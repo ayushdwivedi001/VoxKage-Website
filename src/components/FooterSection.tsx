@@ -74,17 +74,27 @@ export default function FooterSection() {
 
         {/* Center/Right Side: Links */}
         <div className="flex flex-wrap justify-center gap-8 md:gap-16">
-          <a href="#" className="hover:text-white transition-colors duration-300">
+          <a 
+            href="/documentation" 
+            className="transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-[#295cf1] hover:to-indigo-400"
+          >
             Documentation
           </a>
-          <a href="#" className="hover:text-white transition-colors duration-300">
+          <a 
+            href="https://github.com/ayushdwivedi001/VoxKage" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-[#295cf1] hover:to-indigo-400"
+          >
             GitHub
           </a>
-          <a href="#" className="hover:text-white transition-colors duration-300">
+          <a 
+            href="https://www.linkedin.com/in/ayush-dwivedi29/" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-[#295cf1] hover:to-indigo-400"
+          >
             Creator
-          </a>
-          <a href="#" className="hover:text-white transition-colors duration-300">
-            Discord
           </a>
         </div>
       </div>
