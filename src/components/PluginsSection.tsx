@@ -242,7 +242,7 @@ function GlassTerminal({ isVisible }: { isVisible: boolean }) {
       </div>
 
       {/* Body */}
-      <div className="px-6 py-5 font-mono text-[13px] leading-7 min-h-[200px]">
+      <div className="px-6 py-5 font-mono text-[13px] leading-7 h-[240px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -330,19 +330,18 @@ export default function PluginsSection() {
           </p>
 
           {/* "Explore Plugins" button */}
-          <div>
+          <div className="relative w-fit group">
+            {/* Glowing gradient border effect */}
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-[#295cf1] via-indigo-400 to-[#295cf1] rounded-full blur-md opacity-0 group-hover:opacity-75 transition-opacity duration-500 z-0" />
+            
             <a
-              href="#"
-              className="group inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium tracking-wide text-white/70 transition-all duration-300 hover:text-white"
-              style={{
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.04)",
-              }}
+              href="/plugins"
+              className="relative flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium tracking-wide text-white/70 hover:text-white bg-[#ffffff0a] backdrop-blur-md border border-white/10 group-hover:border-transparent transition-all duration-500 z-10"
             >
               Explore Plugins
               <ArrowRight
                 size={15}
-                className="transition-transform duration-300 group-hover:translate-x-1"
+                className="transition-transform duration-500 group-hover:translate-x-1"
               />
             </a>
           </div>

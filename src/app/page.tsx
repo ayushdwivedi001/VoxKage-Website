@@ -26,6 +26,10 @@ const PluginsSection = dynamic(() => import("@/components/PluginsSection"), {
   ssr: false,
 });
 
+const FooterSection = dynamic(() => import("@/components/FooterSection"), {
+  ssr: false,
+});
+
 const AnimatedChar = ({ char, index, scrollY }: { char: string; index: number; scrollY: any }) => {
   // Increased power: more Y movement and tighter staggered fade
   const scrollYOffset = useTransform(scrollY, [0, 500], [0, -300]);
@@ -170,10 +174,12 @@ const EditorialScrubSection = ({
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const { scrollY } = useScroll();
 
   useEffect(() => {
+    // 1. Lenis Scroll setup & cleanup fix
     const lenis = new Lenis({
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -181,16 +187,50 @@ export default function Home() {
       touchMultiplier: 2,
     });
 
+    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
-    const timer = setTimeout(() => setLoading(false), 2500);
+    // 2. BFCache Fix for Back Navigation
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) setLoading(false);
+    };
+    window.addEventListener("pageshow", handlePageShow);
+
+    // 3. Dynamic Progress Loader
+    let loaderRafId: number;
+    let startTimestamp: number | null = null;
+    
+    const simulateProgress = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
+      
+      // Calculate smooth progress up to 90%
+      let currentProgress = Math.min((elapsed / 1500) * 90, 90);
+      
+      // Accelerate to 100% when document is fully ready
+      if (document.readyState === "complete" && elapsed > 500) {
+        currentProgress = Math.min(currentProgress + (elapsed - 500) / 10, 100);
+      }
+
+      setProgress(Math.floor(currentProgress));
+
+      if (currentProgress < 100) {
+        loaderRafId = requestAnimationFrame(simulateProgress);
+      } else {
+        setTimeout(() => setLoading(false), 200); // Small pause at 100%
+      }
+    };
+    loaderRafId = requestAnimationFrame(simulateProgress);
+
     return () => {
-      clearTimeout(timer);
+      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(loaderRafId);
       lenis.destroy();
+      window.removeEventListener("pageshow", handlePageShow);
     };
   }, []);
 
@@ -228,13 +268,21 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 1, ease: "easeInOut" } }}
           >
-            <div className="relative w-48 h-[1px] bg-white/20 overflow-hidden">
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-white"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-              />
+            <div className="flex flex-col items-center justify-center gap-5">
+              <motion.div 
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="font-mono text-[10px] tracking-[0.2em] text-white/80"
+              >
+                {progress}%
+              </motion.div>
+              <div className="relative w-48 h-[1px] bg-white/10 overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full bg-white transition-all duration-75"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
           </motion.div>
         )}
@@ -361,6 +409,9 @@ export default function Home() {
       {/* ── Page 4 ── Plugins ── floating lines show through ─── */}
       <PluginsSection />
 
+      {/* ── Footer ── */}
+      <FooterSection />
+
       {/* ── Glassmorphism Menu Overlay ───────────────────── */}
       <AnimatePresence>
         {menuOpen && (
@@ -381,10 +432,11 @@ export default function Home() {
             </div>
             <div className="flex flex-col py-2">
               {[
-                { name: "Documentation", href: "#" },
-                { name: "GitHub", href: "https://github.com/ayushdwivedi001/VoxKage" },
-                { name: "Features", href: "#" },
-                { name: "Install", href: "#" },
+                { name: "ABOUT", href: "/" },
+                { name: "GITHUB", href: "https://github.com/ayushdwivedi001/VoxKage" },
+                { name: "DOCUMENTATION", href: "/documentation" },
+                { name: "INSTALLATION", href: "/installation" },
+                { name: "PLUGINS", href: "/plugins" },
               ].map((link, i) => (
                 <motion.a
                   key={link.name}
