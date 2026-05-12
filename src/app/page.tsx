@@ -10,25 +10,12 @@ const FloatingLines = dynamic(() => import("@/components/FloatingLines"), {
   ssr: false,
 });
 
-const HoneycombSection = dynamic(() => import("@/components/HoneycombSection"), {
-  ssr: false,
-});
-
-const VisionSection = dynamic(() => import("@/components/VisionSection"), {
-  ssr: false,
-});
-
-const BrowserSection = dynamic(() => import("@/components/BrowserSection"), {
-  ssr: false,
-});
-
-const PluginsSection = dynamic(() => import("@/components/PluginsSection"), {
-  ssr: false,
-});
-
-const FooterSection = dynamic(() => import("@/components/FooterSection"), {
-  ssr: false,
-});
+// Remove ssr: false from the structural sections so their massive heights render immediately
+import HoneycombSection from "@/components/HoneycombSection";
+import VisionSection from "@/components/VisionSection";
+import BrowserSection from "@/components/BrowserSection";
+import PluginsSection from "@/components/PluginsSection";
+import FooterSection from "@/components/FooterSection";
 
 const AnimatedChar = ({ char, index, scrollY }: { char: string; index: number; scrollY: any }) => {
   // Increased power: more Y movement and tighter staggered fade
@@ -186,6 +173,9 @@ export default function Home() {
       smoothWheel: true,
       touchMultiplier: 2,
     });
+    
+    // Attach to window so other components can interact without desyncing the engine
+    (window as any).lenis = lenis;
 
     let rafId: number;
     function raf(time: number) {
@@ -230,6 +220,7 @@ export default function Home() {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(loaderRafId);
       lenis.destroy();
+      delete (window as any).lenis;
       window.removeEventListener("pageshow", handlePageShow);
     };
   }, []);

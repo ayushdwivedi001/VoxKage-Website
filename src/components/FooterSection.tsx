@@ -28,8 +28,18 @@ export default function FooterSection() {
   const handleMouseLeave = () => opacity.set(0);
 
   const scrollToTop = () => {
+    // If the Lenis physics engine is active, use it to prevent desyncing internal scroll state
+    if (typeof window !== "undefined" && (window as any).lenis) {
+      (window as any).lenis.scrollTo(0, {
+        duration: 1.5,
+        easing: (t: number) => t * t * t * t, // Ease-in quartic: starts slow, accelerates dramatically
+      });
+      return;
+    }
+
+    // Fallback if Lenis is unavailable
     const startY = window.scrollY;
-    const duration = 1500; // 1.5 seconds for dramatic acceleration
+    const duration = 1500;
     let startTime: number | null = null;
 
     const animateScroll = (currentTime: number) => {
@@ -37,7 +47,6 @@ export default function FooterSection() {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
-      // Ease-in quartic: t^4 (starts very slow, accelerates aggressively)
       const easeIn = progress * progress * progress * progress;
       const currentY = startY * (1 - easeIn);
 
