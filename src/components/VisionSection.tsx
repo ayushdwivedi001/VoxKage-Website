@@ -185,8 +185,8 @@ export default function VisionSection() {
 
             <div className="border-l-2 border-[#a78bfa]/20 pl-4 flex flex-col gap-3">
               <p className="text-sm text-white/45 font-light leading-relaxed max-w-xs">
-                I don't just read code — I <em className="text-white/70 not-italic">see</em> your screen. A full vision
-                pipeline lets me perceive, reason about, and interact with any
+                VoxKage doesn't just read code — It <em className="text-white/70 not-italic">sees</em> your screen. A full vision
+                pipeline lets it perceive, reason about, and interact with any
                 UI element on the desktop.
               </p>
               <div className="text-[9px] font-mono text-[#a78bfa]/35 tracking-widest uppercase">

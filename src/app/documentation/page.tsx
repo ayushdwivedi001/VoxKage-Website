@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronRight, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronRight, Sun, Moon, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { DOC_SECTIONS, DOC_CONTENT } from "./content";
 
 export default function DocumentationPage() {
@@ -59,6 +60,13 @@ export default function DocumentationPage() {
       {/* ── Left Sidebar (Dashboard Navigation) ── */}
       <aside className={`w-72 h-full border-r ${colors.border} flex flex-col pt-8 pb-4 z-10 shrink-0 transition-colors duration-500 overflow-y-auto no-scrollbar`}>
         <div className="px-8 mb-8 shrink-0">
+          <Link 
+            href="/" 
+            className={`flex items-center gap-2 mb-6 w-fit ${colors.textMuted} hover:text-[#295cf1] transition-colors uppercase tracking-[0.2em] text-xs font-mono`}
+          >
+            <ArrowLeft size={16} />
+            <span>Home</span>
+          </Link>
           <h1 className="text-xl font-bold tracking-widest uppercase">VOXKAGE</h1>
           <p className={`text-[10px] ${colors.textFaint} font-mono tracking-widest mt-1 uppercase transition-colors duration-500`}>
             // Documentation

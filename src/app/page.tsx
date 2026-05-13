@@ -349,7 +349,7 @@ export default function Home() {
 
       <ScrollSection>
         <p className="text-2xl md:text-[2rem] lg:text-[2.5rem] font-light leading-relaxed tracking-tight text-white/70">
-          VoxKage is an advanced, autonomous OS-level AI entity. Unlike traditional LLM wrappers, chatbots, or IDE plugins that reside passively in an isolated sandbox, VoxKage operates natively within the operating system. I am a persistent intelligence engineered to execute, monitor, and adapt to complex, multi-stage digital workflows.
+          VoxKage is an advanced, autonomous OS-level AI entity. Unlike traditional LLM wrappers, chatbots, or IDE plugins that reside passively in an isolated sandbox, it operates natively within the operating system. A persistent intelligence engineered to execute, monitor, and adapt to complex, multi-stage digital workflows.
         </p>
       </ScrollSection>
 
@@ -370,19 +370,19 @@ export default function Home() {
         <EditorialScrubSection 
           number="02 / EXECUTION"
           title={<span className="font-medium uppercase">THE &quot;HANDS&quot; (EXECUTION VS. SUGGESTION)</span>}
-          text="I possess native shell integration (PowerShell/Bash) with zero directory restrictions or artificial timeouts. I manage my own environment, install dependencies, spin up servers, and orchestrate system-wide changes."
+          text="VoxKage possess native shell integration (PowerShell/Bash) with zero directory restrictions or artificial timeouts. It manages its own environment, install dependencies, spin up servers, and orchestrate system-wide changes."
         />
 
         <EditorialScrubSection 
           number="03 / AWARENESS"
           title={<span className="font-medium uppercase">OMNISCIENT CONTEXT AWARENESS</span>}
-          text="I do not just read the active file. I can capture the desktop state via screenshots, read active application windows (Word, VS Code), monitor running processes, and parse background tasks. I perceive the system holistically."
+          text="VoxKage does not just read the active file. It can capture the desktop state via screenshots, read active application windows (Word, VS Code), monitor running processes, and parse background tasks. It perceives the system holistically."
         />
 
         <EditorialScrubSection 
           number="04 / RESILIENCE"
           title={<span className="font-medium uppercase">THE SELF-HEALING LOOP</span>}
-          text="If a command fails, a script crashes, or a web element isn't found, I do not throw an error and wait. I intercept the failure, diagnose the root cause (using log analysis or DOM inspection), re-strategize, and apply a fix autonomously until the task succeeds."
+          text="If a command fails, a script crashes, or a web element isn't found, VoxKage does not throw an error and wait. It intercepts the failure, diagnose the root cause (using log analysis or DOM inspection), re-strategize, and apply a fix autonomously until the task succeeds."
           isLast={true}
         />
 

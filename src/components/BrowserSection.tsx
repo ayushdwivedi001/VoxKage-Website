@@ -178,7 +178,7 @@ export default function BrowserSection() {
 
             <div className="border-l-2 border-[#22c55e]/20 pl-4 flex flex-col gap-3">
               <p className="text-sm text-white/45 font-light leading-relaxed max-w-xs">
-                I surf the web like a human, but with machine precision — navigating, extracting, reverse-engineering and executing multi-step workflows autonomously.
+                VoxKage surfs the web like a human, but with machine precision — navigating, extracting, reverse-engineering and executing multi-step workflows autonomously.
               </p>
               <div className="text-[9px] font-mono text-[#22c55e]/35 tracking-widest uppercase">
                 &gt; LAUNCHING_BROWSER_AGENT
