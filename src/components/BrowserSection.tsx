@@ -140,11 +140,53 @@ export default function BrowserSection() {
   const ringRotate   = useTransform(progress, [0, 1], [0, 720]);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative w-full bg-[#02040a] rounded-b-[60px] md:rounded-b-[100px] [overflow:clip]"
-      style={{ height: "300vh" }}
-    >
+    <>
+      {/* ══ MOBILE LAYOUT (< md) — static, no sticky scroll ══ */}
+      <section className="md:hidden relative w-full bg-[#02040a] rounded-b-[40px] py-20 px-6 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(34,197,94,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,transparent_40%,#02040a_90%)] pointer-events-none" />
+        <div className="relative z-10 max-w-lg mx-auto flex flex-col gap-10">
+          <div>
+            <div className="inline-flex items-center gap-2 border border-[#22c55e]/25 bg-[#22c55e]/5 px-3 py-1 mb-5">
+              <Network size={12} className="text-[#22c55e]" />
+              <span className="text-[#22c55e] text-[9px] font-mono tracking-[0.35em] uppercase">Protocol // III.III</span>
+            </div>
+            <h2 className="text-4xl font-bold tracking-tighter text-white mb-5 uppercase leading-[0.9]">
+              THE BROWSER<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#22c55e] to-[#38bdf8] font-light">ENGINE</span>
+            </h2>
+            <div className="border-l-2 border-[#22c55e]/20 pl-4">
+              <p className="text-sm text-white/45 font-light leading-relaxed">
+                VoxKage surfs the web like a human, but with machine precision — navigating, extracting, reverse-engineering and executing multi-step workflows autonomously.
+              </p>
+              <div className="text-[9px] font-mono text-[#22c55e]/35 tracking-widest uppercase mt-2">&gt; LAUNCHING_BROWSER_AGENT</div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            {NODES.map((node, i) => {
+              const Icon = node.icon;
+              return (
+                <div key={i} className="flex items-center gap-4 border px-4 py-3 rounded-lg" style={{ borderColor: `${node.accent}20`, backgroundColor: `${node.accent}05` }}>
+                  <div className="w-10 h-10 flex items-center justify-center shrink-0" style={{ clipPath: "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)", border: `1px solid ${node.accent}50`, backgroundColor: "#02040a" }}>
+                    <Icon className="w-4 h-4" strokeWidth={1.5} style={{ color: node.accent }} />
+                  </div>
+                  <div>
+                    <div className="text-[8px] font-mono tracking-[0.2em] uppercase" style={{ color: `${node.accent}70` }}>WEB_{node.label.split(" ")[0]}</div>
+                    <div className="text-[11px] font-medium tracking-[0.1em] text-white uppercase">{node.label}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ DESKTOP LAYOUT (≥ md) — full 300vh sticky animation ══ */}
+      <section
+        ref={containerRef}
+        className="hidden md:block relative w-full bg-[#02040a] rounded-b-[100px] [overflow:clip]"
+        style={{ height: "300vh" }}
+      >
       <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center">
 
         {/* Grid */}
@@ -159,7 +201,7 @@ export default function BrowserSection() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,transparent_25%,#02040a_75%)] z-0 pointer-events-none" />
 
         {/* ── Left text ── */}
-        <div className="relative z-30 w-[38%] pl-10 md:pl-16 pr-4 pointer-events-none select-none">
+        <div className="relative z-30 w-full md:w-[45%] lg:w-[38%] pl-6 sm:pl-10 md:pl-16 pr-6 md:pr-4 pointer-events-none select-none bg-gradient-to-r from-[#02040a] via-[#02040a]/80 to-transparent md:bg-none py-10 md:py-0">
           <motion.div style={{ opacity: headingOp, x: headingX }}>
             <div className="inline-flex items-center gap-2 border border-[#22c55e]/25 bg-[#22c55e]/5 px-3 py-1 mb-6">
               <Network size={12} className="text-[#22c55e]" />
@@ -188,7 +230,7 @@ export default function BrowserSection() {
         </div>
 
         {/* ── Right diagram ── */}
-        <div className="absolute left-[38%] top-0 right-0 bottom-0 z-10">
+        <div className="absolute inset-0 md:left-[45%] lg:left-[38%] z-10 opacity-60 md:opacity-100">
 
           {/* SVG bezier web paths */}
           <svg
@@ -356,6 +398,7 @@ export default function BrowserSection() {
         </motion.div>
 
       </div>
-    </section>
+      </section>
+    </>
   );
 }

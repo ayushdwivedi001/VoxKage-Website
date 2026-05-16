@@ -148,15 +148,15 @@ const HoneycombMockup = () => {
   }, [step]);
 
   return (
-    <div className="w-full bg-[#050505] border border-white/5 rounded-xl p-6 font-mono text-[13px] shadow-2xl relative overflow-hidden flex flex-col">
+    <div className="w-full bg-[#050505] border border-white/5 rounded-xl p-4 md:p-6 font-mono text-[11px] md:text-[13px] shadow-2xl relative overflow-hidden flex flex-col">
       {/* Query Bar */}
-      <div className="flex items-center gap-3 bg-white/5 px-4 py-3 rounded-lg mb-8 border border-white/5 shrink-0">
-        <Terminal size={16} className="text-[#295cf1] shrink-0" />
+      <div className="flex items-start md:items-center gap-3 bg-white/5 px-3 md:px-4 py-3 rounded-lg mb-6 md:mb-8 border border-white/5 shrink-0 pr-16 md:pr-20">
+        <Terminal size={16} className="text-[#295cf1] shrink-0 mt-0.5 md:mt-0" />
         <motion.span 
-          initial={{ width: 0, opacity: 0 }} 
-          animate={{ width: "auto", opacity: 1 }} 
-          transition={{ duration: 1.5, ease: "linear" }}
-          className="text-white/80 overflow-hidden whitespace-nowrap"
+          initial={{ opacity: 0, y: 4 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.6 }}
+          className="text-white/80 whitespace-normal leading-relaxed break-words"
         >
           search for the latest NEXT JS documentation and updates and send me a word file through my telegram
         </motion.span>
@@ -223,7 +223,7 @@ const HoneycombMockup = () => {
 
       <button 
         onClick={() => setStep(0)}
-        className="absolute top-4 right-4 text-[10px] text-white/40 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-1 rounded transition-colors z-10"
+        className="absolute top-4 right-4 md:top-6 md:right-6 text-[9px] md:text-[10px] text-white/40 hover:text-white uppercase tracking-widest border border-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded transition-colors z-10 bg-[#050505]"
       >
         Replay
       </button>
@@ -603,15 +603,15 @@ const MemoryMockup = () => {
   }, [step]);
 
   return (
-    <div className="w-full bg-[#050505] border border-white/5 rounded-xl p-6 font-mono text-[13px] shadow-2xl relative overflow-hidden flex flex-col min-h-[360px]">
+    <div className="w-full bg-[#050505] border border-white/5 rounded-xl p-4 md:p-6 font-mono text-[11px] md:text-[13px] shadow-2xl relative overflow-hidden flex flex-col min-h-[360px]">
       {/* Query Bar */}
-      <div className="flex items-center gap-3 bg-white/5 px-4 py-3 rounded-lg mb-8 border border-white/5 shrink-0">
-        <Terminal size={16} className="text-[#295cf1] shrink-0" />
+      <div className="flex items-start md:items-center gap-3 bg-white/5 px-3 md:px-4 py-3 rounded-lg mb-6 md:mb-8 border border-white/5 shrink-0 pr-16 md:pr-20">
+        <Terminal size={16} className="text-[#295cf1] shrink-0 mt-0.5 md:mt-0" />
         <motion.span 
-          initial={{ width: 0, opacity: 0 }} 
-          animate={{ width: "auto", opacity: 1 }} 
-          transition={{ duration: 1.5, ease: "linear" }}
-          className="text-white/80 overflow-hidden whitespace-nowrap"
+          initial={{ opacity: 0, y: 4 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.6 }}
+          className="text-white/80 whitespace-normal leading-relaxed break-words"
         >
           Build me Claude. Do no mistakes.
         </motion.span>
@@ -642,7 +642,7 @@ const MemoryMockup = () => {
 
       <button 
         onClick={() => setStep(0)}
-        className="absolute top-4 right-4 text-[10px] text-white/40 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-1 rounded transition-colors z-10"
+        className="absolute top-4 right-4 md:top-6 md:right-6 text-[9px] md:text-[10px] text-white/40 hover:text-white uppercase tracking-widest border border-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded transition-colors z-10 bg-[#050505]"
       >
         Replay
       </button>

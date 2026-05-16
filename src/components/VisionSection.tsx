@@ -146,11 +146,55 @@ export default function VisionSection() {
   const scanOp = useTransform(progress, [0.05, 0.2], [0, 1]);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative w-full bg-[#02040a]"
-      style={{ height: "300vh" }}
-    >
+    <>
+      {/* ══ MOBILE LAYOUT (< md) — static, no sticky scroll ══ */}
+      <section className="md:hidden relative w-full bg-[#02040a] py-20 px-6">
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(167,139,250,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,transparent_40%,#02040a_90%)] pointer-events-none" />
+        <div className="relative z-10 max-w-lg mx-auto flex flex-col gap-10">
+          <div>
+            <div className="inline-flex items-center gap-2 border border-[#a78bfa]/25 bg-[#a78bfa]/5 px-3 py-1 mb-5">
+              <ScanLine size={12} className="text-[#a78bfa]" />
+              <span className="text-[#a78bfa] text-[9px] font-mono tracking-[0.35em] uppercase">Protocol // III.II</span>
+            </div>
+            <h2 className="text-4xl font-bold tracking-tighter text-white mb-5 uppercase leading-[0.9]">
+              MULTI-MODAL<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a78bfa] to-[#34d399] font-light">VISION &amp; GUI</span>
+            </h2>
+            <div className="border-l-2 border-[#a78bfa]/20 pl-4">
+              <p className="text-sm text-white/45 font-light leading-relaxed">
+                VoxKage doesn&apos;t just read code — It <em className="text-white/70 not-italic">sees</em> your screen. A full vision pipeline lets it perceive, reason about, and interact with any UI element on the desktop.
+              </p>
+              <div className="text-[9px] font-mono text-[#a78bfa]/35 tracking-widest uppercase mt-2">&gt; BOOTING_VISION_PIPELINE</div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            {NODES.map((node, i) => {
+              const Icon = node.icon;
+              return (
+                <div key={i} className="flex items-center gap-4 border border-white/5 bg-white/3 px-4 py-3 rounded-lg" style={{ borderColor: `${node.accentColor}20` }}>
+                  <div className="w-10 h-10 flex items-center justify-center shrink-0 relative" style={{ border: `1px solid ${node.accentColor}50` }}>
+                    <div className="absolute top-[-1px] left-[-1px] w-2 h-2 border-t border-l" style={{ borderColor: node.accentColor }} />
+                    <div className="absolute bottom-[-1px] right-[-1px] w-2 h-2 border-b border-r" style={{ borderColor: node.accentColor }} />
+                    <Icon className="w-4 h-4" strokeWidth={1.5} style={{ color: node.accentColor }} />
+                  </div>
+                  <div>
+                    <div className="text-[8px] font-mono tracking-[0.2em] uppercase" style={{ color: `${node.accentColor}70` }}>VISION_{node.label.split(" ")[0]}</div>
+                    <div className="text-[11px] font-medium tracking-[0.1em] text-white uppercase">{node.label}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ DESKTOP LAYOUT (≥ md) — full 300vh sticky animation ══ */}
+      <section
+        ref={containerRef}
+        className="hidden md:block relative w-full bg-[#02040a]"
+        style={{ height: "300vh" }}
+      >
       <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center">
 
         {/* Grid background */}
@@ -166,7 +210,7 @@ export default function VisionSection() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,transparent_25%,#02040a_75%)] z-0 pointer-events-none" />
 
         {/* ── Left text panel ── */}
-        <div className="relative z-30 w-[38%] pl-10 md:pl-16 pr-4 pointer-events-none select-none">
+        <div className="relative z-30 w-full md:w-[45%] lg:w-[38%] pl-6 sm:pl-10 md:pl-16 pr-6 md:pr-4 pointer-events-none select-none bg-gradient-to-r from-[#02040a] via-[#02040a]/80 to-transparent md:bg-none py-10 md:py-0">
           <motion.div style={{ opacity: headingOp, x: headingX }}>
             <div className="inline-flex items-center gap-2 border border-[#a78bfa]/25 bg-[#a78bfa]/5 px-3 py-1 mb-6">
               <ScanLine size={12} className="text-[#a78bfa]" />
@@ -197,7 +241,7 @@ export default function VisionSection() {
         </div>
 
         {/* ── Right diagram panel (same layout as HoneycombSection) ── */}
-        <div className="absolute left-[38%] top-0 right-0 bottom-0 z-10">
+        <div className="absolute inset-0 md:left-[45%] lg:left-[38%] z-10 opacity-60 md:opacity-100">
 
           {/* SVG — scan-ray paths */}
           <svg
@@ -349,14 +393,8 @@ export default function VisionSection() {
 
       </div>
 
-      <style jsx>{`
-        @keyframes scanH {
-          0%   { transform: translateY(-50%) scaleX(0); opacity: 0; }
-          30%  { transform: translateY(-50%) scaleX(1); opacity: 1; }
-          70%  { transform: translateY(-50%) scaleX(1); opacity: 1; }
-          100% { transform: translateY(-50%) scaleX(0); opacity: 0; }
-        }
-      `}</style>
-    </section>
+      </section>
+    </>
   );
 }
+

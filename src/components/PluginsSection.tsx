@@ -280,8 +280,7 @@ export default function PluginsSection() {
       {/* ── Large PLUGINS heading ── */}
       <div
         ref={headingRef}
-        className="w-full flex items-center justify-center"
-        style={{ minHeight: "70vh" }}
+        className="w-full flex items-center justify-center min-h-[40vh] md:min-h-[70vh]"
       >
         <motion.h1
           initial={{ opacity: 0, filter: "blur(24px)", y: 40 }}
@@ -293,7 +292,7 @@ export default function PluginsSection() {
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-center font-bold uppercase tracking-[-0.02em] leading-none select-none"
           style={{
-            fontSize: "clamp(5rem, 18vw, 18rem)",
+            fontSize: "clamp(4.5rem, 15vw, 18rem)",
             background: "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.25) 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
@@ -306,7 +305,7 @@ export default function PluginsSection() {
       {/* ── Two-column: paragraph + terminal ── */}
       <div
         ref={contentRef}
-        className="w-full max-w-7xl mx-auto px-8 md:px-16 pb-40 flex flex-col lg:flex-row items-start gap-16 lg:gap-24"
+        className="w-full max-w-7xl mx-auto px-6 sm:px-8 md:px-16 pb-32 md:pb-40 flex flex-col lg:flex-row items-start gap-12 lg:gap-24"
       >
         {/* Left: paragraph + button */}
         <motion.div

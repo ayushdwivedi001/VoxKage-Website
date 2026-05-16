@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronRight, Sun, Moon, ArrowLeft } from "lucide-react";
+import { Menu, X, ChevronRight, Sun, Moon, ArrowLeft, PanelLeft } from "lucide-react";
 import Link from "next/link";
 import { DOC_SECTIONS, DOC_CONTENT } from "./content";
 
 export default function DocumentationPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [docsMenuOpen, setDocsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("architecture");
   const [activeTab, setActiveTab] = useState(0); // Internal tabs
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -57,8 +58,28 @@ export default function DocumentationPage() {
   return (
     <main className={`relative w-full h-screen ${colors.bg} ${colors.text} overflow-hidden flex transition-colors duration-500 selection:bg-[#295cf1]/30`}>
       
-      {/* ── Left Sidebar (Dashboard Navigation) ── */}
-      <aside className={`w-72 h-full border-r ${colors.border} flex flex-col pt-8 pb-4 z-10 shrink-0 transition-colors duration-500 overflow-y-auto no-scrollbar`}>
+      {/* ── Mobile Drawer Backdrop ── */}
+      {docsMenuOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm"
+          onClick={() => setDocsMenuOpen(false)}
+        />
+      )}
+
+      {/* ── Left Sidebar (Desktop) / Drawer (Mobile) ── */}
+      <aside 
+        className={`
+          fixed lg:relative z-40 lg:z-10
+          top-0 left-0 h-full w-72
+          transform transition-transform duration-300 ease-in-out
+          ${docsMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          border-r ${colors.border} flex flex-col pt-8 pb-4 shrink-0 overflow-y-auto no-scrollbar
+          ${isDark ? "bg-[#02040a]" : "bg-[#C3C2B7]"}
+        `}
+      >
         <div className="px-8 mb-8 shrink-0">
           <Link 
             href="/" 
@@ -84,7 +105,10 @@ export default function DocumentationPage() {
                 return (
                   <button
                     key={section.id}
-                    onClick={() => setActiveSection(section.id)}
+                    onClick={() => {
+                      setActiveSection(section.id);
+                      setDocsMenuOpen(false);
+                    }}
                     className={`group flex items-center justify-between w-full px-4 py-2.5 rounded-xl transition-all duration-300 ${
                       isActive 
                         ? `bg-[#295cf1]/10 text-[#295cf1] border ${isDark ? 'border-[#295cf1]/20' : 'border-[#295cf1]/30'}` 
@@ -107,18 +131,42 @@ export default function DocumentationPage() {
       {/* ── Main Content Area ── */}
       <section className="flex-1 h-full relative flex flex-col overflow-hidden">
         {/* Top Bar for Hamburger & Breadcrumbs */}
-        <header className={`h-20 w-full flex items-center justify-between px-10 border-b ${colors.border} shrink-0 z-10 transition-colors duration-500`}>
-          <div className={`flex items-center gap-2 text-xs font-mono uppercase tracking-wider ${colors.textMuted} transition-colors duration-500`}>
-            <span>Docs</span>
-            <span className="opacity-30">/</span>
-            <span>{DOC_SECTIONS.find(s => s.id === activeSection)?.category}</span>
-            <span className="opacity-30">/</span>
-            <span className="text-[#295cf1]">
-              {DOC_SECTIONS.find(s => s.id === activeSection)?.label}
-            </span>
+        <header className={`h-20 w-full flex items-center justify-between px-4 md:px-10 border-b ${colors.border} shrink-0 z-10 transition-colors duration-500`}>
+          
+          {/* Left Side: Navigation Controls & Breadcrumbs */}
+          <div className="flex items-center flex-1 min-w-0 mr-4">
+            {/* Mobile Sidebar Toggle Button */}
+            <button
+              onClick={() => setDocsMenuOpen(true)}
+              className={`lg:hidden flex-shrink-0 p-2 mr-2 -ml-2 rounded-md hover:bg-[#295cf1]/10 hover:text-[#295cf1] transition-colors ${colors.textMuted}`}
+              title="Open Navigation"
+            >
+              <PanelLeft size={18} strokeWidth={1.5} />
+            </button>
+
+            <Link 
+              href="/" 
+              className={`flex items-center flex-shrink-0 gap-2 mr-3 md:mr-6 ${isDark ? 'hover:text-white' : 'hover:text-[#1a1a1a]'} ${colors.textMuted} transition-colors`}
+              title="Return to Home"
+            >
+              <ArrowLeft size={16} />
+              <span className="hidden md:inline text-xs font-mono uppercase tracking-wider">Home</span>
+            </Link>
+
+            {/* Breadcrumbs - horizontally scrollable on mobile */}
+            <div className={`flex items-center gap-2 text-[9px] sm:text-[10px] md:text-xs font-mono uppercase tracking-widest ${colors.textMuted} transition-colors duration-500 overflow-x-auto no-scrollbar whitespace-nowrap`}>
+              <span className="flex-shrink-0">Docs</span>
+              <span className="opacity-30 flex-shrink-0">/</span>
+              <span className="flex-shrink-0">{DOC_SECTIONS.find(s => s.id === activeSection)?.category}</span>
+              <span className="opacity-30 flex-shrink-0">/</span>
+              <span className="text-[#295cf1] flex-shrink-0 font-bold">
+                {DOC_SECTIONS.find(s => s.id === activeSection)?.label}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Right Side: Theme & Global Menu */}
+          <div className="flex items-center gap-3 md:gap-4 flex-shrink-0">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -148,7 +196,7 @@ export default function DocumentationPage() {
         </header>
 
         {/* Content Viewport */}
-        <div className="flex-1 w-full relative p-6 lg:p-10 overflow-hidden flex flex-col">
+        <div className="flex-1 w-full relative p-4 md:p-6 lg:p-10 overflow-hidden flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}
@@ -156,17 +204,17 @@ export default function DocumentationPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className={`w-full h-full border ${colors.glassBorder} ${colors.glassBg} rounded-2xl p-8 backdrop-blur-md transition-colors duration-500 shadow-xl flex flex-col`}
+              className={`w-full h-full border ${colors.glassBorder} ${colors.glassBg} rounded-2xl p-6 md:p-8 backdrop-blur-md transition-colors duration-500 shadow-xl flex flex-col`}
             >
               {/* Header */}
-              <div className="shrink-0 mb-8">
-                <h2 className="text-3xl font-light tracking-tight mb-3 uppercase">
+              <div className="shrink-0 mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight mb-2 md:mb-3 uppercase">
                   {currentContent.title}
                 </h2>
-                <p className={`${colors.textMuted} font-light text-sm max-w-3xl transition-colors duration-500`}>
+                <p className={`${colors.textMuted} font-light text-xs md:text-sm max-w-3xl transition-colors duration-500`}>
                   {currentContent.description}
                 </p>
-                <div className="w-16 h-[2px] bg-[#295cf1] mt-6" />
+                <div className="w-16 h-[2px] bg-[#295cf1] mt-4 md:mt-6" />
               </div>
               
               {/* Rich Content Viewport */}

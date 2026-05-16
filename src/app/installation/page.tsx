@@ -87,37 +87,37 @@ pip install -e .`;
       </div>
 
       {/* ── Fixed Navigation ────────────────────────────── */}
-      <div className="absolute top-[40px] left-[48px] z-40 pointer-events-auto">
+      <div className="absolute top-6 left-6 md:top-10 md:left-12 z-40 pointer-events-auto">
         <Link 
           href="/" 
           className="flex items-center gap-2 text-white/50 hover:text-white transition-colors uppercase tracking-[0.2em] text-xs font-mono"
         >
           <ArrowLeft size={16} />
-          <span>Home</span>
+          <span className="hidden md:inline">Home</span>
         </Link>
       </div>
 
-      <div className="absolute top-[40px] right-[48px] z-40 pointer-events-auto flex items-center">
+      <div className="absolute top-6 right-6 md:top-10 md:right-12 z-40 pointer-events-auto flex items-center">
         <button
           onClick={() => setMenuOpen(true)}
-          className="text-white hover:text-white/70 transition-colors"
+          className="text-white hover:text-white/70 transition-colors bg-black/20 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-2 md:p-0 rounded-lg md:rounded-none"
         >
-          <Menu size={28} strokeWidth={1.5} />
+          <Menu size={24} className="md:w-7 md:h-7" strokeWidth={1.5} />
         </button>
       </div>
 
       {/* ── Main Content Area ───────────────────────────── */}
-      <div className="z-10 w-full max-w-3xl px-8 flex flex-col items-center text-center">
+      <div className="z-10 w-full max-w-3xl px-4 md:px-8 flex flex-col items-center text-center mt-16 md:mt-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center gap-8 bg-black/40 backdrop-blur-2xl p-12 md:p-16 rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden w-full"
+          className="flex flex-col items-center gap-6 md:gap-8 bg-black/40 backdrop-blur-2xl p-6 sm:p-8 md:p-12 rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden w-full"
         >
           {/* Subtle Inner Glow */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 md:gap-4">
             <h1 className="text-3xl md:text-5xl font-light tracking-tight text-white">
               INSTALLATION
             </h1>
@@ -127,11 +127,11 @@ pip install -e .`;
           </div>
 
           <div className="w-full flex flex-col gap-3 mt-2">
-            <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase font-bold self-start pl-2">
+            <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase font-bold self-start pl-1 md:pl-2">
               MANUAL INSTALLATION
             </span>
             <div className="flex w-full bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden shadow-inner group transition-colors hover:border-white/20 relative">
-              <pre className="p-5 flex-1 text-left font-mono text-[12px] leading-[1.6] text-[#e5e4dc] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] whitespace-pre-wrap">
+              <pre className="p-4 md:p-5 pr-16 md:pr-20 flex-1 text-left font-mono text-[11px] md:text-[12px] leading-[1.6] text-[#e5e4dc] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] whitespace-pre">
                 {fullInstallCommand.split('\n').map((line, i) => {
                   if (line.startsWith('#')) return <span key={i} className="text-white/30">{line}{'\n'}</span>;
                   if (line.trim() === '') return <span key={i}>{'\n'}</span>;

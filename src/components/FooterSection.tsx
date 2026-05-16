@@ -124,7 +124,23 @@ export default function FooterSection() {
       </div>
 
       {/* ── Massive VOXKAGE Text at Bottom Center ── */}
-      <div className="w-full flex justify-center mt-20 select-none relative z-0">
+      {/* Mobile: plain visible white text, no interactive gradient */}
+      <div className="w-full flex justify-center mt-12 md:mt-20 select-none relative z-0 overflow-visible px-4">
+        {/* Mobile version — static, always visible, permanent glowing gradient */}
+        <h1
+          className="block md:hidden font-sans font-medium tracking-tighter text-center mb-8"
+          style={{ 
+            fontSize: "clamp(3.5rem, 16vw, 6rem)", 
+            lineHeight: 1,
+            backgroundImage: "radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(41,92,241,1) 40%, rgba(255,255,255,0.1) 80%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent"
+          }}
+        >
+          VOXKAGE
+        </h1>
+        {/* Desktop version — interactive mouse gradient */}
         <motion.h1
           ref={textRef}
           onMouseMove={handleMouseMove}
@@ -134,9 +150,9 @@ export default function FooterSection() {
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="font-sans font-medium tracking-tighter text-white"
+          className="hidden md:block font-sans font-medium tracking-tighter text-white"
           style={{
-            fontSize: "clamp(4rem, 15vw, 11rem)",
+            fontSize: "clamp(4rem, 12vw, 11rem)",
             lineHeight: 1,
             backgroundImage: bgImage,
             backgroundClip: "text",

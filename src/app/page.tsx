@@ -33,7 +33,7 @@ const AnimatedChar = ({ char, index, scrollY }: { char: string; index: number; s
           delay: 0.4 + index * 0.08,
         }}
         className="inline-block font-sans font-medium tracking-tighter"
-        style={{ fontSize: "clamp(4rem, 15vw, 11rem)", lineHeight: 1 }}
+        style={{ fontSize: "clamp(2.5rem, 12vw, 11rem)", lineHeight: 1 }}
       >
         {char}
       </motion.span>
@@ -281,7 +281,7 @@ export default function Home() {
 
       {/* ── Fixed Hamburger ─────────────────────────────── */}
       {!loading && (
-        <div className="fixed top-[40px] right-[48px] z-40 pointer-events-auto flex items-center">
+        <div className="fixed top-6 right-6 md:top-[40px] md:right-[48px] z-40 pointer-events-auto flex items-center">
           <button
             onClick={() => setMenuOpen(true)}
             className="text-white hover:text-white/70 transition-colors"
@@ -293,7 +293,7 @@ export default function Home() {
 
       {/* ── Hero Section (Logo at Bottom Left) ───────────── */}
       {!loading && (
-        <div className="fixed left-[48px] bottom-[40px] z-30 pointer-events-none">
+        <div className="fixed left-6 bottom-8 md:left-[48px] md:bottom-[40px] z-30 pointer-events-none">
           <h1 className="flex whitespace-nowrap leading-none">
             {titleText.split("").map((char, index) => (
               <AnimatedChar key={index} char={char} index={index} scrollY={scrollY} />
@@ -308,7 +308,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
-          className="fixed bottom-[48px] right-[56px] z-30 flex flex-col items-center gap-5 pointer-events-none"
+          className="fixed bottom-8 right-6 md:bottom-[48px] md:right-[56px] z-30 flex flex-col items-center gap-5 pointer-events-none"
         >
           <motion.div style={{ opacity: scrollIndicatorOpacity }} className="flex flex-col items-center gap-5">
             <span
@@ -336,19 +336,19 @@ export default function Home() {
       <div className="h-[100vh] pointer-events-none" />
 
       <ScrollSection>
-        <h2 className="text-5xl md:text-[5rem] lg:text-[6.5rem] font-light tracking-tight leading-tight">
+        <h2 className="text-4xl md:text-[5rem] lg:text-[6.5rem] font-light tracking-tight leading-tight">
           The OS has found its voice.
         </h2>
       </ScrollSection>
 
       <ScrollSection>
-        <h2 className="text-5xl md:text-[5rem] lg:text-[6.5rem] font-light tracking-tight leading-tight text-white/90">
+        <h2 className="text-4xl md:text-[5rem] lg:text-[6.5rem] font-light tracking-tight leading-tight text-white/90">
           Beyond the interface, an entity resides.
         </h2>
       </ScrollSection>
 
       <ScrollSection>
-        <p className="text-2xl md:text-[2rem] lg:text-[2.5rem] font-light leading-relaxed tracking-tight text-white/70">
+        <p className="text-xl md:text-[2rem] lg:text-[2.5rem] font-light leading-relaxed tracking-tight text-white/70">
           VoxKage is an advanced, autonomous OS-level AI entity. Unlike traditional LLM wrappers, chatbots, or IDE plugins that reside passively in an isolated sandbox, it operates natively within the operating system. A persistent intelligence engineered to execute, monitor, and adapt to complex, multi-stage digital workflows.
         </p>
       </ScrollSection>
