@@ -349,7 +349,7 @@ export default function Home() {
 
       <ScrollSection>
         <p className="text-xl md:text-[2rem] lg:text-[2.5rem] font-light leading-relaxed tracking-tight text-white/70">
-          VoxKage is an advanced, autonomous OS-level AI entity. Unlike traditional LLM wrappers, chatbots, or IDE plugins that reside passively in an isolated sandbox, it operates natively within the operating system. A persistent intelligence engineered to execute, monitor, and adapt to complex, multi-stage digital workflows.
+          VoxKage is an advanced OS-level capability and orchestration framework. Rather than acting as a passive standalone wrapper, it scaffolds a system-wide network of persistent local MCP servers directly into elite developer shells, empowering your agent to execute, monitor, and adapt to complex digital workflows natively on your machine.
         </p>
       </ScrollSection>
 
@@ -364,25 +364,25 @@ export default function Home() {
               <span className="font-medium text-white">THE ARCHITECTURAL EVOLUTION</span>
             </>
           }
-          text="Most tools require constant user hand-holding (prompting, copy-pasting, fixing errors). VoxKage represents a paradigm shift to full autonomy."
+          text="Most tools are confined inside passive sandbox directories. VoxKage represents a paradigm shift—injecting system-wide intelligence and local MCP servers directly into your active front-end developer shells."
         />
 
         <EditorialScrubSection 
           number="02 / EXECUTION"
           title={<span className="font-medium uppercase">THE &quot;HANDS&quot; (EXECUTION VS. SUGGESTION)</span>}
-          text="VoxKage possess native shell integration (PowerShell/Bash) with zero directory restrictions or artificial timeouts. It manages its own environment, install dependencies, spin up servers, and orchestrate system-wide changes."
+          text="VoxKage scaffolds native system control (PowerShell/Bash) directly into your workspace. From installing dependencies to running local dev servers and managing processes, it operates natively with elevated OS privileges."
         />
 
         <EditorialScrubSection 
           number="03 / AWARENESS"
           title={<span className="font-medium uppercase">OMNISCIENT CONTEXT AWARENESS</span>}
-          text="VoxKage does not just read the active file. It can capture the desktop state via screenshots, read active application windows (Word, VS Code), monitor running processes, and parse background tasks. It perceives the system holistically."
+          text="The session does not just read the active file. With Playwright browser engines, multi-modal GUI control, process watchers, and active task daemons, the agent perceives your system holistically."
         />
 
         <EditorialScrubSection 
           number="04 / RESILIENCE"
           title={<span className="font-medium uppercase">THE SELF-HEALING LOOP</span>}
-          text="If a command fails, a script crashes, or a web element isn't found, VoxKage does not throw an error and wait. It intercepts the failure, diagnose the root cause (using log analysis or DOM inspection), re-strategize, and apply a fix autonomously until the task succeeds."
+          text="If a command fails or a script crashes, the agent does not wait for hand-holding. It intercepts the run-time exception, queries RAG problem logs, re-strategize, and applies autonomous repairs until the goal is met."
           isLast={true}
         />
 

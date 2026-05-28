@@ -319,13 +319,13 @@ export default function PluginsSection() {
             style={{ fontSize: "clamp(1.05rem, 1.6vw, 1.35rem)" }}
           >
             VoxKage's architecture is open by design. The community can publish
-            custom plugins — Gmail, Spotify, Telegram, GitHub, Jira, Docker,
-            AWS orchestrators and more — directly to PyPI via the{" "}
+            custom plugins — Gmail, Spotify, Telegram, GitHub, Firebase, Netlify,
+            Supabase, and more — directly via the{" "}
             <span className="text-white/85 font-normal">
               [project.entry-points] API.
             </span>{" "}
-            VoxKage auto-detects and mounts each plugin into its honeycomb at
-            runtime. One command. No config files, no restarts.
+            VoxKage auto-detects and mounts each plugin into its honeycomb,
+            configured dynamically via the plugins CLI controller.
           </p>
 
           {/* "Explore Plugins" button */}
