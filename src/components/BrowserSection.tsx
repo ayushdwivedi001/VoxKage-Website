@@ -11,15 +11,15 @@ import { Code2, Layers, GitBranch, Globe, Network } from "lucide-react";
 // Hub at SVG (50, 50). Node x/y % match SVG endpoint coords.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const HUB_X = 50;
+const HUB_X = 44;
 const HUB_Y = 50;
 
-// Bezier arc paths — organic web-crawl feel, not straight or orthogonal
+// Bezier arc paths — organic web-crawl feel, start from hub edges to avoid crossing globe center
 const NODES = [
   {
     // Top-right arc → Live DOM Extraction
-    path: `M ${HUB_X} ${HUB_Y} C 62 28, 76 22, 84 22`,
-    x: 84, y: 22,
+    path: `M 50 44 C 56 34, 64 26, 72 22`,
+    x: 72, y: 22,
     label: "LIVE DOM EXTRACTION",
     icon: Code2,
     drawStart: 0.15, drawEnd: 0.38,
@@ -28,8 +28,8 @@ const NODES = [
   },
   {
     // Hard left arc → Frontend Autonomy
-    path: `M ${HUB_X} ${HUB_Y} C 36 42, 24 46, 18 50`,
-    x: 18, y: 50,
+    path: `M 37 50 C 30 48, 23 48, 16 50`,
+    x: 16, y: 50,
     label: "FRONTEND AUTONOMY",
     icon: Layers,
     drawStart: 0.38, drawEnd: 0.60,
@@ -38,8 +38,8 @@ const NODES = [
   },
   {
     // Bottom-right arc → Workflow Execution
-    path: `M ${HUB_X} ${HUB_Y} C 62 68, 76 76, 84 78`,
-    x: 84, y: 78,
+    path: `M 50 56 C 56 66, 64 74, 72 78`,
+    x: 72, y: 78,
     label: "WORKFLOW EXECUTION",
     icon: GitBranch,
     drawStart: 0.60, drawEnd: 0.82,
@@ -70,27 +70,16 @@ const BrowserNode = ({
         opacity: op,
         scale: sc,
       }}
-      className="flex items-center gap-3 z-20 pointer-events-auto"
+      className="z-20 pointer-events-auto w-11 h-11 flex items-center justify-center"
     >
-      {align === "right" && (
-        <div className="flex flex-col items-end shrink-0">
-          <span className="text-[8px] font-mono tracking-[0.25em] uppercase leading-none" style={{ color: `${accent}90` }}>
-            WEB_{label.split(" ")[0]}
-          </span>
-          <span className="text-[11px] font-medium tracking-[0.1em] text-white uppercase mt-1 leading-none whitespace-nowrap">
-            {label}
-          </span>
-        </div>
-      )}
-
-      <div className="group relative shrink-0">
+      <div className="group relative w-full h-full shrink-0">
         <div
           className="absolute -inset-3 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded"
           style={{ backgroundColor: `${accent}15` }}
         />
         {/* Hexagonal clip */}
         <div
-          className="relative w-11 h-11 bg-[#02040a] flex items-center justify-center text-white/70 group-hover:text-white transition-all duration-300"
+          className="relative w-full h-full bg-[#02040a] flex items-center justify-center text-white/70 group-hover:text-white transition-all duration-300"
           style={{
             border: `1px solid ${accent}50`,
             clipPath: "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
@@ -105,8 +94,18 @@ const BrowserNode = ({
         />
       </div>
 
-      {align === "left" && (
-        <div className="flex flex-col items-start shrink-0">
+      {/* Label positioned absolutely relative to the centered icon */}
+      {align === "right" ? (
+        <div className="absolute right-[calc(100%+16px)] top-1/2 -translate-y-1/2 flex flex-col items-end text-right select-none pointer-events-none">
+          <span className="text-[8px] font-mono tracking-[0.25em] uppercase leading-none" style={{ color: `${accent}90` }}>
+            WEB_{label.split(" ")[0]}
+          </span>
+          <span className="text-[11px] font-medium tracking-[0.1em] text-white uppercase mt-1 leading-none whitespace-nowrap">
+            {label}
+          </span>
+        </div>
+      ) : (
+        <div className="absolute left-[calc(100%+16px)] top-1/2 -translate-y-1/2 flex flex-col items-start text-left select-none pointer-events-none">
           <span className="text-[8px] font-mono tracking-[0.25em] uppercase leading-none" style={{ color: `${accent}90` }}>
             WEB_{label.split(" ")[0]}
           </span>

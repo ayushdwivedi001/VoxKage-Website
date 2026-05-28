@@ -18,15 +18,15 @@ import {
 // Node x/y % match SVG coords so paths land exactly on icons.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const HUB_X = 50;
+const HUB_X = 44;
 const HUB_Y = 50;
 
-// Diagonal "scan ray" paths — each branch shoots out at an angle then terminates
+// Diagonal "scan ray" paths — start from hub edges to avoid crossing through the eye center
 const NODES = [
   {
     // Upper-left diagonal → GUI Pilot
-    path: `M ${HUB_X} ${HUB_Y} L 20 22`,
-    x: 20, y: 22,
+    path: `M 36 42 L 16 22`,
+    x: 16, y: 22,
     label: "GUI PILOT",
     icon: MousePointer2,
     drawStart: 0.15, drawEnd: 0.38,
@@ -35,8 +35,8 @@ const NODES = [
   },
   {
     // Right horizontal → Visual Validation
-    path: `M ${HUB_X} ${HUB_Y} L 85 50`,
-    x: 85, y: 50,
+    path: `M 52 50 L 72 50`,
+    x: 72, y: 50,
     label: "VISUAL VALIDATION",
     icon: ImageIcon,
     drawStart: 0.38, drawEnd: 0.60,
@@ -45,8 +45,8 @@ const NODES = [
   },
   {
     // Lower-left diagonal → Visual QA
-    path: `M ${HUB_X} ${HUB_Y} L 18 78`,
-    x: 18, y: 78,
+    path: `M 36 58 L 16 78`,
+    x: 16, y: 78,
     label: "VISUAL QA",
     icon: MonitorCheck,
     drawStart: 0.60, drawEnd: 0.82,
@@ -77,26 +77,15 @@ const VisionNode = ({
         opacity: op,
         scale: sc,
       }}
-      className="flex items-center gap-3 z-20 pointer-events-auto"
+      className="z-20 pointer-events-auto w-11 h-11 flex items-center justify-center"
     >
-      {align === "right" && (
-        <div className="flex flex-col items-end shrink-0">
-          <span className="text-[8px] font-mono tracking-[0.25em] uppercase leading-none" style={{ color: `${accentColor}80` }}>
-            VISION_{label.split(" ")[0]}
-          </span>
-          <span className="text-[11px] font-medium tracking-[0.1em] text-white uppercase mt-1 leading-none whitespace-nowrap">
-            {label}
-          </span>
-        </div>
-      )}
-
-      <div className="group relative shrink-0">
+      <div className="group relative w-full h-full shrink-0">
         <div
           className="absolute -inset-3 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded"
           style={{ backgroundColor: `${accentColor}18` }}
         />
         <div
-          className="relative w-11 h-11 bg-[#02040a] flex items-center justify-center text-white/70 group-hover:text-white transition-all duration-300"
+          className="relative w-full h-full bg-[#02040a] flex items-center justify-center text-white/70 group-hover:text-white transition-all duration-300"
           style={{ border: `1px solid ${accentColor}50`, boxShadow: `0 0 0 0 ${accentColor}00` }}
         >
           {/* Corner brackets in accent color */}
@@ -106,8 +95,18 @@ const VisionNode = ({
         </div>
       </div>
 
-      {align === "left" && (
-        <div className="flex flex-col items-start shrink-0">
+      {/* Label positioned absolutely relative to the centered icon */}
+      {align === "right" ? (
+        <div className="absolute right-[calc(100%+16px)] top-1/2 -translate-y-1/2 flex flex-col items-end text-right select-none pointer-events-none">
+          <span className="text-[8px] font-mono tracking-[0.25em] uppercase leading-none" style={{ color: `${accentColor}80` }}>
+            VISION_{label.split(" ")[0]}
+          </span>
+          <span className="text-[11px] font-medium tracking-[0.1em] text-white uppercase mt-1 leading-none whitespace-nowrap">
+            {label}
+          </span>
+        </div>
+      ) : (
+        <div className="absolute left-[calc(100%+16px)] top-1/2 -translate-y-1/2 flex flex-col items-start text-left select-none pointer-events-none">
           <span className="text-[8px] font-mono tracking-[0.25em] uppercase leading-none" style={{ color: `${accentColor}80` }}>
             VISION_{label.split(" ")[0]}
           </span>

@@ -14,31 +14,31 @@ import { Monitor, Activity, Folder, Terminal, Cpu } from "lucide-react";
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Hub center in SVG units
-const HUB_X = 65;
+const HUB_X = 60;
 const HUB_Y = 50;
 
-// Nodes: paths stem directly from hub, one bend max each
+// Nodes: paths stem directly from the edges of the hub to avoid overlapping the central diamond
 const NODES = [
   {
     // top branch: rise from hub then turn left — clean ⌐ shape
-    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 16 L 28 16`,
-    x: 28, y: 16,
+    path: `M ${HUB_X} 36 L ${HUB_X} 16 L 24 16`,
+    x: 24, y: 16,
     label: "SYSTEM HARDWARE", icon: Monitor,
     drawStart: 0.15, drawEnd: 0.38,
     align: "right" as const,
   },
   {
-    // right branch: straight horizontal
-    path: `M ${HUB_X} ${HUB_Y} L 90 ${HUB_Y}`,
-    x: 90, y: 50,
+    // right branch: straight horizontal, starts at hub right edge
+    path: `M 68 50 L 78 50`,
+    x: 78, y: 50,
     label: "PROCESS MANAGEMENT", icon: Activity,
     drawStart: 0.38, drawEnd: 0.60,
     align: "left" as const,
   },
   {
     // bottom branch: descend from hub then turn left — clean L shape
-    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 84 L 28 84`,
-    x: 28, y: 84,
+    path: `M ${HUB_X} 64 L ${HUB_X} 84 L 24 84`,
+    x: 24, y: 84,
     label: "FILESYSTEM MASTERY", icon: Folder,
     drawStart: 0.60, drawEnd: 0.82,
     align: "right" as const,
@@ -66,24 +66,12 @@ const TechNode = ({
         opacity: op,
         scale: sc,
       }}
-      className="flex items-center gap-3 z-20 pointer-events-auto"
+      className="z-20 pointer-events-auto w-11 h-11 flex items-center justify-center"
     >
-      {/* Label to the LEFT of the icon (for right-align nodes) */}
-      {align === "right" && (
-        <div className="flex flex-col items-end shrink-0">
-          <span className="text-[8px] font-mono tracking-[0.25em] text-[#00f0ff]/50 uppercase leading-none">
-            SYS_{label.split(" ")[0]}
-          </span>
-          <span className="text-[11px] font-medium tracking-[0.1em] text-white uppercase mt-1 leading-none whitespace-nowrap">
-            {label}
-          </span>
-        </div>
-      )}
-
-      {/* Icon box */}
-      <div className="group relative shrink-0">
+      {/* Icon box (centered precisely on coordinates) */}
+      <div className="group relative w-full h-full shrink-0">
         <div className="absolute -inset-3 bg-[#00f0ff]/10 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded" />
-        <div className="relative w-11 h-11 bg-[#02040a] border border-[#00f0ff]/40 flex items-center justify-center text-[#00f0ff]/80 group-hover:border-[#00f0ff] group-hover:text-white group-hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all duration-300">
+        <div className="relative w-full h-full bg-[#02040a] border border-[#00f0ff]/40 flex items-center justify-center text-[#00f0ff]/80 group-hover:border-[#00f0ff] group-hover:text-white group-hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all duration-300">
           {/* Tech corners */}
           <div className="absolute top-[-1px] left-[-1px] w-2.5 h-2.5 border-t border-l border-[#00f0ff]" />
           <div className="absolute bottom-[-1px] right-[-1px] w-2.5 h-2.5 border-b border-r border-[#00f0ff]" />
@@ -91,9 +79,18 @@ const TechNode = ({
         </div>
       </div>
 
-      {/* Label to the RIGHT of the icon (for left-align nodes) */}
-      {align === "left" && (
-        <div className="flex flex-col items-start shrink-0">
+      {/* Label positioned absolutely to prevent overlapping SVG lines */}
+      {align === "right" ? (
+        <div className="absolute right-[calc(100%+16px)] top-1/2 -translate-y-1/2 flex flex-col items-end text-right select-none pointer-events-none">
+          <span className="text-[8px] font-mono tracking-[0.25em] text-[#00f0ff]/50 uppercase leading-none">
+            SYS_{label.split(" ")[0]}
+          </span>
+          <span className="text-[11px] font-medium tracking-[0.1em] text-white uppercase mt-1 leading-none whitespace-nowrap">
+            {label}
+          </span>
+        </div>
+      ) : (
+        <div className="absolute left-[calc(100%+16px)] top-1/2 -translate-y-1/2 flex flex-col items-start text-left select-none pointer-events-none">
           <span className="text-[8px] font-mono tracking-[0.25em] text-[#00f0ff]/50 uppercase leading-none">
             SYS_{label.split(" ")[0]}
           </span>
@@ -322,10 +319,10 @@ export default function HoneycombSection() {
                 })}
               </svg>
 
-              {/* ── Central hub ── positioned at SVG coords (65, 50) i.e. 65% / 50% */}
+              {/* ── Central hub ── positioned at SVG coords (60, 50) i.e. 60% / 50% */}
               <motion.div
                 style={{
-                  left: "65%",
+                  left: "60%",
                   top: "50%",
                   translateX: "-50%",
                   translateY: "-50%",
