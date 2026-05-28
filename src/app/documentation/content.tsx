@@ -89,63 +89,65 @@ const LoopContent = () => (
   <div className="flex flex-col gap-10 pb-12">
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">2.0</span> From Chatbot to Autonomous Agent
+        <span className="text-[#295cf1]">2.0</span> The Host-Orchestrated Agentic Loop
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>The Paradigm Shift:</strong> Traditional AI waits for a prompt, outputs text, and stops. VoxKage is an agent. It receives a high-level goal, executes a step, evaluates the result, and loops continuously until the goal is achieved.</li>
-        <li><strong>Persistence:</strong> VoxKage does not execute a linear script. It runs a persistent, recursive execution loop (<code className="bg-white/10 px-1.5 py-0.5 rounded">agentic_loop.py</code>) that operates entirely autonomously once a command is given.</li>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        Unlike standard chatbots that print text and stop, VoxKage-powered environments operate under a persistent, goal-oriented agentic loop. Rather than running a custom standalone reasoning script, this loop is driven entirely by the hosting CLI client (**Antigravity** or **OpenCode**). 
+      </p>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        The host shell receives your high-level goal, acts as the cognitive maestro, dynamically routes reasoning to top-tier developer models, and queries VoxKage's capability servers to execute steps sequentially until the goal is mathematically validated.
+      </p>
+    </div>
+
+    <div className="flex flex-col gap-3">
+      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+        <span className="text-[#295cf1]">2.1</span> State Assembly (The Context Ingestion)
+      </h3>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        Before the hosting model generates a plan, it must understand the environment. The hosting CLI dynamically assemblies context at the start of every turn:
+      </p>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>RAG Queries:</strong> The client queries VoxKage's embedded vector database (<code className="bg-white/10 px-1.5 py-0.5 rounded">query_rag</code>) to fetch semantically relevant code snippets and files across the repository.</li>
+        <li><strong>Rule Integration:</strong> It reads and parses project instructions (<code className="bg-white/10 px-1.5 py-0.5 rounded">GEMINI.md</code> or <code className="bg-white/10 px-1.5 py-0.5 rounded">AGENTS.md</code>) to adapt to your codebase conventions, active configurations, and custom boundaries.</li>
       </ul>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">2.1</span> State Assembly (The Context Phase)
+        <span className="text-[#295cf1]">2.2</span> Atomic JSON-RPC Tool Selection & Execution
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Dynamic Injection:</strong> Before making a decision, VoxKage silently injects the local file system state, project rules (GEMINI.md), active background tasks, and recent learnings (MEMORY.md) into its context window.</li>
-        <li><strong>Awareness:</strong> This ensures every single decision is grounded in the current, real-time state of the operating system, not just the original prompt.</li>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        Once the host CLI determines the current step's intent, it maps the required action to a specific, registered MCP tool schema.
+      </p>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>Turn-by-Turn Isolation:</strong> The system executes exactly one tool per conversational turn. This strict sequential flow prevents overlapping shell operations, file race conditions, and process blockages.</li>
+        <li><strong>Dynamic Spawning:</strong> The host client targets a VoxKage sub-server (e.g., <code className="bg-white/10 px-1.5 py-0.5 rounded">os_control_server</code>) and pipes the JSON-RPC execution string via secure standard input/output channels.</li>
       </ul>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">2.2</span> Tool Selection (The Plan Phase)
+        <span className="text-[#295cf1]">2.3</span> Stderr Capture & Self-Healing
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Intent Parsing:</strong> The engine analyzes the request to determine if it is conversational (chitchat) or actionable (requires OS interaction).</li>
-        <li><strong>Strategic Hierarchy:</strong> The LLM is strictly programmed to prefer specific, safe MCP tools (like <code className="bg-white/10 px-1.5 py-0.5 rounded">read_file</code>) over generic, risky shell commands. It formulates a single, atomic action for its current turn.</li>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        Traditional scripts crash when they encounter a permission error, a missing dependency, or a command failure. The active agentic loop circumvents this through automated self-healing:
+      </p>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>Error Interception:</strong> When a tool execution fails, VoxKage catches the raw error streams, maps them to structured JSON exceptions, and returns them directly into the host model's next prompt block.</li>
+        <li><strong>Autonomous Re-entry:</strong> Instead of prompting you for help, the hosting model reads the error stack trace, diagnoses the issue, adjusts its strategy (e.g., modifying its syntax or requesting a permission override), and automatically retries the action.</li>
       </ul>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">2.3</span> The Feedback Loop & Self-Correction
+        <span className="text-[#295cf1]">2.4</span> Persistent Progress Verification
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Execution & Capture:</strong> Once the MCP Dispatcher executes a tool, the raw output (success message, file contents, or an error stack trace) is captured.</li>
-        <li><strong>The Auto-Reentry:</strong> Instead of crashing or asking the user for help when an error occurs, VoxKage automatically feeds the error output back into itself.</li>
-        <li><strong>Self-Correction:</strong> If a command fails (e.g., "Permission Denied"), VoxKage reads the error, adjusts its strategy, and generates a new, corrected tool call autonomously.</li>
-      </ul>
-    </div>
-
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">2.4</span> Turn-by-Turn Execution
-      </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Atomic Actions:</strong> VoxKage executes exactly one tool per conversational turn. It does not queue multiple tools simultaneously (preventing race conditions and timeouts).</li>
-        <li><strong>Sequential Verification:</strong> It performs an action, waits for the result, verifies it succeeded, and only then proceeds to the next step of a complex task.</li>
-      </ul>
-    </div>
-
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">2.5</span> The GOAL_MET Sentinel
-      </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Knowing When to Stop:</strong> Once the LLM determines that the original user request has been fully satisfied and validated, it outputs a specialized string starting with <code className="bg-white/10 px-1.5 py-0.5 rounded">GOAL_MET:</code>.</li>
-        <li><strong>Synthesis:</strong> This acts as a hard break in the agentic loop, stopping further tool execution and triggering the final, concise summary presented to the user.</li>
-      </ul>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        During multi-step refactoring, the active client tracks milestones live. In the background, the AST parser and planning engine (<code className="bg-white/10 px-1.5 py-0.5 rounded">coding_server</code>) persistently update an interactive checklist (<code className="bg-white/10 px-1.5 py-0.5 rounded">active_plan.md</code>) outlining current progress. 
+      </p>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        Once all plan milestones are satisfied and the model validates its modifications via automated checks, the host CLI terminates cleanly, presenting a concise, factual summary of accomplishments.
+      </p>
     </div>
   </div>
 );
