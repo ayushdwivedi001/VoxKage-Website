@@ -469,186 +469,248 @@ const SecurityContent = ({ isDark = true }: { isDark?: boolean }) => {
   );
 };
 
-const AceContent = () => (
-  <div className="flex flex-col gap-10 pb-12">
-    <div className="flex flex-col gap-3">
-      <p className="opacity-70 leading-relaxed text-[15px] mb-2">
-        VoxKage does not just write isolated code snippets; it operates as a senior developer embedded in your repository. The Agentic Coding Engine (ACE) is a dedicated subsystem (<code className="bg-white/10 px-1.5 py-0.5 rounded">voxkage-coding</code>) designed specifically to navigate, understand, and safely modify massive codebases without overwhelming the LLM's context window.
-      </p>
+const AceContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
 
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
-        <span className="text-[#295cf1]">5.0</span> The Core Philosophy: Plan, Understand, Act
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        ACE forces VoxKage to abandon the "shoot from the hip" approach common in chat UIs. It enforces a strict, multi-step protocol before a single line of code is ever modified.
-      </p>
-      <ul className="list-decimal pl-5 opacity-70 flex flex-col gap-2 mt-1">
-        <li><strong>Information Gathering:</strong> Reading the environment.</li>
-        <li><strong>Persistent Planning:</strong> Creating an immutable blueprint.</li>
-        <li><strong>Targeted Execution:</strong> Making surgical edits based on structural awareness.</li>
-      </ul>
-    </div>
+  return (
+    <div className="flex flex-col gap-10 pb-12">
+      <div className="flex flex-col gap-3">
+        <p className="opacity-70 leading-relaxed text-[15px] mb-2">
+          VoxKage does not just write isolated code snippets; it operates as an autonomous local development lead embedded directly in your repository. The Agentic Coding Engine (ACE) is powered by a dedicated capabilities server ({renderCode("voxkage-coding")}) designed specifically to navigate, map, and surgically refactor sprawling codebases with absolute token efficiency.
+        </p>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">5.1</span> The 95% Efficiency Breakthrough: Code Skeletons
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        The biggest bottleneck in AI coding is context limits. Feeding a 3,000-line source file into an LLM just to change one function is incredibly slow, expensive, and prone to "context loss" where the AI forgets details.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>The Solution (<code className="bg-white/10 px-1 rounded">get_code_skeleton</code>):</strong> ACE introduces a proprietary AST (Abstract Syntax Tree) parsing tool. Instead of reading raw files, VoxKage requests the skeleton of a file.</li>
-        <li><strong>How it Works:</strong> The tool parses Python (.py), JavaScript/TypeScript (.js, .ts, .tsx), and CSS. It strips away all implementation logic, returning only:
-          <ul className="list-[circle] pl-5 mt-1 flex flex-col gap-1">
-            <li>Import statements.</li>
-            <li>Class definitions and docstrings.</li>
-            <li>Function/Method signatures (names, arguments, return types).</li>
-            <li>Top-level global constants.</li>
-          </ul>
-        </li>
-        <li><strong>The Result:</strong> A sprawling 2,000-line monolith is instantly compressed into a ~40-line structural map. This saves over 95% of token context while giving VoxKage perfect spatial awareness of where functions live and how the file is organized.</li>
-      </ul>
-    </div>
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
+          <span className="text-[#295cf1]">5.0</span> The 6-Phase Reasoning Pipeline
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          ACE forces VoxKage to abandon the unsafe "shoot from the hip" approach common in basic AI wrappers. The capabilities server ({renderCode("coding_server.py")}) enforces a rigorous six-stage reasoning loop:
+        </p>
+        <ul className="list-decimal pl-5 opacity-70 flex flex-col gap-2 mt-1 text-[14.5px]">
+          <li><strong>Phase 0 — Problem Decomposition:</strong> Deconstructs high-level requests into atomic, single-turn developer issues.</li>
+          <li><strong>Phase 1 — RAG-First Awareness:</strong> Auto-indexes and queries the local repository vector space prior to reading files.</li>
+          <li><strong>Phase 2 — Knowledge Gap Fill:</strong> Utilizes browser automation to fetch external APIs/documentation if unknown APIs are detected.</li>
+          <li><strong>Phase 3 — Blueprint Checklist:</strong> Generates a step-by-step markdown task list ({renderCode("active_plan.md")}) detailing the execution path.</li>
+          <li><strong>Phase 4 — Execute & Verify:</strong> Operates an iterative execution cycle, validating changes using test suites or shell compiles.</li>
+          <li><strong>Phase 5 — Final System Check:</strong> Performs system checks, syntax compilations, and health reports before concluding.</li>
+        </ul>
+      </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">5.2</span> The ACE Pre-Flight Protocol
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        When you ask VoxKage to build a feature or fix a bug, ACE triggers an unskippable sequence of MCP tool calls:
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Step A: Semantic Indexing</h4>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">index_directory</code> — Before writing code, ACE ensures its knowledge is up-to-date. It rapidly scans the local directory, indexing new or modified files into its local RAG vector database.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Step B: Context Retrieval</h4>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">query_rag</code> — VoxKage queries its own RAG database with your goal. It retrieves the exact file chunks relevant to the task across the entire repo.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Step C: Blueprint Generation</h4>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">coding_thinking</code> — Using the context, ACE formulates a precise plan written to a persistent <code className="bg-white/10 px-1 rounded">active_plan.md</code>. This acts as short-term memory, ensuring it never loses its place.</p>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">5.1</span> The 95% Efficiency Breakthrough: Code Skeletons
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          The biggest bottleneck in AI-driven software development is LLM context windows. Sending a 3,000-line source file into a model just to modify a single method is slow, expensive, and leads to context loss where details are dropped.
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>The AST Structural Parser ({renderCode("get_code_skeleton")}):</strong> ACE introduces a proprietary, local abstract syntax parser. Instead of ingestion of massive files, the model queries a skeleton map first.</li>
+          <li><strong>Multi-Language Syntactic Stripping:</strong>
+            <ul className="list-[circle] pl-5 mt-1 flex flex-col gap-1.5 text-[14px]">
+              <li><strong>Python ({renderCode(".py")}):</strong> Leverages the native {renderCode("ast")} module to strip implementation code, extracting imports, class structures, function/async method signatures with return annotations, docstrings, and global uppercase constants.</li>
+              <li><strong>JavaScript &amp; TypeScript ({renderCode(".js, .ts, .tsx, .jsx")}):</strong> Employs precise regular expression parsing to map exports, imports, functions, arrow methods, and class hierarchies.</li>
+              <li><strong>Styling &amp; Data ({renderCode(".css, .json, .yaml")}):</strong> Extracts stylesheet selectors and parses YAML or JSON top-level keys to represent structure cleanly.</li>
+            </ul>
+          </li>
+          <li><strong>The Result:</strong> Sprawling monoliths are compressed into a compact 40-line structural outline. This saves **over 95% of token context** while providing perfect spatial awareness of imports, files, and signatures.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">5.2</span> The ACE Pre-Flight Protocol
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          When a coding task is received, ACE triggers an unskippable sequence of MCP tools before editing a single line:
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Step A: Cache-Aware Indexing</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Indices are dynamically generated via {renderCode("index_directory")}.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              To maximize speed, ACE caches indexing times in {renderCode("index_cache.json")}. If a project has been indexed within a 10-minute TTL (Time-To-Live), re-hashing is skipped to ensure near-zero startup lag.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Step B: Context Retrieval</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Code context is loaded using FAISS/ChromaDB via {renderCode("query_rag")}.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              By querying semantic vector space, ACE fetches relevant file chunks, declarations, and historical problem/solution logs that match the current development goal across the entire repository.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Step C: Blueprint Creation</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Plans are formulated and stored inside {renderCode("active_plan.md")}.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              Calling {renderCode("coding_thinking")} compiles steps and injects semantic RAG contexts into a persistent log at {renderCode("~\\.voxkage\\data\\brain\\active_plan.md")}, establishing secure short-term session state.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">5.3</span> Iterative Execution & Progress Tracking
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        Once the blueprint is generated, VoxKage switches to execution mode:
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Surgical Editing:</strong> Using the code skeletons for navigation, VoxKage uses targeted file operation tools to insert or modify code exactly where it belongs.</li>
-        <li><strong>Mandatory Status Updates:</strong> After every single step, ACE is strictly required to call <code className="bg-white/10 px-1.5 py-0.5 rounded">update_coding_plan</code>, ticking the step as "done" or "failed" in the <code className="bg-white/10 px-1.5 py-0.5 rounded">active_plan.md</code>.</li>
-        <li><strong>Visual Transparency:</strong> Because this plan is updated via an MCP tool, the user sees a live, ticking checklist. You always know exactly what VoxKage has completed and what it plans to do next.</li>
-      </ul>
-    </div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">5.3</span> Iterative Execution &amp; Progress Tracking
+        </h3>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Surgical File Editing:</strong> Navigates via AST outlines, executing replacements on precise coordinates rather than rewriting entire files to maintain structure.</li>
+          <li><strong>Milestone State Management:</strong> After completing each subtask, the model calls {renderCode("update_coding_plan(step_number, status)")}. This updates {renderCode("active_plan.md")}'s overall status (e.g. `COMPLETE`, `IN PROGRESS`, `COMPLETE WITH FAILURES`) and appends logged completions with precise timestamps under the execution log.</li>
+          <li><strong>Session Syncing:</strong> Developers and agents inspect plans using {renderCode("get_coding_plan()")}, providing transparent session state recovery even across shell reboots.</li>
+        </ul>
+      </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">5.4</span> Evolution Tasks: Safe Refactoring
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        For massive, cross-cutting changes, ACE utilizes <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#295cf1]">spawn_evolution_task</code>.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Automated Checkpoints:</strong> Before touching a single file, ACE automatically creates a safe restore checkpoint (either via a Git commit or a .zip snapshot).</li>
-        <li><strong>Test-Driven Development:</strong> It writes the new code, then writes a test file, and executes the test suite.</li>
-        <li><strong>Auto-Rollback:</strong> If tests fail and VoxKage cannot resolve the issue after a set number of retries, it abandons the evolution and safely rolls the repository back to the pristine checkpoint, ensuring your codebase is never broken.</li>
-      </ul>
-    </div>
-  </div>
-);
-
-const VisionContent = () => (
-  <div className="flex flex-col gap-10 pb-12">
-    <div className="flex flex-col gap-3">
-      <p className="opacity-70 leading-relaxed text-[15px] mb-2">
-        VoxKage bridges the gap between raw text processing and human-like visual understanding. It interacts with the web structurally and visually, allowing it to navigate complex modern web apps, bypass anti-bot text blockers, and empirically validate its own actions through "sight."
-      </p>
-
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
-        <span className="text-[#295cf1]">6.0</span> The Persistent Browser Session
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        VoxKage utilizes a persistent, headless browser instance managed by the <code className="bg-white/10 px-1.5 py-0.5 rounded">browser_server</code>.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Stateful Interaction:</strong> Unlike simple API fetchers that lose cookies and session data after every request, VoxKage maintains state. It can log into a website, navigate through a multi-page form, and maintain its session across multiple distinct tool calls.</li>
-        <li><strong>Dynamic Rendering:</strong> It natively handles Client-Side Rendering (CSR). Websites built with React, Vue, or Angular that rely on JavaScript to load content pose no issue; VoxKage waits for the DOM to fully render before interacting.</li>
-      </ul>
-    </div>
-
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">6.1</span> Deep DOM Inspection
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        When VoxKage needs to understand a webpage, it doesn't just read the visible text; it dissects the architecture.
-      </p>
-      <div className="grid grid-cols-1 gap-4 mt-2">
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Structural Parsing</h4>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">dom_get_elements</code> — Instead of dumping the entire, cluttered HTML source code into the LLM's context window (which wastes tokens), this tool allows VoxKage to query the live DOM using precise CSS selectors. It extracts clean, isolated components (e.g., extracting just the &lt;article&gt; tags or &lt;ul&gt; lists).</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Aesthetic Awareness</h4>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">dom_get_computed_style</code> — VoxKage can "see" CSS. If tasked with analyzing a UI, it retrieves the live, computed styles of elements—reading exact hex colors, flexbox layouts, font weights, and animation timings directly from the browser's rendering engine.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Custom Execution</h4>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">dom_execute_js</code> — For complex web apps, VoxKage can inject and execute raw JavaScript directly into the page's console, allowing it to manipulate variables, trigger custom events, or extract deeply nested data arrays that aren't exposed in the standard HTML.</p>
-        </div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">5.4</span> Evolution Tasks: Safe Refactoring
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          For complex, sweeping, or structural modifications, ACE leverages {renderCode("spawn_evolution_task")} to run safe refactoring campaigns:
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Automated Restores:</strong> Prior to modifications, ACE captures active repository state, auto-generating a secure Git commit or a `.zip` file snapshot of the workspace.</li>
+          <li><strong>TDD Loop:</strong> Automatically structures tests, compiles changes, and executes testing commands locally to evaluate compatibility.</li>
+          <li><strong>Auto-Rollbacks:</strong> If tests fail repeatedly and cannot be self-healed, ACE abandons modifications and automatically restores the repository to the pristine snapshot, guaranteeing a secure environment that is never left broken.</li>
+        </ul>
       </div>
     </div>
+  );
+};
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">6.2</span> The Multimodal Vision Loop
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        Text extraction fails when buttons are unlabeled, images contain crucial text, or a layout breaks. VoxKage circumvents this entirely by using the official Gemini Multimodal Vision pipeline.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Visual Checkpoints:</strong> After navigating to a new URL, clicking a button, or scrolling, VoxKage takes an instantaneous, high-resolution screenshot of the active viewport via <code className="bg-white/10 px-1 rounded">get_browser_state</code> and <code className="bg-white/10 px-1 rounded">take_screenshot</code>.</li>
-        <li><strong>Empirical Validation:</strong> VoxKage passes the absolute path of this screenshot directly to the Gemini Engine. It asks itself specific questions based on the image: "Is the download button visible?", "Did the login modal appear?", "Does this image actually depict the 'cyberpunk cityscape' the user asked for?"</li>
-        <li><strong>The "See-Act" Cycle:</strong> If VoxKage clicks a link and the vision model confirms an error 404 page appeared in the screenshot, it knows the action failed. It autonomously navigates back and attempts an alternative route. It does not assume success; it verifies it visually.</li>
-      </ul>
-    </div>
+const VisionContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">6.3</span> Autonomous Image Acquisition
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        Finding and downloading high-quality images is notoriously difficult for standard bots due to lazy-loading and thumbnail generation. VoxKage uses a specialized loop:
-      </p>
-      <ul className="list-decimal pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Search & Navigate:</strong> Uses web search to find relevant galleries (e.g., Unsplash, NASA).</li>
-        <li><strong>Scroll Triggers:</strong> Uses <code className="bg-white/10 px-1 rounded">scroll_and_read</code> to force JavaScript lazy-loaders to render high-resolution images below the fold.</li>
-        <li><strong>Live Extraction:</strong> Executes JavaScript to pull the actual source URLs, bypassing thumbnails and hidden &lt;img&gt; tags via <code className="bg-white/10 px-1 rounded">extract_image_urls</code>.</li>
-        <li><strong>Vision Quality Control:</strong> After downloading an image, it immediately passes the local file to the vision model. If the image is a low-res thumbnail, watermarked, or visually irrelevant, VoxKage deletes the file and continues searching until a perfect match is found.</li>
-      </ul>
-    </div>
+  return (
+    <div className="flex flex-col gap-10 pb-12">
+      <div className="flex flex-col gap-3">
+        <p className="opacity-70 leading-relaxed text-[15px] mb-2">
+          VoxKage bridges the gap between static text processing and human-like visual understanding. It interacts with the web both structurally and visually, allowing it to navigate complex modern web applications, bypass anti-bot mechanisms, and empirically validate its own actions through Playwright-driven browser automation and Gemini's vision pipeline.
+        </p>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">6.4</span> Frontend Template Memory
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        Because VoxKage can understand both the DOM structure and the computed CSS styles, it acts as an autonomous frontend learner.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Pattern Extraction:</strong> When VoxKage encounters a brilliant CSS animation, a perfectly responsive grid, or an elegant UI component during web browsing, it extracts the HTML/CSS/JS.</li>
-        <li><strong>Permanent Storage:</strong> It logs this snippet into its specialized Frontend Memory via <code className="bg-white/10 px-1 rounded">save_frontend_snippet</code>.</li>
-        <li><strong>Future Application:</strong> When a user later asks VoxKage to build a new web app or dashboard, VoxKage queries its <code className="bg-white/10 px-1 rounded">search_frontend_snippets</code> database, utilizing the complex UI patterns it learned from browsing the live web.</li>
-      </ul>
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
+          <span className="text-[#295cf1]">6.0</span> The Persistent Browser Session
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          VoxKage maintains a persistent, headless browser instance managed by the stateful Chromium automation server ({renderCode("browser_server.py")}).
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Stateful Tab Lifecycle:</strong> Manages browser tabs statefully. It maintains session cookies, logins, and local state across distinct conversational turns via {renderCode("new_page")}, {renderCode("select_page")}, and {renderCode("list_pages")}.</li>
+          <li><strong>Client-Side Rendering (CSR):</strong> Bypasses simple HTML fetchers, waiting for modern JS frameworks (React, Angular, Vue, Next.js) to fully render page graphics and data before interacting.</li>
+          <li><strong>Page Emulation:</strong> Simulates custom viewports, mobile environments, network throttling, CPU throttling, and custom geolocations via the {renderCode("emulate")} tool.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">6.1</span> Deep DOM Inspection &amp; JS Execution
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          When analyzing a layout or scraping data, VoxKage dissects the active document structure without cluttering context window limits:
+        </p>
+        <div className="grid grid-cols-1 gap-4 mt-2">
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Targeted Node Scraping</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Isolated elements are queried using CSS selectors via {renderCode("dom_get_elements")}.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              Instead of dumping the entire cluttered HTML page, this tool returns only specified properties (e.g. innerHTML, class, id, href, textContent) for matches, keeping context highly compressed and readable.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Aesthetic &amp; Layout Audits</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Computed element styles are extracted directly via {renderCode("dom_get_computed_style")}.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              By reading exact layout dimensions, flexbox details, fonts, color hexes, and animation values, VoxKage can audit layouts, diagnose styling issues, or copy visual components with absolute precision.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Direct Page Manipulation</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Raw JS scripts are evaluated page-wide using {renderCode("dom_execute_js")}.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              Allows VoxKage to interact with page-level variables, trigger complex state changes, bypass anti-scraping blockers, or extract deeply nested data arrays that are not visible in standard HTML tags.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">6.2</span> High-Fidelity Accessibility Tree Navigation
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          Unlike standard browser bots that rely on fragile CSS selectors that break constantly when layouts shift, VoxKage acts as a human by operating on a structured Accessibility Tree:
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Structural Snapshotting ({renderCode("take_snapshot")}):</strong> Translates the live webpage into a clean structural tree, mapping interactive elements to unique ID coordinators ({renderCode("uid")}).</li>
+          <li><strong>Precise Element Actions:</strong> Clicks, hovers, and entries are executed directly on the tree via {renderCode("click(uid)")}, {renderCode("hover(uid)")}, and {renderCode("fill(uid, value)")}, bypassing shadow DOM and frame limitations.</li>
+          <li><strong>Simulated Hardware Inputs:</strong> Executes native keyboard typing, drag-and-drop operations, and key presses (such as Enter or Control shortcuts) via {renderCode("type_text")}, {renderCode("drag")}, and {renderCode("press_key")}.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">6.3</span> The See-Act Multimodal Vision Loop
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          Text parsers fail when buttons are graphical, layout elements shift, or error modals occur. VoxKage uses real-time visual inspection to self-correct:
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Visual Checkpoints:</strong> After page actions, the system takes a high-resolution viewport screenshot via {renderCode("take_screenshot")} or {renderCode("get_browser_state")}.</li>
+          <li><strong>Path perception:</strong> The screenshot path is fed directly to Gemini's vision pipeline, prompting questions: *"Is the target link visible?", "Did the alert modal cover the page?", "Does the UI align properly?"*</li>
+          <li><strong>Self-Healing loop:</strong> If vision checks indicate an action failed or an overlay blocks focus, VoxKage automatically rolls back, removes overlays via JS, and tries alternate coordinates until validated.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">6.4</span> Autonomous Acquisition Gating
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          Finding official packages or downloading high-res imagery is automated and secured via target loops:
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Software Sourcing ({renderCode("find_download_url")}):</strong> Navigates to official directories (e.g. VS Code, Python), extracts download links, filters for your target operating system architecture (`.exe`, `.msi`, `.dmg`, `.deb`), and prepares the installer.</li>
+          <li><strong>Lazy-Load Bypassing:</strong> Employs {renderCode("scroll_and_read")} to trigger page scrolling, forcing lazy-loaded images to render, and extracts source links directly using {renderCode("extract_image_urls")}.</li>
+          <li><strong>Visual Quality Gates:</strong> Validates downloaded images via the vision pipeline. If an image is watermarked, pixelated, or incorrect, it is auto-deleted and skipped, collecting only pristine files.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">6.5</span> Frontend Pattern Memory
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          By coupling DOM extraction with computed styling audits, VoxKage acts as a local frontend crawler:
+        </p>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+          <li><strong>Visual Pattern Logging ({renderCode("save_frontend_snippet")}):</strong> Autonomously saves beautiful layouts, CSS animations, or custom components into a local frontend directory ({renderCode("frontend_memory.jsonl")}).</li>
+          <li><strong>Layout Splicing ({renderCode("search_frontend_snippets")}):</strong> Retrieves saved templates from its knowledge base during new project Refactoring, allowing the agent to write premium, highly responsive code elements learned from the web.</li>
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const MemoryMockup = () => {
   const [step, setStep] = useState(0);
