@@ -2,11 +2,24 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, Check, Menu, X, ArrowLeft } from "lucide-react";
+import { 
+  Copy, 
+  Check, 
+  Menu, 
+  X, 
+  ArrowLeft, 
+  Terminal, 
+  Cpu, 
+  Layers, 
+  Globe, 
+  Eye, 
+  Activity 
+} from "lucide-react";
 import Link from "next/link";
 import GradientBlinds from "@/components/GradientBlinds";
 
 export default function InstallationPage() {
+  const [activeTab, setActiveTab] = useState<"pipx" | "manual">("pipx");
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -14,11 +27,24 @@ export default function InstallationPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1500); // 1.5 seconds loading to match the gradient passing through
+    }, 1200); // Quick loading transition
     return () => clearTimeout(timer);
   }, []);
 
-  const fullInstallCommand = `# Clone the repository
+  const pipxInstallCommands = `# Install pipx globally (if you don't have it)
+pip install pipx
+pipx ensurepath
+
+# Install VoxKage globally via pipx
+pipx install voxkage
+
+# Run setup and link CLI environments
+voxkage init
+
+# Install modular capability packs (highly recommended)
+voxkage install full`;
+
+  const manualInstallCommands = `# Clone the repository
 git clone https://github.com/ayushdwivedi001/VoxKage.git
 cd VoxKage
 
@@ -29,35 +55,36 @@ python -m venv venv
 # macOS/Linux:
 source venv/bin/activate
 
-# Install dependencies and link the package
+# Install dependencies and link the package local
 pip install -r requirements.txt
 pip install -e .`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(fullInstallCommand);
+    const textToCopy = activeTab === "pipx" ? pipxInstallCommands : manualInstallCommands;
+    navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <main className="relative w-full h-screen bg-[#09090b] text-white overflow-hidden flex items-center justify-center selection:bg-[#295cf1]/30">
+    <main className="relative w-full min-h-screen bg-[#02040a] text-white overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start py-16 md:py-24 selection:bg-[#00f0ff]/20">
       
       {/* ── Seamless Loading Overlay ────────────────────── */}
       <AnimatePresence>
         {loading && (
           <motion.div
             key="loader"
-            className="absolute inset-0 z-50 flex items-center justify-center bg-[#09090b]"
+            className="absolute inset-0 z-50 flex items-center justify-center bg-[#02040a]"
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
           >
             <div className="relative text-[10rem] md:text-[15rem] font-bold leading-none tracking-tighter select-none flex items-center justify-center">
               <span className="text-white/5 relative z-0 pr-8 pl-4">V</span>
               <motion.span 
-                className="absolute inset-0 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-t from-[#020617] via-[#1e3a8a] to-[#3b82f6] z-10 pr-8 pl-4"
-                initial={{ clipPath: "inset(100% -20% 0 -20%)" }}
-                animate={{ clipPath: "inset(0% -20% 0 -20%)" }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
+                className="absolute inset-0 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-t from-[#02040a] via-[#00f0ff]/20 to-[#00f0ff] z-10 pr-8 pl-4"
+                initial={{ clipPath: "inset(100% 0 0 0)" }}
+                animate={{ clipPath: "inset(0% 0 0 0)" }}
+                transition={{ duration: 1.1, ease: "easeInOut" }}
               >
                 V
               </motion.span>
@@ -66,22 +93,26 @@ pip install -e .`;
         )}
       </AnimatePresence>
 
-      {/* ── Background Effect ───────────────────────────── */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
+      {/* ── Background Grid & Vignette ────────────────────── */}
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(0,240,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.02) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_30%,#02040a_90%)] pointer-events-none z-0" />
+
+      {/* ── Background Gradient Effect ──────────────────────── */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
         <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
           <GradientBlinds
-            gradientColors={['#0ba0eb', '#e12e43']}
+            gradientColors={['#00f0ff', '#a78bfa']}
             angle={26}
             noise={0.5}
-            blindCount={16}
+            blindCount={12}
             blindMinWidth={60}
-            spotlightRadius={0.5}
+            spotlightRadius={0.4}
             spotlightSoftness={1}
-            spotlightOpacity={1}
+            spotlightOpacity={0.8}
             mouseDampening={0.5}
             distortAmount={0}
             shineDirection="left"
-            mixBlendMode="lighten"
+            mixBlendMode="screen"
           />
         </div>
       </div>
@@ -100,61 +131,201 @@ pip install -e .`;
       <div className="absolute top-6 right-6 md:top-10 md:right-12 z-40 pointer-events-auto flex items-center">
         <button
           onClick={() => setMenuOpen(true)}
-          className="text-white hover:text-white/70 transition-colors bg-black/20 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-2 md:p-0 rounded-lg md:rounded-none"
+          className="text-white hover:text-[#00f0ff] transition-colors bg-black/20 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-2 md:p-0 rounded-lg md:rounded-none"
         >
           <Menu size={24} className="md:w-7 md:h-7" strokeWidth={1.5} />
         </button>
       </div>
 
       {/* ── Main Content Area ───────────────────────────── */}
-      <div className="z-10 w-full max-w-3xl px-4 md:px-8 flex flex-col items-center text-center mt-16 md:mt-0">
+      <div className="z-10 w-full max-w-4xl px-4 md:px-8 flex flex-col items-center mt-12 md:mt-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center gap-6 md:gap-8 bg-black/40 backdrop-blur-2xl p-6 sm:p-8 md:p-12 rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden w-full"
+          className="flex flex-col items-center gap-10 bg-[#02040a]/60 backdrop-blur-2xl p-6 sm:p-8 md:p-12 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden w-full"
         >
-          {/* Subtle Inner Glow */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          {/* Top light bar */}
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00f0ff]/40 to-transparent"></div>
 
-          <div className="flex flex-col gap-3 md:gap-4">
-            <h1 className="text-3xl md:text-5xl font-light tracking-tight text-white">
+          {/* Heading */}
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="inline-flex items-center gap-2 border border-[#00f0ff]/25 bg-[#00f0ff]/5 px-3 py-1">
+              <Terminal size={12} className="text-[#00f0ff]" />
+              <span className="text-[#00f0ff] text-[9px] font-mono tracking-[0.35em] uppercase">SYSTEM_DEPLOY</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-white uppercase leading-none mt-2">
               INSTALLATION
             </h1>
-            <p className="text-white/60 text-[15px] md:text-[16px] leading-relaxed max-w-lg mx-auto font-light">
-              VoxKage will soon be available as a <strong className="text-white font-medium">PIPX package</strong> for a seamless one-line global installation. Until then, you can clone the repository directly to get started.
+            <p className="text-white/45 text-sm md:text-base leading-relaxed max-w-lg mx-auto font-light">
+              Supercharge your standard developer shells into an autonomous OS coordinate center. Fully packaged and deployed globally.
             </p>
           </div>
 
-          <div className="w-full flex flex-col gap-3 mt-2">
-            <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase font-bold self-start pl-1 md:pl-2">
-              MANUAL INSTALLATION
-            </span>
-            <div className="flex w-full bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden shadow-inner group transition-colors hover:border-white/20 relative">
-              <pre className="p-4 md:p-5 pr-16 md:pr-20 flex-1 text-left font-mono text-[11px] md:text-[12px] leading-[1.6] text-[#e5e4dc] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] whitespace-pre">
-                {fullInstallCommand.split('\n').map((line, i) => {
-                  if (line.startsWith('#')) return <span key={i} className="text-white/30">{line}{'\n'}</span>;
-                  if (line.trim() === '') return <span key={i}>{'\n'}</span>;
-                  return <span key={i} className="text-[#295cf1] mix-blend-lighten opacity-90">{line}{'\n'}</span>;
-                })}
+          {/* Tab Switcher */}
+          <div className="flex bg-[#02040a] border border-white/10 rounded-lg p-1.5 z-10">
+            <button
+              onClick={() => setActiveTab("pipx")}
+              className={`px-6 py-2 rounded-md text-[10px] font-mono tracking-widest uppercase transition-all duration-300 ${
+                activeTab === "pipx"
+                  ? "bg-[#00f0ff]/10 border border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.15)]"
+                  : "text-white/45 border border-transparent hover:text-white"
+              }`}
+            >
+              PIPX INSTALL (RECOMMENDED)
+            </button>
+            <button
+              onClick={() => setActiveTab("manual")}
+              className={`px-6 py-2 rounded-md text-[10px] font-mono tracking-widest uppercase transition-all duration-300 ${
+                activeTab === "manual"
+                  ? "bg-[#a78bfa]/10 border border-[#a78bfa]/30 text-[#a78bfa] shadow-[0_0_15px_rgba(167,139,250,0.15)]"
+                  : "text-white/45 border border-transparent hover:text-white"
+              }`}
+            >
+              MANUAL SOURCE
+            </button>
+          </div>
+
+          {/* Code block */}
+          <div className="w-full flex flex-col gap-3 relative z-10">
+            <div className="flex w-full bg-[#02040a] border border-white/10 rounded-xl overflow-hidden shadow-inner group transition-colors hover:border-[#00f0ff]/20 relative">
+              <pre className="p-5 pr-20 flex-1 text-left font-mono text-[11px] md:text-[12.5px] leading-[1.6] text-white/80 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] whitespace-pre">
+                {(activeTab === "pipx" ? pipxInstallCommands : manualInstallCommands)
+                  .split('\n')
+                  .map((line, i) => {
+                    if (line.startsWith('#')) return <span key={i} className="text-white/20 font-light italic">{line}{'\n'}</span>;
+                    if (line.trim() === '') return <span key={i}>{'\n'}</span>;
+                    const accentColor = activeTab === "pipx" ? "text-[#00f0ff]" : "text-[#a78bfa]";
+                    return <span key={i} className={`${accentColor} opacity-90`}>{line}{'\n'}</span>;
+                  })}
               </pre>
               <button 
                 onClick={handleCopy}
-                className="absolute top-4 right-4 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center shrink-0 backdrop-blur-md border border-white/5"
+                className="absolute top-4 right-4 p-2.5 rounded-xl bg-white/3 hover:bg-white/5 border border-white/5 transition-colors flex items-center justify-center shrink-0 backdrop-blur-md"
                 title="Copy to clipboard"
               >
                 {copied ? (
                   <Check size={16} className="text-emerald-400" />
                 ) : (
-                  <Copy size={16} className="text-white/60 group-hover:text-white" />
+                  <Copy size={16} className="text-white/50 group-hover:text-white" />
                 )}
               </button>
             </div>
           </div>
 
-          <p className="text-white/40 text-[13px] font-light mt-1">
-            For more installation guides, checkout our official <a href="https://github.com/ayushdwivedi001/VoxKage" target="_blank" rel="noopener noreferrer" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#295cf1] to-blue-400">VoxKage</a> GitHub Repository.
+          {/* Capability Packs Section */}
+          <div className="w-full flex flex-col gap-6 mt-4 relative z-10 text-left">
+            <div className="flex flex-col gap-2">
+              <span className="text-[10px] tracking-[0.25em] text-[#00f0ff] font-mono uppercase">
+                // OPTIONAL CAPABILITY PACKS
+              </span>
+              <p className="text-xs text-white/40 font-light">
+                Extend VoxKage's OS abilities by installing optional modular packs via: <code className="bg-black/50 border border-white/10 px-2 py-0.5 rounded text-white/80 text-[10px] font-mono">voxkage install &lt;pack&gt;</code>
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+              {[
+                {
+                  name: "BROWSER ENGINE",
+                  cmd: "browser",
+                  desc: "Playwright automation, JS form filling, and live DOM extraction.",
+                  icon: Globe,
+                  accent: "#00f0ff",
+                },
+                {
+                  name: "RAG MEMORY",
+                  cmd: "rag",
+                  desc: "ChromaDB vector logs, embeddings, and semantic codebase indexing.",
+                  icon: Layers,
+                  accent: "#a78bfa",
+                },
+                {
+                  name: "VISION PIPELINE",
+                  cmd: "vision",
+                  desc: "OpenCV visual verification, OCR scanning, and screen perceptions.",
+                  icon: Eye,
+                  accent: "#34d399",
+                },
+                {
+                  name: "DOCS PLUS",
+                  cmd: "docs_plus",
+                  desc: "Word-to-PDF compilers, spreadsheet parsing, and file utilities.",
+                  icon: Cpu,
+                  accent: "#f59e0b",
+                },
+              ].map((pack, i) => {
+                const Icon = pack.icon;
+                return (
+                  <div 
+                    key={i} 
+                    className="group relative bg-[#02040a] border border-white/5 hover:border-white/10 p-5 rounded-xl transition-all duration-300 flex gap-4 overflow-hidden"
+                  >
+                    {/* Inner tech corner lines */}
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/10 group-hover:border-white/30 transition-colors" />
+                    
+                    <div 
+                      className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/2 text-white/60 shrink-0 relative transition-all group-hover:text-white"
+                      style={{ border: `1px solid ${pack.accent}30` }}
+                    >
+                      <Icon className="w-5 h-5" strokeWidth={1.5} />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono tracking-wider font-semibold text-white">
+                          {pack.name}
+                        </span>
+                        <code className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-white/3 text-white/50">
+                          {pack.cmd}
+                        </code>
+                      </div>
+                      <span className="text-[11px] font-light text-white/40 leading-relaxed">
+                        {pack.desc}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Running VoxKage */}
+          <div className="w-full flex flex-col gap-4 relative z-10 text-left border-t border-white/5 pt-8">
+            <span className="text-[10px] tracking-[0.25em] text-[#a78bfa] font-mono uppercase">
+              // RUNNING THE ENGINE
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { title: "voxkage", desc: "Launches the CLI and connects interactive developer sub-shells." },
+                { title: "voxkage tray", desc: "Runs persistently in your background system tray coordinating named pipes." },
+                { title: "voxkage status", desc: "Inspects system health, model portfolios, and plugin credentials status." },
+              ].map((cmd, i) => (
+                <div key={i} className="flex flex-col gap-1.5 border-l border-white/10 pl-4 py-1.5">
+                  <code className="text-white text-xs font-semibold font-mono tracking-wider">
+                    {cmd.title}
+                  </code>
+                  <span className="text-[11px] font-light text-white/45 leading-relaxed">
+                    {cmd.desc}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer note */}
+          <p className="text-white/30 text-[11px] font-light mt-4 z-10">
+            Need details on building customized modules? Check out our official{" "}
+            <a 
+              href="https://github.com/ayushdwivedi001/VoxKage" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="font-semibold text-white/50 hover:text-white transition-colors underline"
+            >
+              VoxKage Github Repository
+            </a>.
           </p>
+
         </motion.div>
       </div>
 
@@ -166,7 +337,7 @@ pip install -e .`;
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed top-[36px] right-[36px] z-50 w-60 rounded-2xl bg-[#09090b]/95 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden pointer-events-auto"
+            className="fixed top-[36px] right-[36px] z-50 w-60 rounded-2xl bg-[#02040a]/95 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden pointer-events-auto"
           >
             <div className="flex justify-end p-4 border-b border-white/5">
               <button
