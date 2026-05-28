@@ -9,35 +9,36 @@ import { Monitor, Activity, Folder, Terminal, Cpu } from "lucide-react";
 // The SVG viewBox is "0 0 100 100" with preserveAspectRatio="xMidYMid meet"
 // The hub center is at SVG coords (65, 50).
 // Each node is placed via absolute CSS (left/top %) matching SVG coords.
-// Paths terminate exactly at node center so lines land on the icon square.
+// All branches originate FROM the hub's own x=65 axis, so lines look anchored
+// to the hub — top goes up then left, bottom goes down then left, right is straight.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Hub center in SVG units
 const HUB_X = 65;
 const HUB_Y = 50;
 
-// Nodes: keep x/y matching the SVG terminal point of their path
+// Nodes: paths stem directly from hub, one bend max each
 const NODES = [
   {
-    // top-left branch: enter horizontally from the left at y=50, go left to x=50, then up to y=22, then left to x=30
-    path: `M ${HUB_X} ${HUB_Y} L 50 ${HUB_Y} L 50 22 L 30 22`,
-    x: 30, y: 22,
+    // top branch: rise from hub then turn left — clean ⌐ shape
+    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 16 L 28 16`,
+    x: 28, y: 16,
     label: "SYSTEM HARDWARE", icon: Monitor,
     drawStart: 0.15, drawEnd: 0.38,
     align: "right" as const,
   },
   {
-    // right branch: go right to x=88, staying at y=50
-    path: `M ${HUB_X} ${HUB_Y} L 88 ${HUB_Y}`,
-    x: 88, y: 50,
+    // right branch: straight horizontal
+    path: `M ${HUB_X} ${HUB_Y} L 90 ${HUB_Y}`,
+    x: 90, y: 50,
     label: "PROCESS MANAGEMENT", icon: Activity,
     drawStart: 0.38, drawEnd: 0.60,
     align: "left" as const,
   },
   {
-    // bottom-left branch: enter horizontally from the left at y=50, go left to x=50, then down to y=78, then left to x=35
-    path: `M ${HUB_X} ${HUB_Y} L 50 ${HUB_Y} L 50 78 L 35 78`,
-    x: 35, y: 78,
+    // bottom branch: descend from hub then turn left — clean L shape
+    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 84 L 28 84`,
+    x: 28, y: 84,
     label: "FILESYSTEM MASTERY", icon: Folder,
     drawStart: 0.60, drawEnd: 0.82,
     align: "right" as const,
@@ -228,10 +229,20 @@ export default function HoneycombSection() {
               <svg
                 className="absolute inset-0 w-full h-full pointer-events-none"
                 viewBox="0 0 100 100"
+                preserveAspectRatio="xMidYMid meet"
               >
                 <defs>
-                  <filter id="hc-glow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="0.8" result="blur" />
+                  {/* Glow filter for animated lines */}
+                  <filter id="hc-glow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="1.2" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  {/* Dot glow for junction circles */}
+                  <filter id="hc-dot-glow" x="-200%" y="-200%" width="500%" height="500%">
+                    <feGaussianBlur stdDeviation="1.5" result="blur" />
                     <feMerge>
                       <feMergeNode in="blur" />
                       <feMergeNode in="SourceGraphic" />
@@ -250,13 +261,17 @@ export default function HoneycombSection() {
                     [node.drawStart, node.drawStart + 0.04],
                     [0, 1]
                   );
+                  // Junction dot position — the bend corner of this path (not on right-branch)
+                  const junctionX = i !== 1 ? HUB_X : null;
+                  const junctionY = i === 0 ? 16 : i === 2 ? 84 : null;
+
                   return (
                     <React.Fragment key={i}>
-                      {/* Ghost rail — full path always visible, very faint */}
+                      {/* Ghost rail — faint backdrop of full path */}
                       <path
                         d={node.path}
-                        stroke="rgba(0,240,255,0.06)"
-                        strokeWidth="0.25"
+                        stroke="rgba(0,240,255,0.08)"
+                        strokeWidth="0.3"
                         fill="none"
                         strokeLinecap="square"
                       />
@@ -264,18 +279,29 @@ export default function HoneycombSection() {
                       <motion.path
                         d={node.path}
                         stroke="#00f0ff"
-                        strokeWidth="0.35"
+                        strokeWidth="0.45"
                         fill="none"
                         strokeLinecap="square"
                         filter="url(#hc-glow)"
                         style={{ pathLength: pathDraw, opacity: pathOp }}
                       />
+                      {/* Junction dot at the 90° bend corner */}
+                      {junctionX !== null && junctionY !== null && (
+                        <motion.circle
+                          cx={junctionX}
+                          cy={junctionY}
+                          r="1.1"
+                          fill="#00f0ff"
+                          filter="url(#hc-dot-glow)"
+                          style={{ opacity: pathOp }}
+                        />
+                      )}
                       {/* Data packet square travelling the path */}
                       <motion.rect
-                        x="-0.5"
-                        y="-0.5"
-                        width="1"
-                        height="1"
+                        x="-0.6"
+                        y="-0.6"
+                        width="1.2"
+                        height="1.2"
                         fill="#ffffff"
                         style={{
                           offsetPath: `path("${node.path}")`,
