@@ -19,8 +19,8 @@ const HUB_Y = 50;
 // Nodes: keep x/y matching the SVG terminal point of their path
 const NODES = [
   {
-    // top-left branch: go up to y=22, then left to x=30
-    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 22 L 30 22`,
+    // top-left branch: enter horizontally from the left at y=50, go left to x=50, then up to y=22, then left to x=30
+    path: `M ${HUB_X} ${HUB_Y} L 50 ${HUB_Y} L 50 22 L 30 22`,
     x: 30, y: 22,
     label: "SYSTEM HARDWARE", icon: Monitor,
     drawStart: 0.15, drawEnd: 0.38,
@@ -35,8 +35,8 @@ const NODES = [
     align: "left" as const,
   },
   {
-    // bottom-left branch: go down to y=78, then left to x=35
-    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 78 L 35 78`,
+    // bottom-left branch: enter horizontally from the left at y=50, go left to x=50, then down to y=78, then left to x=35
+    path: `M ${HUB_X} ${HUB_Y} L 50 ${HUB_Y} L 50 78 L 35 78`,
     x: 35, y: 78,
     label: "FILESYSTEM MASTERY", icon: Folder,
     drawStart: 0.60, drawEnd: 0.82,
@@ -221,127 +221,128 @@ export default function HoneycombSection() {
           </div>
 
           {/* ── SVG diagram — fills the right 62% of screen ── */}
-          <div className="absolute left-[38%] top-0 right-0 bottom-0 z-10">
+          <div className="absolute left-[38%] top-0 right-0 bottom-0 z-10 flex items-center justify-center">
+            <div className="relative w-full aspect-square max-h-full max-w-full">
 
-            {/* SVG lines */}
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              <defs>
-                <filter id="hc-glow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="0.8" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
+              {/* SVG lines */}
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 100 100"
+              >
+                <defs>
+                  <filter id="hc-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="0.8" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
 
-              {NODES.map((node, i) => {
-                const pathDraw = useTransform(
-                  progress,
-                  [node.drawStart, node.drawEnd],
-                  [0, 1]
-                );
-                const pathOp = useTransform(
-                  progress,
-                  [node.drawStart, node.drawStart + 0.04],
-                  [0, 1]
-                );
-                return (
-                  <React.Fragment key={i}>
-                    {/* Ghost rail — full path always visible, very faint */}
-                    <path
-                      d={node.path}
-                      stroke="rgba(0,240,255,0.06)"
-                      strokeWidth="0.25"
-                      fill="none"
-                      strokeLinecap="square"
-                    />
-                    {/* Animated draw path */}
-                    <motion.path
-                      d={node.path}
-                      stroke="#00f0ff"
-                      strokeWidth="0.35"
-                      fill="none"
-                      strokeLinecap="square"
-                      filter="url(#hc-glow)"
-                      style={{ pathLength: pathDraw, opacity: pathOp }}
-                    />
-                    {/* Data packet square travelling the path */}
-                    <motion.rect
-                      x="-0.5"
-                      y="-0.5"
-                      width="1"
-                      height="1"
-                      fill="#ffffff"
-                      style={{
-                        offsetPath: `path("${node.path}")`,
-                        offsetDistance: useTransform(
-                          progress,
-                          [node.drawStart, node.drawEnd],
-                          ["0%", "100%"]
-                        ),
-                        opacity: useTransform(
-                          progress,
-                          [node.drawStart, node.drawStart + 0.06, node.drawEnd - 0.04, node.drawEnd],
-                          [0, 1, 1, 0]
-                        ),
-                      }}
-                    />
-                  </React.Fragment>
-                );
-              })}
-            </svg>
+                {NODES.map((node, i) => {
+                  const pathDraw = useTransform(
+                    progress,
+                    [node.drawStart, node.drawEnd],
+                    [0, 1]
+                  );
+                  const pathOp = useTransform(
+                    progress,
+                    [node.drawStart, node.drawStart + 0.04],
+                    [0, 1]
+                  );
+                  return (
+                    <React.Fragment key={i}>
+                      {/* Ghost rail — full path always visible, very faint */}
+                      <path
+                        d={node.path}
+                        stroke="rgba(0,240,255,0.06)"
+                        strokeWidth="0.25"
+                        fill="none"
+                        strokeLinecap="square"
+                      />
+                      {/* Animated draw path */}
+                      <motion.path
+                        d={node.path}
+                        stroke="#00f0ff"
+                        strokeWidth="0.35"
+                        fill="none"
+                        strokeLinecap="square"
+                        filter="url(#hc-glow)"
+                        style={{ pathLength: pathDraw, opacity: pathOp }}
+                      />
+                      {/* Data packet square travelling the path */}
+                      <motion.rect
+                        x="-0.5"
+                        y="-0.5"
+                        width="1"
+                        height="1"
+                        fill="#ffffff"
+                        style={{
+                          offsetPath: `path("${node.path}")`,
+                          offsetDistance: useTransform(
+                            progress,
+                            [node.drawStart, node.drawEnd],
+                            ["0%", "100%"]
+                          ),
+                          opacity: useTransform(
+                            progress,
+                            [node.drawStart, node.drawStart + 0.06, node.drawEnd - 0.04, node.drawEnd],
+                            [0, 1, 1, 0]
+                          ),
+                        }}
+                      />
+                    </React.Fragment>
+                  );
+                })}
+              </svg>
 
-            {/* ── Central hub ── positioned at SVG coords (65, 50) i.e. 65% / 50% */}
-            <motion.div
-              style={{
-                left: "65%",
-                top: "50%",
-                translateX: "-50%",
-                translateY: "-50%",
-                opacity: useTransform(progress, [0.05, 0.18], [0, 1]),
-                scale: useTransform(progress, [0.05, 0.18], [0.5, 1]),
-              }}
-              className="absolute z-20"
-            >
-              {/* Rings */}
-              <div className="absolute w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#00f0ff]/10 rounded-full animate-[spin_40s_linear_infinite]" />
-              <div className="absolute w-[120px] h-[120px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#00f0ff]/15 border-dashed rounded-full animate-[spin_20s_linear_infinite_reverse]" />
+              {/* ── Central hub ── positioned at SVG coords (65, 50) i.e. 65% / 50% */}
+              <motion.div
+                style={{
+                  left: "65%",
+                  top: "50%",
+                  translateX: "-50%",
+                  translateY: "-50%",
+                  opacity: useTransform(progress, [0.05, 0.18], [0, 1]),
+                  scale: useTransform(progress, [0.05, 0.18], [0.5, 1]),
+                }}
+                className="absolute z-20"
+              >
+                {/* Rings */}
+                <div className="absolute w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#00f0ff]/10 rounded-full animate-[spin_40s_linear_infinite]" />
+                <div className="absolute w-[120px] h-[120px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#00f0ff]/15 border-dashed rounded-full animate-[spin_20s_linear_infinite_reverse]" />
 
-              {/* Diamond box */}
-              <div className="relative w-[72px] h-[72px] rotate-45 bg-[#02040a] border border-[#00f0ff]/55 flex items-center justify-center shadow-[0_0_40px_rgba(0,240,255,0.25)] overflow-hidden">
-                <div className="absolute inset-0 bg-[#00f0ff]/5" />
-                <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#00f0ff]/80" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#00f0ff]/80" />
-                <Terminal className="w-8 h-8 text-[#00f0ff] -rotate-45" strokeWidth={1.2} />
-              </div>
-
-              {/* Label below */}
-              <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <div className="text-[#00f0ff] text-[9px] font-mono tracking-[0.4em] uppercase bg-black/60 px-3 py-1 border border-[#00f0ff]/20">
-                  VK_CORE_EXEC
+                {/* Diamond box */}
+                <div className="relative w-[72px] h-[72px] rotate-45 bg-[#02040a] border border-[#00f0ff]/55 flex items-center justify-center shadow-[0_0_40px_rgba(0,240,255,0.25)] overflow-hidden">
+                  <div className="absolute inset-0 bg-[#00f0ff]/5" />
+                  <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#00f0ff]/80" />
+                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#00f0ff]/80" />
+                  <Terminal className="w-8 h-8 text-[#00f0ff] -rotate-45" strokeWidth={1.2} />
                 </div>
-              </div>
-            </motion.div>
 
-            {/* ── Peripheral nodes ── */}
-            {NODES.map((node, i) => (
-              <TechNode
-                key={i}
-                x={node.x}
-                y={node.y}
-                label={node.label}
-                icon={node.icon}
-                progress={progress}
-                drawStart={node.drawStart}
-                drawEnd={node.drawEnd}
-                align={node.align}
-              />
-            ))}
+                {/* Label below */}
+                <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 whitespace-nowrap">
+                  <div className="text-[#00f0ff] text-[9px] font-mono tracking-[0.4em] uppercase bg-black/60 px-3 py-1 border border-[#00f0ff]/20">
+                    VK_CORE_EXEC
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* ── Peripheral nodes ── */}
+              {NODES.map((node, i) => (
+                <TechNode
+                  key={i}
+                  x={node.x}
+                  y={node.y}
+                  label={node.label}
+                  icon={node.icon}
+                  progress={progress}
+                  drawStart={node.drawStart}
+                  drawEnd={node.drawEnd}
+                  align={node.align}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Status readout */}

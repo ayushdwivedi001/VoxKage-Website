@@ -230,153 +230,154 @@ export default function BrowserSection() {
         </div>
 
         {/* ── Right diagram ── */}
-        <div className="absolute inset-0 md:left-[45%] lg:left-[38%] z-10 opacity-60 md:opacity-100">
+        <div className="absolute inset-0 md:left-[45%] lg:left-[38%] z-10 opacity-60 md:opacity-100 flex items-center justify-center">
+          <div className="relative w-full aspect-square max-h-full max-w-full">
 
-          {/* SVG bezier web paths */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <defs>
-              <filter id="web-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="0.8" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <radialGradient id="web-aura" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#22c55e" stopOpacity="0.1" />
-                <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
-              </radialGradient>
-            </defs>
+            {/* SVG bezier web paths */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox="0 0 100 100"
+            >
+              <defs>
+                <filter id="web-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="0.8" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <radialGradient id="web-aura" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#22c55e" stopOpacity="0.1" />
+                  <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+                </radialGradient>
+              </defs>
 
-            {/* Web crawl aura */}
-            <motion.circle
-              cx={HUB_X} cy={HUB_Y} r="20"
-              fill="url(#web-aura)"
-              style={{ opacity: hubOp }}
-            />
-
-            {/* Concentric orbit circles (decorative — drawn early) */}
-            {[14, 22, 30].map((r, i) => (
+              {/* Web crawl aura */}
               <motion.circle
-                key={`orbit-${i}`}
-                cx={HUB_X} cy={HUB_Y} r={r}
-                stroke="#22c55e"
-                strokeWidth="0.08"
-                fill="none"
-                strokeDasharray="1.5 2"
-                style={{ opacity: useTransform(progress, [0.05 + i * 0.04, 0.18 + i * 0.04], [0, 0.25]) }}
+                cx={HUB_X} cy={HUB_Y} r="20"
+                fill="url(#web-aura)"
+                style={{ opacity: hubOp }}
+              />
+
+              {/* Concentric orbit circles (decorative — drawn early) */}
+              {[14, 22, 30].map((r, i) => (
+                <motion.circle
+                  key={`orbit-${i}`}
+                  cx={HUB_X} cy={HUB_Y} r={r}
+                  stroke="#22c55e"
+                  strokeWidth="0.08"
+                  fill="none"
+                  strokeDasharray="1.5 2"
+                  style={{ opacity: useTransform(progress, [0.05 + i * 0.04, 0.18 + i * 0.04], [0, 0.25]) }}
+                />
+              ))}
+
+              {/* Bezier arc paths + packets */}
+              {NODES.map((node, i) => {
+                const pathDraw = useTransform(progress, [node.drawStart, node.drawEnd], [0, 1]);
+                const pathOp   = useTransform(progress, [node.drawStart, node.drawStart + 0.04], [0, 1]);
+                return (
+                  <React.Fragment key={i}>
+                    <path
+                      d={node.path}
+                      stroke={`${node.accent}10`}
+                      strokeWidth="0.3"
+                      fill="none"
+                    />
+                    <motion.path
+                      d={node.path}
+                      stroke={node.accent}
+                      strokeWidth="0.4"
+                      fill="none"
+                      strokeLinecap="round"
+                      filter="url(#web-glow)"
+                      style={{ pathLength: pathDraw, opacity: pathOp }}
+                    />
+                    {/* Travelling packet */}
+                    <motion.circle
+                      r="0.7"
+                      fill="#ffffff"
+                      style={{
+                        offsetPath: `path("${node.path}")`,
+                        offsetDistance: useTransform(progress, [node.drawStart, node.drawEnd], ["0%", "100%"]),
+                        opacity: useTransform(
+                          progress,
+                          [node.drawStart, node.drawStart + 0.05, node.drawEnd - 0.04, node.drawEnd],
+                          [0, 1, 1, 0]
+                        ),
+                      }}
+                    />
+                  </React.Fragment>
+                );
+              })}
+            </svg>
+
+            {/* ── Globe hub ── */}
+            <motion.div
+              style={{
+                left: `${HUB_X}%`,
+                top: `${HUB_Y}%`,
+                translateX: "-50%",
+                translateY: "-50%",
+                opacity: hubOp,
+                scale: hubScale,
+              }}
+              className="absolute z-20"
+            >
+              {/* Orbit ring (scroll-driven rotation) */}
+              <motion.div
+                style={{ rotate: ringRotate }}
+                className="absolute w-[140px] h-[140px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
+              >
+                <svg viewBox="0 0 100 100" className="w-full h-full">
+                  <circle cx="50" cy="50" r="46" stroke="#22c55e" strokeWidth="0.5" fill="none" strokeDasharray="4 6" opacity="0.3" />
+                  {/* Packet travelling on orbit */}
+                  <circle cx="96" cy="50" r="2" fill="#22c55e" opacity="0.8" />
+                </svg>
+              </motion.div>
+              {/* Static outer ring */}
+              <div className="absolute w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#22c55e]/10 rounded-full animate-[spin_60s_linear_infinite_reverse]" />
+
+              {/* Circular hub body */}
+              <div
+                className="relative w-[68px] h-[68px] rounded-full bg-[#02040a] flex items-center justify-center"
+                style={{
+                  border: "1px solid rgba(34,197,94,0.5)",
+                  boxShadow: "0 0 40px rgba(34,197,94,0.2), inset 0 0 20px rgba(34,197,94,0.05)",
+                }}
+              >
+                <div className="absolute inset-0 rounded-full bg-[#22c55e]/5" />
+                {/* Vertical equator line (globe aesthetic) */}
+                <div className="absolute inset-0 rounded-full overflow-hidden">
+                  <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#22c55e]/20" />
+                  <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-[#22c55e]/20" />
+                </div>
+                <Globe className="w-8 h-8 text-[#22c55e]" strokeWidth={1.2} />
+              </div>
+
+              <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 whitespace-nowrap">
+                <div className="text-[#22c55e] text-[9px] font-mono tracking-[0.4em] uppercase bg-black/60 px-3 py-1 border border-[#22c55e]/20">
+                  VK_BROWSER_AGENT
+                </div>
+              </div>
+            </motion.div>
+
+            {/* ── Peripheral nodes ── */}
+            {NODES.map((node, i) => (
+              <BrowserNode
+                key={i}
+                x={node.x}
+                y={node.y}
+                label={node.label}
+                icon={node.icon}
+                progress={progress}
+                drawStart={node.drawStart}
+                drawEnd={node.drawEnd}
+                align={node.align}
+                accent={node.accent}
               />
             ))}
-
-            {/* Bezier arc paths + packets */}
-            {NODES.map((node, i) => {
-              const pathDraw = useTransform(progress, [node.drawStart, node.drawEnd], [0, 1]);
-              const pathOp   = useTransform(progress, [node.drawStart, node.drawStart + 0.04], [0, 1]);
-              return (
-                <React.Fragment key={i}>
-                  <path
-                    d={node.path}
-                    stroke={`${node.accent}10`}
-                    strokeWidth="0.3"
-                    fill="none"
-                  />
-                  <motion.path
-                    d={node.path}
-                    stroke={node.accent}
-                    strokeWidth="0.4"
-                    fill="none"
-                    strokeLinecap="round"
-                    filter="url(#web-glow)"
-                    style={{ pathLength: pathDraw, opacity: pathOp }}
-                  />
-                  {/* Travelling packet */}
-                  <motion.circle
-                    r="0.7"
-                    fill="#ffffff"
-                    style={{
-                      offsetPath: `path("${node.path}")`,
-                      offsetDistance: useTransform(progress, [node.drawStart, node.drawEnd], ["0%", "100%"]),
-                      opacity: useTransform(
-                        progress,
-                        [node.drawStart, node.drawStart + 0.05, node.drawEnd - 0.04, node.drawEnd],
-                        [0, 1, 1, 0]
-                      ),
-                    }}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </svg>
-
-          {/* ── Globe hub ── */}
-          <motion.div
-            style={{
-              left: `${HUB_X}%`,
-              top: `${HUB_Y}%`,
-              translateX: "-50%",
-              translateY: "-50%",
-              opacity: hubOp,
-              scale: hubScale,
-            }}
-            className="absolute z-20"
-          >
-            {/* Orbit ring (scroll-driven rotation) */}
-            <motion.div
-              style={{ rotate: ringRotate }}
-              className="absolute w-[140px] h-[140px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
-            >
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                <circle cx="50" cy="50" r="46" stroke="#22c55e" strokeWidth="0.5" fill="none" strokeDasharray="4 6" opacity="0.3" />
-                {/* Packet travelling on orbit */}
-                <circle cx="96" cy="50" r="2" fill="#22c55e" opacity="0.8" />
-              </svg>
-            </motion.div>
-            {/* Static outer ring */}
-            <div className="absolute w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#22c55e]/10 rounded-full animate-[spin_60s_linear_infinite_reverse]" />
-
-            {/* Circular hub body */}
-            <div
-              className="relative w-[68px] h-[68px] rounded-full bg-[#02040a] flex items-center justify-center"
-              style={{
-                border: "1px solid rgba(34,197,94,0.5)",
-                boxShadow: "0 0 40px rgba(34,197,94,0.2), inset 0 0 20px rgba(34,197,94,0.05)",
-              }}
-            >
-              <div className="absolute inset-0 rounded-full bg-[#22c55e]/5" />
-              {/* Vertical equator line (globe aesthetic) */}
-              <div className="absolute inset-0 rounded-full overflow-hidden">
-                <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#22c55e]/20" />
-                <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-[#22c55e]/20" />
-              </div>
-              <Globe className="w-8 h-8 text-[#22c55e]" strokeWidth={1.2} />
-            </div>
-
-            <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 whitespace-nowrap">
-              <div className="text-[#22c55e] text-[9px] font-mono tracking-[0.4em] uppercase bg-black/60 px-3 py-1 border border-[#22c55e]/20">
-                VK_BROWSER_AGENT
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── Peripheral nodes ── */}
-          {NODES.map((node, i) => (
-            <BrowserNode
-              key={i}
-              x={node.x}
-              y={node.y}
-              label={node.label}
-              icon={node.icon}
-              progress={progress}
-              drawStart={node.drawStart}
-              drawEnd={node.drawEnd}
-              align={node.align}
-              accent={node.accent}
-            />
-          ))}
+          </div>
         </div>
 
         {/* Status */}

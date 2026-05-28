@@ -241,136 +241,137 @@ export default function VisionSection() {
         </div>
 
         {/* ── Right diagram panel (same layout as HoneycombSection) ── */}
-        <div className="absolute inset-0 md:left-[45%] lg:left-[38%] z-10 opacity-60 md:opacity-100">
+        <div className="absolute inset-0 md:left-[45%] lg:left-[38%] z-10 opacity-60 md:opacity-100 flex items-center justify-center">
+          <div className="relative w-full aspect-square max-h-full max-w-full">
 
-          {/* SVG — scan-ray paths */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <defs>
-              <filter id="vision-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="0.9" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              {/* Radial sweep gradient for the "scanning" aura */}
-              <radialGradient id="scan-aura" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-
-            {/* Animated scanning aura behind hub */}
-            <motion.circle
-              cx={HUB_X} cy={HUB_Y} r="18"
-              fill="url(#scan-aura)"
-              style={{ opacity: scanOp }}
-            />
-
-            {/* Three scan-ray paths */}
-            {NODES.map((node, i) => {
-              const pathDraw = useTransform(progress, [node.drawStart, node.drawEnd], [0, 1]);
-              const pathOp   = useTransform(progress, [node.drawStart, node.drawStart + 0.04], [0, 1]);
-              return (
-                <React.Fragment key={i}>
-                  {/* Ghost rail */}
-                  <path
-                    d={node.path}
-                    stroke={`${node.accentColor}10`}
-                    strokeWidth="0.3"
-                    fill="none"
-                  />
-                  {/* Animated draw */}
-                  <motion.path
-                    d={node.path}
-                    stroke={node.accentColor}
-                    strokeWidth="0.4"
-                    fill="none"
-                    strokeLinecap="round"
-                    filter="url(#vision-glow)"
-                    style={{ pathLength: pathDraw, opacity: pathOp }}
-                  />
-                  {/* Data packet */}
-                  <motion.circle
-                    r="0.7"
-                    fill="#ffffff"
-                    style={{
-                      offsetPath: `path("${node.path}")`,
-                      offsetDistance: useTransform(
-                        progress,
-                        [node.drawStart, node.drawEnd],
-                        ["0%", "100%"]
-                      ),
-                      opacity: useTransform(
-                        progress,
-                        [node.drawStart, node.drawStart + 0.05, node.drawEnd - 0.04, node.drawEnd],
-                        [0, 1, 1, 0]
-                      ),
-                    }}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </svg>
-
-          {/* ── Central hub — Eye / Vision Core ── */}
-          <motion.div
-            style={{
-              left: `${HUB_X}%`,
-              top: `${HUB_Y}%`,
-              translateX: "-50%",
-              translateY: "-50%",
-              opacity: hubOp,
-              scale: hubScale,
-            }}
-            className="absolute z-20"
-          >
-            {/* Outer sweeping rings */}
-            <div className="absolute w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#a78bfa]/10 rounded-full animate-[spin_30s_linear_infinite]" />
-            <div className="absolute w-[120px] h-[120px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#a78bfa]/15 border-dashed rounded-full animate-[spin_18s_linear_infinite_reverse]" />
-
-            {/* Octagonal hub (clip-path approximation via large border-radius) */}
-            <div
-              className="relative w-[72px] h-[72px] bg-[#02040a] flex items-center justify-center overflow-hidden"
-              style={{
-                border: "1px solid rgba(167,139,250,0.55)",
-                boxShadow: "0 0 40px rgba(167,139,250,0.2), inset 0 0 20px rgba(167,139,250,0.05)",
-                clipPath: "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
-              }}
+            {/* SVG — scan-ray paths */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox="0 0 100 100"
             >
-              <div className="absolute inset-0 bg-[#a78bfa]/5" />
-              {/* Horizontal scan sweep */}
-              <div className="absolute inset-0 w-full h-[2px] top-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#a78bfa]/60 to-transparent animate-[scanH_2s_ease-in-out_infinite]" />
-              <Eye className="w-8 h-8 text-[#a78bfa]" strokeWidth={1.2} />
-            </div>
+              <defs>
+                <filter id="vision-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="0.9" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                {/* Radial sweep gradient for the "scanning" aura */}
+                <radialGradient id="scan-aura" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.12" />
+                  <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
+                </radialGradient>
+              </defs>
 
-            {/* Label */}
-            <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 whitespace-nowrap">
-              <div className="text-[#a78bfa] text-[9px] font-mono tracking-[0.4em] uppercase bg-black/60 px-3 py-1 border border-[#a78bfa]/20">
-                VK_VISION_CORE
+              {/* Animated scanning aura behind hub */}
+              <motion.circle
+                cx={HUB_X} cy={HUB_Y} r="18"
+                fill="url(#scan-aura)"
+                style={{ opacity: scanOp }}
+              />
+
+              {/* Three scan-ray paths */}
+              {NODES.map((node, i) => {
+                const pathDraw = useTransform(progress, [node.drawStart, node.drawEnd], [0, 1]);
+                const pathOp   = useTransform(progress, [node.drawStart, node.drawStart + 0.04], [0, 1]);
+                return (
+                  <React.Fragment key={i}>
+                    {/* Ghost rail */}
+                    <path
+                      d={node.path}
+                      stroke={`${node.accentColor}10`}
+                      strokeWidth="0.3"
+                      fill="none"
+                    />
+                    {/* Animated draw */}
+                    <motion.path
+                      d={node.path}
+                      stroke={node.accentColor}
+                      strokeWidth="0.4"
+                      fill="none"
+                      strokeLinecap="round"
+                      filter="url(#vision-glow)"
+                      style={{ pathLength: pathDraw, opacity: pathOp }}
+                    />
+                    {/* Data packet */}
+                    <motion.circle
+                      r="0.7"
+                      fill="#ffffff"
+                      style={{
+                        offsetPath: `path("${node.path}")`,
+                        offsetDistance: useTransform(
+                          progress,
+                          [node.drawStart, node.drawEnd],
+                          ["0%", "100%"]
+                        ),
+                        opacity: useTransform(
+                          progress,
+                          [node.drawStart, node.drawStart + 0.05, node.drawEnd - 0.04, node.drawEnd],
+                          [0, 1, 1, 0]
+                        ),
+                      }}
+                    />
+                  </React.Fragment>
+                );
+              })}
+            </svg>
+
+            {/* ── Central hub — Eye / Vision Core ── */}
+            <motion.div
+              style={{
+                left: `${HUB_X}%`,
+                top: `${HUB_Y}%`,
+                translateX: "-50%",
+                translateY: "-50%",
+                opacity: hubOp,
+                scale: hubScale,
+              }}
+              className="absolute z-20"
+            >
+              {/* Outer sweeping rings */}
+              <div className="absolute w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#a78bfa]/10 rounded-full animate-[spin_30s_linear_infinite]" />
+              <div className="absolute w-[120px] h-[120px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 border border-[#a78bfa]/15 border-dashed rounded-full animate-[spin_18s_linear_infinite_reverse]" />
+
+              {/* Octagonal hub (clip-path approximation via large border-radius) */}
+              <div
+                className="relative w-[72px] h-[72px] bg-[#02040a] flex items-center justify-center overflow-hidden"
+                style={{
+                  border: "1px solid rgba(167,139,250,0.55)",
+                  boxShadow: "0 0 40px rgba(167,139,250,0.2), inset 0 0 20px rgba(167,139,250,0.05)",
+                  clipPath: "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
+                }}
+              >
+                <div className="absolute inset-0 bg-[#a78bfa]/5" />
+                {/* Horizontal scan sweep */}
+                <div className="absolute inset-0 w-full h-[2px] top-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#a78bfa]/60 to-transparent animate-[scanH_2s_ease-in-out_infinite]" />
+                <Eye className="w-8 h-8 text-[#a78bfa]" strokeWidth={1.2} />
               </div>
-            </div>
-          </motion.div>
 
-          {/* ── Peripheral nodes ── */}
-          {NODES.map((node, i) => (
-            <VisionNode
-              key={i}
-              x={node.x}
-              y={node.y}
-              label={node.label}
-              icon={node.icon}
-              progress={progress}
-              drawStart={node.drawStart}
-              drawEnd={node.drawEnd}
-              align={node.align}
-              accentColor={node.accentColor}
-            />
-          ))}
+              {/* Label */}
+              <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 whitespace-nowrap">
+                <div className="text-[#a78bfa] text-[9px] font-mono tracking-[0.4em] uppercase bg-black/60 px-3 py-1 border border-[#a78bfa]/20">
+                  VK_VISION_CORE
+                </div>
+              </div>
+            </motion.div>
+
+            {/* ── Peripheral nodes ── */}
+            {NODES.map((node, i) => (
+              <VisionNode
+                key={i}
+                x={node.x}
+                y={node.y}
+                label={node.label}
+                icon={node.icon}
+                progress={progress}
+                drawStart={node.drawStart}
+                drawEnd={node.drawEnd}
+                align={node.align}
+                accentColor={node.accentColor}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Status readout */}
