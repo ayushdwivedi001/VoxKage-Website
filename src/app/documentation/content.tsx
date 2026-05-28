@@ -20,52 +20,66 @@ const ArchitectureContent = () => (
   <div className="flex flex-col gap-10 pb-12">
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">1.0</span> The High-Level System Topology
+        <span className="text-[#295cf1]">1.0</span> High-Level System Topology & Orchestration
       </h3>
       <p className="opacity-70 leading-relaxed text-[15px]">
-        VoxKage is not a simple API wrapper or a chat UI. It is an OS-level middleware that bridges a Large Language Model directly to local hardware and system processes. The system operates on three main pillars: The LLM Engine (Reasoning), the Dispatcher (Routing), and the MCP Servers (Execution).
+        VoxKage is a high-performance system-wide capability coordinator and local middleware. Unlike standalone chatbot loops or restrictive wrappers, VoxKage acts as an omnipresent launcher and orchestrator. It maps, registers, and scaffolds a unified network of built-in Model Context Protocol (MCP) servers directly into your active front-end developer shells—specifically the **Antigravity CLI (<code>agy</code>)** and the **OpenCode CLI**.
+      </p>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        Instead of executing its own isolated LLM loop, VoxKage supercharges these CLI clients with native system capabilities. VoxKage is the capability provider; the host CLI is the reasoning shell.
       </p>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">1.1</span> The Core Reasoning Engine
+        <span className="text-[#295cf1]">1.1</span> Dual-Engine Context Routing
       </h3>
       <p className="opacity-70 leading-relaxed text-[15px]">
-        Unlike web-based assistants, VoxKage utilizes the official, locally installed <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#295cf1]">gemini</code> CLI as its brain rather than making standard REST API calls. 
+        VoxKage dynamically adapts to and pre-scaffolds its capability suite depending on your active developer environment, linking your prompts directly to top-tier developer models:
       </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Asynchronous Subprocessing:</strong> VoxKage spawns the LLM engine as a continuous, asynchronous background process. This non-blocking design ensures the system tray, Telegram watchers, and IPC pipes remain instantly responsive while the LLM is "thinking."</li>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>Antigravity CLI Mode:</strong> VoxKage automatically configures and injects its local sub-servers into <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#295cf1]">~/.gemini/config/mcp_config.json</code>, enabling your active session to tap into **Gemini 3.5 Flash**, **Gemini 3.1 Pro**, **Claude 4.6 Sonnet**, and **Claude 4.6 Opus** with full system toolkits.</li>
+        <li><strong>OpenCode CLI Mode:</strong> VoxKage scaffolds its server schemas directly into <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#295cf1]">~/.config/opencode/opencode.json</code>, routing execution through OpenCode's free high-efficiency Zen portfolio, including **DeepSeek v4 Flash**.</li>
       </ul>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">1.2</span> Native Multimodal Pipeline
+        <span className="text-[#295cf1]">1.2</span> Shared Consciousness & Session Syncing
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Bypassing Base64:</strong> Instead of converting massive images or PDFs into bloated Base64 strings (which slows down traditional web apps), VoxKage passes absolute local file paths directly into the CLI's argument flags (e.g., <code className="bg-white/10 px-1.5 py-0.5 rounded">gemini --image C:\path\to\screenshot.png</code>).</li>
-        <li><strong>The Advantage:</strong> This allows for instant, native ingestion of local context, making OS-level screen reading and file analysis incredibly fast with zero-latency vision.</li>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        At the heart of VoxKage's multi-shell architecture is the central background coordinator: <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#295cf1]">session_server.py</code>.
+      </p>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>Dynamic Interception:</strong> Whether you are working through an Antigravity shell or an OpenCode window, the session manager intercepts, structures, and logs active command history and workspace contexts to a centralized memory repository.</li>
+        <li><strong>Unified Memory:</strong> Both shells draw from the same local vector RAG database and problem/solution registries. Context established in an `agy` session is instantly recalled and seamlessly utilized when you pivot to `opencode`, creating a unified "shared consciousness" across your OS.</li>
       </ul>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">1.3</span> Robust Output Parsing
+        <span className="text-[#295cf1]">1.3</span> Named-Pipe IPC & Daemon Backbone
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>The Hallucination Filter:</strong> LLMs naturally want to converse and often wrap valid JSON tool calls in markdown or conversational filler.</li>
-        <li><strong>Multi-Strategy Extraction:</strong> VoxKage uses a multi-strategy parser (<code className="bg-white/10 px-1.5 py-0.5 rounded">clean_cli_json</code>) that walks the raw stdout character-by-character to extract only valid JSON objects or arrays, completely ignoring surrounding conversational hallucinations. This guarantees the OS only attempts to execute clean, valid commands.</li>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        To coordinate background automation across isolated applications, VoxKage runs persistent lightweight daemons that communicate over an optimized Inter-Process Communication (IPC) backbone:
+      </p>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>System Tray Control Center:</strong> A native tray UI (<code className="bg-white/10 px-1.5 py-0.5 rounded">tray.py</code>) that allows manual setting swaps, switches active engines, toggles Safe Mode gating, and monitors connected connectors.</li>
+        <li><strong>Telegram Watcher Daemon:</strong> A background polling script (<code className="bg-white/10 px-1.5 py-0.5 rounded">telegram_watcher.py</code>) that persistently listens for remote commands and secures remote file transfers.</li>
+        <li><strong>Secure Injection:</strong> On Windows, background watchers communicate with your active shell window using secure **Named Pipes**, allowing remote messages to securely inject text directly into the active shell's stdin stream for live execution.</li>
       </ul>
     </div>
 
     <div className="flex flex-col gap-3">
       <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">1.4</span> Inter-Process Communication (IPC) Backbone
+        <span className="text-[#295cf1]">1.4</span> Zero-Latency Vision & Code Skeletons
       </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Cross-Environment Talk:</strong> The different components (main terminal, background sub-agents, system tray daemon) communicate flawlessly using advanced OS-level IPC.</li>
-        <li><strong>Named Pipes:</strong> On Windows, VoxKage uses Named Pipes that allow external processes (like the Telegram watcher) to securely physically inject text directly into the active terminal's stdin stream, keeping everything perfectly synchronized live.</li>
+      <p className="opacity-70 leading-relaxed text-[15px]">
+        To maximize execution speed and stay strictly within LLM context boundaries, VoxKage routes resources surgically:
+      </p>
+      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14.5px]">
+        <li><strong>Bypassing Base64:</strong> For multimodal screen perceptions and OCR, VoxKage bypasses massive Base64 conversions, passing absolute local file paths directly into the client's argument flags for native, instant rendering.</li>
+        <li><strong>Structural Code Skeletons:</strong> When exploring directories, the capability layer parses source files (.py, .ts, .tsx, .js) through a local Abstract Syntax Tree (AST) parser to strip implementation code and return clean imports, classes, and function signatures. This maps massive codebases with a 95% token context saving.</li>
       </ul>
     </div>
   </div>
