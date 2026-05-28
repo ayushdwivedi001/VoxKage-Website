@@ -13,7 +13,9 @@ import {
   Layers, 
   Globe, 
   Eye, 
-  Activity 
+  Activity,
+  ShieldCheck,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import GradientBlinds from "@/components/GradientBlinds";
@@ -27,7 +29,7 @@ export default function InstallationPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1200); // Quick loading transition
+    }, 1200); // 1.2s smooth loading screen transition
     return () => clearTimeout(timer);
   }, []);
 
@@ -67,24 +69,27 @@ pip install -e .`;
   };
 
   return (
-    <main className="relative w-full min-h-screen bg-[#02040a] text-white overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start py-16 md:py-24 selection:bg-[#00f0ff]/20">
+    <main 
+      className="relative w-full min-h-screen bg-[#09090b] text-white flex flex-col items-center justify-start py-16 md:py-24 selection:bg-[#295cf1]/30"
+      style={{ overflowY: loading ? "hidden" : "auto", height: loading ? "100vh" : "auto" }}
+    >
       
       {/* ── Seamless Loading Overlay ────────────────────── */}
       <AnimatePresence>
         {loading && (
           <motion.div
             key="loader"
-            className="absolute inset-0 z-50 flex items-center justify-center bg-[#02040a]"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#09090b] w-screen h-screen overflow-hidden"
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            transition={{ duration: 0.45, ease: "easeInOut" }}
           >
             <div className="relative text-[10rem] md:text-[15rem] font-bold leading-none tracking-tighter select-none flex items-center justify-center">
               <span className="text-white/5 relative z-0 pr-8 pl-4">V</span>
               <motion.span 
-                className="absolute inset-0 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-t from-[#02040a] via-[#00f0ff]/20 to-[#00f0ff] z-10 pr-8 pl-4"
-                initial={{ clipPath: "inset(100% 0 0 0)" }}
-                animate={{ clipPath: "inset(0% 0 0 0)" }}
-                transition={{ duration: 1.1, ease: "easeInOut" }}
+                className="absolute inset-0 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-t from-[#020617] via-[#1e3a8a] to-[#3b82f6] z-10 pr-8 pl-4"
+                initial={{ clipPath: "inset(100% -20% 0 -20%)" }}
+                animate={{ clipPath: "inset(0% -20% 0 -20%)" }}
+                transition={{ duration: 1.3, ease: "easeInOut" }}
               >
                 V
               </motion.span>
@@ -94,21 +99,21 @@ pip install -e .`;
       </AnimatePresence>
 
       {/* ── Background Grid & Vignette ────────────────────── */}
-      <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(0,240,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.02) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_30%,#02040a_90%)] pointer-events-none z-0" />
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(41,92,241,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(41,92,241,0.02) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_30%,#09090b_90%)] pointer-events-none z-0" />
 
-      {/* ── Background Gradient Effect ──────────────────────── */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+      {/* ── Premium Dark Blue Blinds Gradient Effect ─────────── */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
         <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
           <GradientBlinds
-            gradientColors={['#00f0ff', '#a78bfa']}
+            gradientColors={['#295cf1', '#09090b']}
             angle={26}
-            noise={0.5}
-            blindCount={12}
+            noise={0.4}
+            blindCount={14}
             blindMinWidth={60}
-            spotlightRadius={0.4}
+            spotlightRadius={0.45}
             spotlightSoftness={1}
-            spotlightOpacity={0.8}
+            spotlightOpacity={0.9}
             mouseDampening={0.5}
             distortAmount={0}
             shineDirection="left"
@@ -121,7 +126,7 @@ pip install -e .`;
       <div className="absolute top-6 left-6 md:top-10 md:left-12 z-40 pointer-events-auto">
         <Link 
           href="/" 
-          className="flex items-center gap-2 text-white/50 hover:text-white transition-colors uppercase tracking-[0.2em] text-xs font-mono"
+          className="flex items-center gap-2 text-white/40 hover:text-white transition-colors uppercase tracking-[0.2em] text-xs font-mono"
         >
           <ArrowLeft size={16} />
           <span className="hidden md:inline">Home</span>
@@ -131,7 +136,7 @@ pip install -e .`;
       <div className="absolute top-6 right-6 md:top-10 md:right-12 z-40 pointer-events-auto flex items-center">
         <button
           onClick={() => setMenuOpen(true)}
-          className="text-white hover:text-[#00f0ff] transition-colors bg-black/20 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-2 md:p-0 rounded-lg md:rounded-none"
+          className="text-white hover:text-[#295cf1] transition-colors bg-black/20 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-2 md:p-0 rounded-lg md:rounded-none"
         >
           <Menu size={24} className="md:w-7 md:h-7" strokeWidth={1.5} />
         </button>
@@ -143,16 +148,16 @@ pip install -e .`;
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center gap-10 bg-[#02040a]/60 backdrop-blur-2xl p-6 sm:p-8 md:p-12 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden w-full"
+          className="flex flex-col items-center gap-10 bg-[#09090b]/65 backdrop-blur-2xl p-6 sm:p-8 md:p-12 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden w-full"
         >
           {/* Top light bar */}
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00f0ff]/40 to-transparent"></div>
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#295cf1]/45 to-transparent"></div>
 
           {/* Heading */}
           <div className="flex flex-col items-center gap-4 text-center">
-            <div className="inline-flex items-center gap-2 border border-[#00f0ff]/25 bg-[#00f0ff]/5 px-3 py-1">
-              <Terminal size={12} className="text-[#00f0ff]" />
-              <span className="text-[#00f0ff] text-[9px] font-mono tracking-[0.35em] uppercase">SYSTEM_DEPLOY</span>
+            <div className="inline-flex items-center gap-2 border border-[#295cf1]/25 bg-[#295cf1]/5 px-3 py-1">
+              <Terminal size={12} className="text-[#295cf1]" />
+              <span className="text-[#295cf1] text-[9px] font-mono tracking-[0.35em] uppercase">SYSTEM_DEPLOY</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-white uppercase leading-none mt-2">
               INSTALLATION
@@ -162,13 +167,13 @@ pip install -e .`;
             </p>
           </div>
 
-          {/* Tab Switcher */}
-          <div className="flex bg-[#02040a] border border-white/10 rounded-lg p-1.5 z-10">
+          {/* Premium Tab Switcher */}
+          <div className="flex bg-black/40 border border-white/5 rounded-lg p-1.5 z-10">
             <button
               onClick={() => setActiveTab("pipx")}
               className={`px-6 py-2 rounded-md text-[10px] font-mono tracking-widest uppercase transition-all duration-300 ${
                 activeTab === "pipx"
-                  ? "bg-[#00f0ff]/10 border border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.15)]"
+                  ? "bg-[#295cf1]/10 border border-[#295cf1]/30 text-[#295cf1] shadow-[0_0_15px_rgba(41,92,241,0.15)]"
                   : "text-white/45 border border-transparent hover:text-white"
               }`}
             >
@@ -178,7 +183,7 @@ pip install -e .`;
               onClick={() => setActiveTab("manual")}
               className={`px-6 py-2 rounded-md text-[10px] font-mono tracking-widest uppercase transition-all duration-300 ${
                 activeTab === "manual"
-                  ? "bg-[#a78bfa]/10 border border-[#a78bfa]/30 text-[#a78bfa] shadow-[0_0_15px_rgba(167,139,250,0.15)]"
+                  ? "bg-[#295cf1]/10 border border-[#295cf1]/30 text-[#295cf1] shadow-[0_0_15px_rgba(41,92,241,0.15)]"
                   : "text-white/45 border border-transparent hover:text-white"
               }`}
             >
@@ -188,15 +193,14 @@ pip install -e .`;
 
           {/* Code block */}
           <div className="w-full flex flex-col gap-3 relative z-10">
-            <div className="flex w-full bg-[#02040a] border border-white/10 rounded-xl overflow-hidden shadow-inner group transition-colors hover:border-[#00f0ff]/20 relative">
+            <div className="flex w-full bg-black/40 border border-white/5 rounded-xl overflow-hidden shadow-inner group transition-all hover:border-[#295cf1]/30 hover:shadow-[0_0_30px_rgba(41,92,241,0.15)] relative">
               <pre className="p-5 pr-20 flex-1 text-left font-mono text-[11px] md:text-[12.5px] leading-[1.6] text-white/80 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] whitespace-pre">
                 {(activeTab === "pipx" ? pipxInstallCommands : manualInstallCommands)
                   .split('\n')
                   .map((line, i) => {
                     if (line.startsWith('#')) return <span key={i} className="text-white/20 font-light italic">{line}{'\n'}</span>;
                     if (line.trim() === '') return <span key={i}>{'\n'}</span>;
-                    const accentColor = activeTab === "pipx" ? "text-[#00f0ff]" : "text-[#a78bfa]";
-                    return <span key={i} className={`${accentColor} opacity-90`}>{line}{'\n'}</span>;
+                    return <span key={i} className="text-[#295cf1] opacity-90">{line}{'\n'}</span>;
                   })}
               </pre>
               <button 
@@ -216,7 +220,7 @@ pip install -e .`;
           {/* Capability Packs Section */}
           <div className="w-full flex flex-col gap-6 mt-4 relative z-10 text-left">
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] tracking-[0.25em] text-[#00f0ff] font-mono uppercase">
+              <span className="text-[10px] tracking-[0.25em] text-[#295cf1] font-mono uppercase">
                 // OPTIONAL CAPABILITY PACKS
               </span>
               <p className="text-xs text-white/40 font-light">
@@ -231,42 +235,37 @@ pip install -e .`;
                   cmd: "browser",
                   desc: "Playwright automation, JS form filling, and live DOM extraction.",
                   icon: Globe,
-                  accent: "#00f0ff",
                 },
                 {
                   name: "RAG MEMORY",
                   cmd: "rag",
                   desc: "ChromaDB vector logs, embeddings, and semantic codebase indexing.",
                   icon: Layers,
-                  accent: "#a78bfa",
                 },
                 {
                   name: "VISION PIPELINE",
                   cmd: "vision",
                   desc: "OpenCV visual verification, OCR scanning, and screen perceptions.",
                   icon: Eye,
-                  accent: "#34d399",
                 },
                 {
                   name: "DOCS PLUS",
                   cmd: "docs_plus",
                   desc: "Word-to-PDF compilers, spreadsheet parsing, and file utilities.",
                   icon: Cpu,
-                  accent: "#f59e0b",
                 },
               ].map((pack, i) => {
                 const Icon = pack.icon;
                 return (
                   <div 
                     key={i} 
-                    className="group relative bg-[#02040a] border border-white/5 hover:border-white/10 p-5 rounded-xl transition-all duration-300 flex gap-4 overflow-hidden"
+                    className="group relative bg-[#09090b]/40 border border-white/5 hover:border-[#295cf1]/30 p-5 rounded-xl transition-all duration-300 flex gap-4 overflow-hidden"
                   >
                     {/* Inner tech corner lines */}
-                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/10 group-hover:border-white/30 transition-colors" />
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/10 group-hover:border-[#295cf1]/30 transition-colors" />
                     
                     <div 
-                      className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/2 text-white/60 shrink-0 relative transition-all group-hover:text-white"
-                      style={{ border: `1px solid ${pack.accent}30` }}
+                      className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/2 text-white/50 border border-white/5 shrink-0 relative transition-all duration-300 group-hover:text-white group-hover:border-[#295cf1]/40"
                     >
                       <Icon className="w-5 h-5" strokeWidth={1.5} />
                     </div>
@@ -292,7 +291,7 @@ pip install -e .`;
 
           {/* Running VoxKage */}
           <div className="w-full flex flex-col gap-4 relative z-10 text-left border-t border-white/5 pt-8">
-            <span className="text-[10px] tracking-[0.25em] text-[#a78bfa] font-mono uppercase">
+            <span className="text-[10px] tracking-[0.25em] text-[#295cf1] font-mono uppercase">
               // RUNNING THE ENGINE
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -301,7 +300,7 @@ pip install -e .`;
                 { title: "voxkage tray", desc: "Runs persistently in your background system tray coordinating named pipes." },
                 { title: "voxkage status", desc: "Inspects system health, model portfolios, and plugin credentials status." },
               ].map((cmd, i) => (
-                <div key={i} className="flex flex-col gap-1.5 border-l border-white/10 pl-4 py-1.5">
+                <div key={i} className="flex flex-col gap-1.5 border-l border-white/10 pl-4 py-1.5 hover:border-[#295cf1]/30 transition-colors duration-300">
                   <code className="text-white text-xs font-semibold font-mono tracking-wider">
                     {cmd.title}
                   </code>
@@ -311,6 +310,17 @@ pip install -e .`;
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Security & Shield */}
+          <div className="w-full flex flex-col gap-4 relative z-10 text-left border-t border-white/5 pt-8">
+            <span className="text-[10px] tracking-[0.25em] text-[#295cf1] font-mono uppercase flex items-center gap-1.5">
+              <ShieldCheck size={12} className="text-[#295cf1]" />
+              // THE SHIELD SECURITY PROTOCOL
+            </span>
+            <p className="text-xs text-white/45 leading-relaxed font-light">
+              VoxKage operates under an integrated <strong className="text-white font-medium">Three-Layer Shield System</strong> to secure local shell and filesystems. Critical system paths are non-overrideable blocked, and destructive commands are gated via Safe Mode. Learn more at <code className="bg-black/50 border border-white/10 px-2 py-0.5 rounded text-white/80 text-[10px] font-mono">voxkage status</code>.
+            </p>
           </div>
 
           {/* Footer note */}
@@ -337,7 +347,7 @@ pip install -e .`;
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed top-[36px] right-[36px] z-50 w-60 rounded-2xl bg-[#02040a]/95 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden pointer-events-auto"
+            className="fixed top-[36px] right-[36px] z-50 w-60 rounded-2xl bg-[#09090b]/95 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden pointer-events-auto"
           >
             <div className="flex justify-end p-4 border-b border-white/5">
               <button
