@@ -386,77 +386,88 @@ const HoneycombContent = ({ isDark = true }: { isDark?: boolean }) => {
   );
 };
 
-const SecurityContent = () => (
-  <div className="flex flex-col gap-10 pb-12">
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">4.0</span> The Zero-Trust Philosophy
-      </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Bare-Metal Execution:</strong> VoxKage does not run inside a restrictive Docker container or virtual machine. To be truly useful, it needs raw, bare-metal access to your native file system, applications, and shell.</li>
-        <li><strong>The Problem:</strong> Large Language Models can hallucinate, misunderstand context, or make logical errors. Giving an LLM unrestricted root/admin access is inherently dangerous.</li>
-        <li><strong>The Solution:</strong> The Shield Protocol (<code className="bg-white/10 px-1.5 py-0.5 rounded">voxkage/shield.py</code>) acts as a non-bypassable middleware layer. Every single action requested by the Agentic Loop must pass through the Shield before the MCP Dispatcher is allowed to execute it.</li>
-      </ul>
-    </div>
+const SecurityContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">4.1</span> Multi-Layered Defense System
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        The Shield uses three distinct gating mechanisms to evaluate actions in real-time:
-      </p>
-      <div className="grid grid-cols-1 gap-4 mt-2">
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Layer 1: Path Gating</h4>
-          <p className="text-sm opacity-60 mb-2">Before any file operation, the Shield checks the target absolute path.</p>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">shield_gate_path</code> matches the path against a dynamic blocklist. VoxKage is strictly forbidden from mutating critical OS directories (e.g., C:\Windows\System32) and repository history folders (like .git/ or .svn/).</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Layer 2: Command Gating</h4>
-          <p className="text-sm opacity-60 mb-2">Intercepts raw command strings sent to the native shell.</p>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">shield_gate_command</code> uses aggressive Regex pattern matching to block globally destructive commands involving bulk deletions (rm -rf /*, del *.*), disk formatting (format C:), or critical registry modifications.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">Layer 3: Extension Gating</h4>
-          <p className="text-sm opacity-60 mb-2">A safeguard specifically for preventing accidental codebase destruction.</p>
-          <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">shield_check_delete</code> prevents the deletion of critical source code files or configuration files (e.g., .py, .json, .env) even if the file is in an allowed directory, unless explicitly overridden.</p>
+  return (
+    <div className="flex flex-col gap-10 pb-12">
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">4.0</span> The Zero-Trust Philosophy
+        </h3>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
+          <li><strong>Bare-Metal OS Coordination:</strong> Unlike traditional AI wrappers confined within sandboxed Docker containers, VoxKage acts as an omnipresent middleware with bare-metal access to your native filesystem, terminals, and processes.</li>
+          <li><strong>Hallucination Defense:</strong> Large Language Models are subject to logical errors, command hallucinations, or path confusion. Giving an AI agent root or admin shell privileges is a massive system risk.</li>
+          <li><strong>The Safety Middleware:</strong> The Shield Protocol ({renderCode("voxkage/shield.py")}) acts as an absolute, non-bypassable safety filter. Every single command execution, directory mutation, or delete call requested by the host CLI's Agentic Loop is checked and evaluated against the Shield before execution.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">4.1</span> The Three-Layered Safety Architecture
+        </h3>
+        <p className="opacity-70 leading-relaxed text-[15px]">
+          VoxKage enforces a rigorous three-tiered protection model to prevent system damage:
+        </p>
+        <div className="grid grid-cols-1 gap-4 mt-2">
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Layer 1: Hard-Blocked Path & Command Checks</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Absolute paths are normalized via {renderCode("_expand_path")} (handling environment variables like {renderCode("%WINDIR%")} and `~` separators) and validated before any filesystem call.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              Critical directories such as {renderCode("C:\\Windows")}, {renderCode("C:\\Program Files")}, SSH directories ({renderCode("~\\.ssh")}), GPG stores ({renderCode("~\\.gnupg")}), and configuration keys ({renderCode("~\\.voxkage\\config.json")}) are hard-locked. Furthermore, destructive shell utilities (e.g. {renderCode("format")}, {renderCode("diskpart")}, {renderCode("bcdedit")}, {renderCode("reg delete")}, {renderCode("sfc")}, {renderCode("shutdown")}, {renderCode("rm -rf /")}) are strictly intercepted and blocked. Deletions of binary extensions ({renderCode(".sys")}, {renderCode(".dll")}, {renderCode(".exe")}) inside protected spaces are instantly denied. **These boundaries are absolute and cannot be overridden.**
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Layer 2: Safe Mode Gating</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Safe Mode defaults to active ({renderCode("safe_mode: true")}), reinforcing standard boundaries across all active developer environments.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              Power users can toggle Safe Mode off by setting the environment variable {renderCode("VOXKAGE_SAFE_MODE=0")} or manually switching the parameter inside the local config ({renderCode("~\\.voxkage\\config.json")}). Toggling is also supported natively inside the **System Tray Settings Control Center** ({renderCode("tray/settings_window.py")}) via an interactive GUI. Even with Safe Mode disabled, Hard-Stop Confirmation Dialogs for binary installations and deletions remain active to provide a final safety net.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Layer 3: Transparent Audit Logging</h4>
+            <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Provides a continuous, indestructible history of all system-level and filesystem actions performed by the agent.
+            </p>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/65"}`}>
+              Every path evaluation and shell interception is timestamped and recorded inside a centralized log at {renderCode("audit.log")} within the active brain directory (e.g. {renderCode("~\\.gemini\\antigravity\\brain\\audit.log")}). Logs are formatted in a clean structured layout: {renderCode("[Timestamp] ALLOWED/BLOCKED | action: target")}, ensuring complete accountability and simple audit checks for developer safety.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">4.2</span> Hard Stop Confirmation Gates
-      </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>The Mechanism:</strong> For sensitive MCP tools like <code className="bg-white/10 px-1.5 py-0.5 rounded">delete_file</code> or <code className="bg-white/10 px-1.5 py-0.5 rounded">run_installer</code>, the tool requires a <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#ff4d4d]">confirmed</code> boolean parameter.</li>
-        <li><strong>The Workflow:</strong> The Agentic Loop is forced to call the tool with confirmed=False first. This pauses the loop and presents a security preview to the user. VoxKage must wait for the user to explicitly type "Yes" or "Agreed" before it can call the tool again with confirmed=True.</li>
-      </ul>
-    </div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">4.2</span> MCP Server Integration &amp; Graceful Degradation
+        </h3>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
+          <li><strong>Direct Server Hooks:</strong> Gating hooks are imported locally inside the microservices. The {renderCode("os_control_server")} intercepts file modifications via {renderCode("shield_gate_path")}, while the {renderCode("system_server")} protects commands via {renderCode("shield_gate_command")}.</li>
+          <li><strong>Graceful Degradation:</strong> If the {renderCode("voxkage.shield")} module is missing or cannot be imported (such as in lightweight custom client environments), the MCP servers are designed to gracefully degrade (fail-open) rather than crashing the system, enabling custom setup flexibility.</li>
+        </ul>
+      </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">4.3</span> Transparent Audit Logging
-      </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Accountability:</strong> Because VoxKage operates autonomously, the user must always know what it did while they weren't looking.</li>
-        <li><strong>The Log:</strong> Every potentially destructive action—whether executed or blocked—is permanently recorded via the <code className="bg-white/10 px-1.5 py-0.5 rounded">audit_log</code> function into a secure local file, providing a clear, timestamped trail of the AI's physical footprint.</li>
-      </ul>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+          <span className="text-[#295cf1]">4.3</span> Confirmation Dialog Checkpoints
+        </h3>
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
+          <li><strong>confirmed=False Gate:</strong> For high-risk operations (such as deleting files or running executable software packages), the system requires a boolean {renderCode("confirmed")} parameter.</li>
+          <li><strong>Two-Step Execution:</strong> The Agentic Loop is forced to call the tool with {renderCode("confirmed=False")} first. This generates a clear visual card in the terminal or Telegram. The loop is paused, and execution will resume ONLY when the user manually submits an explicit confirmation (e.g. "Yes" or "Proceed"), after which the tool is re-called with {renderCode("confirmed=True")}.</li>
+        </ul>
+      </div>
     </div>
-
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">4.4</span> Managing "Safe Mode"
-      </h3>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Default State:</strong> VoxKage ships with Safe Mode ON (<code className="bg-white/10 px-1.5 py-0.5 rounded">"safe_mode": true</code>), enforcing maximum strictness across all gating layers.</li>
-        <li><strong>Power User Override:</strong> If a developer specifically needs VoxKage to manage system-level configurations, they can manually open <code className="bg-white/10 px-1.5 py-0.5 rounded">~/.voxkage/settings.json</code> and toggle Safe Mode to false.</li>
-        <li><strong>The Caveat:</strong> Disabling Safe Mode turns off automatic Path and Command gating, but the Hard Stop Confirmation Gates for running unverified .exe files and deleting data remain active to provide a final safety net.</li>
-      </ul>
-    </div>
-  </div>
-);
+  );
+};
 
 const AceContent = () => (
   <div className="flex flex-col gap-10 pb-12">
