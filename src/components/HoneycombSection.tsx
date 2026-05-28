@@ -17,27 +17,27 @@ import { Monitor, Activity, Folder, Terminal, Cpu } from "lucide-react";
 const HUB_X = 60;
 const HUB_Y = 50;
 
-// Nodes: paths stem directly from the edges of the hub to avoid overlapping the central diamond
+// Nodes: paths start directly from the center of the hub for unified scroll animation origin
 const NODES = [
   {
-    // top branch: rise from hub then turn left — clean ⌐ shape
-    path: `M ${HUB_X} 36 L ${HUB_X} 16 L 24 16`,
+    // top branch: rise from hub center then turn left
+    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 16 L 24 16`,
     x: 24, y: 16,
     label: "SYSTEM HARDWARE", icon: Monitor,
     drawStart: 0.15, drawEnd: 0.38,
     align: "right" as const,
   },
   {
-    // right branch: straight horizontal, starts at hub right edge
-    path: `M 68 50 L 78 50`,
+    // right branch: straight horizontal from hub center
+    path: `M ${HUB_X} ${HUB_Y} L 78 ${HUB_Y}`,
     x: 78, y: 50,
     label: "PROCESS MANAGEMENT", icon: Activity,
     drawStart: 0.38, drawEnd: 0.60,
     align: "left" as const,
   },
   {
-    // bottom branch: descend from hub then turn left — clean L shape
-    path: `M ${HUB_X} 64 L ${HUB_X} 84 L 24 84`,
+    // bottom branch: descend from hub center then turn left
+    path: `M ${HUB_X} ${HUB_Y} L ${HUB_X} 84 L 24 84`,
     x: 24, y: 84,
     label: "FILESYSTEM MASTERY", icon: Folder,
     drawStart: 0.60, drawEnd: 0.82,
@@ -247,7 +247,7 @@ export default function HoneycombSection() {
                   </filter>
                 </defs>
 
-                {NODES.map((node, i) => {
+                 {NODES.map((node, i) => {
                   const pathDraw = useTransform(
                     progress,
                     [node.drawStart, node.drawEnd],
@@ -261,6 +261,25 @@ export default function HoneycombSection() {
                   // Junction dot position — the bend corner of this path (not on right-branch)
                   const junctionX = i !== 1 ? HUB_X : null;
                   const junctionY = i === 0 ? 16 : i === 2 ? 84 : null;
+
+                  // ─── MATHEMATICAL PACKET MOTION ───
+                  // Bypasses browser-buggy CSS offsetPath by interpolating viewBox coordinates directly!
+                  const halfway = node.drawStart + (node.drawEnd - node.drawStart) / 2;
+                  let dotCx, dotCy;
+                  
+                  if (i === 0) {
+                    // Top branch: (60, 50) → (60, 16) → (24, 16)
+                    dotCx = useTransform(progress, [node.drawStart, halfway, node.drawEnd], [60, 60, 24]);
+                    dotCy = useTransform(progress, [node.drawStart, halfway, node.drawEnd], [50, 16, 16]);
+                  } else if (i === 1) {
+                    // Right branch: (60, 50) → (78, 50)
+                    dotCx = useTransform(progress, [node.drawStart, node.drawEnd], [60, 78]);
+                    dotCy = 50;
+                  } else {
+                    // Bottom branch: (60, 50) → (60, 84) → (24, 84)
+                    dotCx = useTransform(progress, [node.drawStart, halfway, node.drawEnd], [60, 60, 24]);
+                    dotCy = useTransform(progress, [node.drawStart, halfway, node.drawEnd], [50, 84, 84]);
+                  }
 
                   return (
                     <React.Fragment key={i}>
@@ -293,20 +312,13 @@ export default function HoneycombSection() {
                           style={{ opacity: pathOp }}
                         />
                       )}
-                      {/* Data packet square travelling the path */}
-                      <motion.rect
-                        x="-0.6"
-                        y="-0.6"
-                        width="1.2"
-                        height="1.2"
+                      {/* Data packet circle travelling the path */}
+                      <motion.circle
+                        cx={dotCx}
+                        cy={dotCy}
+                        r="0.8"
                         fill="#ffffff"
                         style={{
-                          offsetPath: `path("${node.path}")`,
-                          offsetDistance: useTransform(
-                            progress,
-                            [node.drawStart, node.drawEnd],
-                            ["0%", "100%"]
-                          ),
                           opacity: useTransform(
                             progress,
                             [node.drawStart, node.drawStart + 0.06, node.drawEnd - 0.04, node.drawEnd],
@@ -317,6 +329,16 @@ export default function HoneycombSection() {
                     </React.Fragment>
                   );
                 })}
+
+                {/* SVG mask to cover lines inside the rotated central diamond hub */}
+                <rect
+                  x={HUB_X - 5}
+                  y={HUB_Y - 5}
+                  width="10"
+                  height="10"
+                  fill="#02040a"
+                  transform={`rotate(45 ${HUB_X} ${HUB_Y})`}
+                />
               </svg>
 
               {/* ── Central hub ── positioned at SVG coords (60, 50) i.e. 60% / 50% */}

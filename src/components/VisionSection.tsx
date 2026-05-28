@@ -21,11 +21,11 @@ import {
 const HUB_X = 44;
 const HUB_Y = 50;
 
-// Diagonal "scan ray" paths — start from hub edges to avoid crossing through the eye center
+// Diagonal "scan ray" paths — start directly from the center of the hub for unified scroll animation origin
 const NODES = [
   {
     // Upper-left diagonal → GUI Pilot
-    path: `M 36 42 L 16 22`,
+    path: `M ${HUB_X} ${HUB_Y} L 16 22`,
     x: 16, y: 22,
     label: "GUI PILOT",
     icon: MousePointer2,
@@ -35,7 +35,7 @@ const NODES = [
   },
   {
     // Right horizontal → Visual Validation
-    path: `M 52 50 L 72 50`,
+    path: `M ${HUB_X} ${HUB_Y} L 72 50`,
     x: 72, y: 50,
     label: "VISUAL VALIDATION",
     icon: ImageIcon,
@@ -45,7 +45,7 @@ const NODES = [
   },
   {
     // Lower-left diagonal → Visual QA
-    path: `M 36 58 L 16 78`,
+    path: `M ${HUB_X} ${HUB_Y} L 16 78`,
     x: 16, y: 78,
     label: "VISUAL QA",
     icon: MonitorCheck,
@@ -274,6 +274,24 @@ export default function VisionSection() {
               {NODES.map((node, i) => {
                 const pathDraw = useTransform(progress, [node.drawStart, node.drawEnd], [0, 1]);
                 const pathOp   = useTransform(progress, [node.drawStart, node.drawStart + 0.04], [0, 1]);
+
+                // ─── MATHEMATICAL PACKET MOTION ───
+                // Prevents offset-path desync by calculating SVG viewBox coordinates directly!
+                let dotCx, dotCy;
+                if (i === 0) {
+                  // Upper-left diagonal: (44, 50) → (16, 22)
+                  dotCx = useTransform(progress, [node.drawStart, node.drawEnd], [44, 16]);
+                  dotCy = useTransform(progress, [node.drawStart, node.drawEnd], [50, 22]);
+                } else if (i === 1) {
+                  // Right horizontal: (44, 50) → (72, 50)
+                  dotCx = useTransform(progress, [node.drawStart, node.drawEnd], [44, 72]);
+                  dotCy = 50;
+                } else {
+                  // Lower-left diagonal: (44, 50) → (16, 78)
+                  dotCx = useTransform(progress, [node.drawStart, node.drawEnd], [44, 16]);
+                  dotCy = useTransform(progress, [node.drawStart, node.drawEnd], [50, 78]);
+                }
+
                 return (
                   <React.Fragment key={i}>
                     {/* Ghost rail */}
@@ -293,17 +311,13 @@ export default function VisionSection() {
                       filter="url(#vision-glow)"
                       style={{ pathLength: pathDraw, opacity: pathOp }}
                     />
-                    {/* Data packet */}
+                    {/* Mathematical Data packet */}
                     <motion.circle
-                      r="0.7"
+                      cx={dotCx}
+                      cy={dotCy}
+                      r="0.8"
                       fill="#ffffff"
                       style={{
-                        offsetPath: `path("${node.path}")`,
-                        offsetDistance: useTransform(
-                          progress,
-                          [node.drawStart, node.drawEnd],
-                          ["0%", "100%"]
-                        ),
                         opacity: useTransform(
                           progress,
                           [node.drawStart, node.drawStart + 0.05, node.drawEnd - 0.04, node.drawEnd],
@@ -314,6 +328,12 @@ export default function VisionSection() {
                   </React.Fragment>
                 );
               })}
+
+              {/* SVG mask to cover lines inside the central octagonal hub */}
+              <polygon
+                points={`${HUB_X - 3.5} ${HUB_Y - 8.5}, ${HUB_X + 3.5} ${HUB_Y - 8.5}, ${HUB_X + 8.5} ${HUB_Y - 3.5}, ${HUB_X + 8.5} ${HUB_Y + 3.5}, ${HUB_X + 3.5} ${HUB_Y + 8.5}, ${HUB_X - 3.5} ${HUB_Y + 8.5}, ${HUB_X - 8.5} ${HUB_Y + 3.5}, ${HUB_X - 8.5} ${HUB_Y - 3.5}`}
+                fill="#02040a"
+              />
             </svg>
 
             {/* ── Central hub — Eye / Vision Core ── */}

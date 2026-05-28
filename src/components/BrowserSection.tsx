@@ -14,11 +14,11 @@ import { Code2, Layers, GitBranch, Globe, Network } from "lucide-react";
 const HUB_X = 44;
 const HUB_Y = 50;
 
-// Bezier arc paths — organic web-crawl feel, start from hub edges to avoid crossing globe center
+// Bezier arc paths — organic web-crawl feel, start directly from the center of the hub for unified scroll animation origin
 const NODES = [
   {
     // Top-right arc → Live DOM Extraction
-    path: `M 50 44 C 56 34, 64 26, 72 22`,
+    path: `M ${HUB_X} ${HUB_Y} C 56 34, 64 26, 72 22`,
     x: 72, y: 22,
     label: "LIVE DOM EXTRACTION",
     icon: Code2,
@@ -28,7 +28,7 @@ const NODES = [
   },
   {
     // Hard left arc → Frontend Autonomy
-    path: `M 37 50 C 30 48, 23 48, 16 50`,
+    path: `M ${HUB_X} ${HUB_Y} C 30 48, 23 48, 16 50`,
     x: 16, y: 50,
     label: "FRONTEND AUTONOMY",
     icon: Layers,
@@ -38,7 +38,7 @@ const NODES = [
   },
   {
     // Bottom-right arc → Workflow Execution
-    path: `M 50 56 C 56 66, 64 74, 72 78`,
+    path: `M ${HUB_X} ${HUB_Y} C 56 66, 64 74, 72 78`,
     x: 72, y: 78,
     label: "WORKFLOW EXECUTION",
     icon: GitBranch,
@@ -292,9 +292,11 @@ export default function BrowserSection() {
                       filter="url(#web-glow)"
                       style={{ pathLength: pathDraw, opacity: pathOp }}
                     />
-                    {/* Travelling packet */}
+                    {/* Travelling packet (centered precisely at local origin 0,0 under offsetPath) */}
                     <motion.circle
-                      r="0.7"
+                      cx="0"
+                      cy="0"
+                      r="0.8"
                       fill="#ffffff"
                       style={{
                         offsetPath: `path("${node.path}")`,
@@ -309,6 +311,14 @@ export default function BrowserSection() {
                   </React.Fragment>
                 );
               })}
+
+              {/* SVG mask to cover lines inside the circular globe hub */}
+              <circle
+                cx={HUB_X}
+                cy={HUB_Y}
+                r="7"
+                fill="#02040a"
+              />
             </svg>
 
             {/* ── Globe hub ── */}
