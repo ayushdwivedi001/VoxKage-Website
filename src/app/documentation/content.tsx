@@ -165,7 +165,6 @@ const HoneycombMockup = () => {
 
   return (
     <div className="w-full bg-[#050505] border border-white/5 rounded-xl p-4 md:p-6 font-mono text-[11px] md:text-[13px] shadow-2xl relative overflow-hidden flex flex-col">
-      {/* Query Bar */}
       <div className="flex items-start md:items-center gap-3 bg-white/5 px-3 md:px-4 py-3 rounded-lg mb-6 md:mb-8 border border-white/5 shrink-0 pr-16 md:pr-20">
         <Terminal size={16} className="text-[#295cf1] shrink-0 mt-0.5 md:mt-0" />
         <motion.span 
@@ -178,9 +177,7 @@ const HoneycombMockup = () => {
         </motion.span>
       </div>
 
-      {/* Honeycomb Nodes */}
       <div className="flex flex-col gap-6 relative pl-6 border-l border-white/5 ml-4">
-        
         {step >= 1 && (
           <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 relative">
             <div className="absolute -left-[35px] bg-[#050505] border border-white/10 p-1.5 rounded-md">
@@ -188,7 +185,7 @@ const HoneycombMockup = () => {
             </div>
             <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg w-full">
               <span className="text-yellow-500/80 font-bold tracking-widest text-[10px] uppercase mb-1 block">AGENTIC THINKING // PLAN</span>
-              <p className="text-white/60">I need to fetch Next.js docs via browser, compile to word via os_control, and dispatch via telegram server.</p>
+              <p className="text-white/60">I need to fetch Next.js docs via browser_server, compile to word via file_ops_server, and dispatch via telegram_server.</p>
             </div>
           </motion.div>
         )}
@@ -199,8 +196,8 @@ const HoneycombMockup = () => {
               <Search size={14} className="text-[#295cf1]" />
             </div>
             <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg w-full">
-              <span className="text-[#295cf1] font-bold tracking-widest text-[10px] uppercase mb-1 block">BROWSER_SERVER.PY // EXECUTE</span>
-              <p className="text-white/60">Navigating to nextjs.org/docs... Extracted 4,201 tokens of updated DOM content.</p>
+              <span className="text-[#295cf1] font-bold tracking-widest text-[10px] uppercase mb-1 block">BROWSER_SERVER.PY // EXECUTE — 42 TOOLS</span>
+              <p className="text-white/60">Navigating to nextjs.org/docs... Extracted 4,201 tokens of updated DOM content via Playwright agent.</p>
             </div>
           </motion.div>
         )}
@@ -211,8 +208,8 @@ const HoneycombMockup = () => {
               <FileEdit size={14} className="text-emerald-500" />
             </div>
             <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg w-full">
-              <span className="text-emerald-500 font-bold tracking-widest text-[10px] uppercase mb-1 block">FILE_OPS_SERVER.PY // EXECUTE</span>
-              <p className="text-white/60">Compiling extracted data... Created 'NextJS_Updates.docx' at C:\Temp.</p>
+              <span className="text-emerald-500 font-bold tracking-widest text-[10px] uppercase mb-1 block">FILE_OPS_SERVER.PY // EXECUTE — 5 TOOLS</span>
+              <p className="text-white/60">Compiling extracted data... Created 'NextJS_Updates.docx' at C:\Users\AYUSH\Documents.</p>
             </div>
           </motion.div>
         )}
@@ -223,8 +220,8 @@ const HoneycombMockup = () => {
               <Send size={14} className="text-purple-500" />
             </div>
             <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg w-full">
-              <span className="text-purple-500 font-bold tracking-widest text-[10px] uppercase mb-1 block">TELEGRAM_SERVER.PY // EXECUTE</span>
-              <p className="text-white/60">Dispatching secure payload over IPC pipe... Message sent successfully.</p>
+              <span className="text-purple-500 font-bold tracking-widest text-[10px] uppercase mb-1 block">TELEGRAM_SERVER.PY // EXECUTE — 8 TOOLS</span>
+              <p className="text-white/60">Dispatching secure file payload over IPC pipe to Telegram Bot API... Message sent successfully.</p>
             </div>
           </motion.div>
         )}
@@ -250,9 +247,30 @@ const HoneycombMockup = () => {
 const HoneycombContent = () => {
   const [tab, setTab] = useState<"docs" | "mockup">("docs");
 
+  const servers = [
+    { name: "browser_server.py", color: "text-[#295cf1]", tools: 42, role: "Web Agent & Browser Automation", desc: "Full Playwright/Chromium orchestration. Handles search, DOM extraction, screenshot-with-vision, click/fill/drag/type via accessibility UIDs, JS execution, multi-tab management, network inspection, performance tracing, and a frontend snippet memory store." },
+    { name: "os_control_server.py", color: "text-emerald-500", tools: 20, role: "OS File & Process Control", desc: "The system hands. Copy, cut, rename, create folders, sort directories, find duplicates, recycle bin control, image compress/resize, wallpaper setting, process kill, Windows Update checks, disk usage analytics, archive compression and extraction." },
+    { name: "system_server.py", color: "text-cyan-400", tools: 56, role: "Full System Control Layer", desc: "The deepest OS integration layer. Controls volume, brightness, audio devices, night light, dark mode, power actions, power plans, battery status, system info, running processes, WiFi/Bluetooth/hotspot/airplane mode, network scanning, speed tests, DNS flushing, window management, clipboard, keystrokes, temp file cleanup, and the native shell executor." },
+    { name: "task_server.py", color: "text-rose-400", tools: 12, role: "Parallel Sub-Agent Manager", desc: "Spawns headless background sub-agent CLI processes (agy or OpenCode) for long-running tasks. Features a 30-min watchdog timer, hard 90-min kill cap, dual-engine support, auto-model selection (Pro vs Flash by task complexity), step logging heartbeats, and zombie PID detection." },
+    { name: "gui_server.py", color: "text-amber-400", tools: 5, role: "Desktop GUI Pilot", desc: "Vision-assisted desktop automation. Focuses windows via AttachThreadInput, captures desktop screenshots to disk paths (never base64), executes find-and-click with coordinate extraction, hotkeys, typed text via clipboard-paste for Unicode, drag/drop, and file opening." },
+    { name: "memory_server.py", color: "text-violet-400", tools: 11, role: "SOUL Memory & Self-Learning", desc: "The hippocampus. Manages the SOUL user profile (remember_user, recall_user, get_user_profile), problem/solution knowledge base (log_problem, log_solution, search_memory), trusted action registry, and full memory lifecycle (list, forget)." },
+    { name: "rag_server.py", color: "text-teal-400", tools: 6, role: "Vector RAG Database", desc: "The librarian. Handles document chunking, sentence-transformer embedding, FAISS/ChromaDB semantic storage, intelligent retrieval (query_rag), directory-wide indexing (index_directory), change detection (check_and_index), and document lifecycle management." },
+    { name: "coding_server.py", color: "text-yellow-400", tools: 4, role: "Agentic Coding Engine (ACE)", desc: "Powers the ACE workflow. Runs coding_thinking to initialize RAG-backed plans, get_code_skeleton for 95%-token-saving AST structural parsing, and update_coding_plan / get_coding_plan for live milestone tracking across multi-file refactoring sessions." },
+    { name: "telegram_server.py", color: "text-sky-400", tools: 8, role: "Telegram Remote Control", desc: "Bidirectional Telegram Bot bridge. Sends messages, reports, and files. Checks inbox, handles user confirmation dialogs (telegram_ask_save / telegram_check_reply), retrieves pending messages, and reports bot connection status." },
+    { name: "github_server.py", color: "text-orange-400", tools: 14, role: "GitHub & Git Automation", desc: "Full Git & GitHub lifecycle. Clone repos, smart commits with auto-messages, pull, fake commit histories, auto-detect and install dependencies, run/kill projects, check project health, list repos, create local repos, and inspect GitHub Actions runs and job logs." },
+    { name: "email_server.py", color: "text-pink-400", tools: 11, role: "Email Client & Automation", desc: "Complete Gmail/IMAP integration. Check inbox, read emails, send, save drafts, reply, delete, bulk delete, archive, mark read/unread, and get email statistics — all via secure OAuth or App Password flow." },
+    { name: "devserver_server.py", color: "text-lime-400", tools: 7, role: "Dev Server Manager & Visual QA", desc: "Auto-detects and starts local dev servers (Next.js, Vite, React CRA, Angular, SvelteKit, Nuxt, Django, Flask, FastAPI, static HTML). Manages port conflicts, waits for server readiness, and bridges browser screenshots to Gemini vision scoring for the Visual QA self-correction loop." },
+    { name: "media_server.py", color: "text-fuchsia-400", tools: 6, role: "Spotify & Media Control", desc: "Full Spotify integration via spotipy. Search and play tracks/playlists by name or URI, control playback (play/pause/skip/volume), search YouTube media options, and play media selections directly from search results." },
+    { name: "file_server.py", color: "text-indigo-400", tools: 5, role: "Smart File Intelligence", desc: "Intelligent file operations. smart_open resolves descriptions to real apps/files and launches them, browse_directory gives structured listings, analyze_specific_file uses Gemini vision for image/doc analysis, and find_and_analyze_file searches the filesystem by keyword." },
+    { name: "file_ops_server.py", color: "text-emerald-300", tools: 5, role: "File Creation & Editing", desc: "Precise file lifecycle management with confirmation gates. Creates new files with content, edits existing files via diff-style replacement, deletes files safely, converts between formats (.docx, .pdf, .txt, etc.), and lists directory contents with metadata." },
+    { name: "health_server.py", color: "text-red-400", tools: 7, role: "System Health Monitor", desc: "Comprehensive PC diagnostics. Full health check (CPU/RAM/disk/network), top processes by CPU or memory, startup programs inventory, junk file scanning and cleaning (with confirmation), Windows Defender/antivirus status, and disk usage analysis." },
+    { name: "download_server.py", color: "text-orange-300", tools: 4, role: "Download & Installer Manager", desc: "Safe agentic download pipeline. Finds official download URLs via browser, shows preview before downloading (confirmed=False gate), tracks download progress, and runs installers silently — all with user confirmation checkpoints before execution." },
+    { name: "notify_server.py", color: "text-yellow-300", tools: 2, role: "Windows Notification Bridge", desc: "Native Windows toast notifications. notify_task_done fires structured completion alerts with task ID and status. notify delivers arbitrary title/message/duration popups to the desktop notification center for background task awareness." },
+    { name: "session_server.py", color: "text-slate-400", tools: 4, role: "Session Log & Shared Consciousness", desc: "Structured session memory. Creates, lists, retrieves, and searches markdown session logs — the backbone of VoxKage's shared consciousness across Antigravity CLI and OpenCode CLI sessions. Enables seamless context handoff between sessions." },
+  ];
+
   return (
     <div className="flex flex-col h-full w-full">
-      {/* Internal Tab Switcher */}
       <div className="flex items-center gap-2 mb-8 bg-[#111] w-max p-1 rounded-xl border border-white/5">
         <button 
           onClick={() => setTab("docs")} 
@@ -273,64 +291,62 @@ const HoneycombContent = () => {
           <motion.div key="docs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex flex-col gap-10 pb-12">
             <div className="flex flex-col gap-3">
               <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">3.0</span> The Honeycomb Paradigm
+                <span className="text-[#295cf1]">3.0</span> The Honeycomb Architecture
+              </h3>
+              <p className="opacity-70 leading-relaxed text-[15px]">
+                VoxKage does not have a single monolithic codebase where all tools are tangled together. Its capabilities are organized into <strong>19 highly-specialized, isolated MCP sub-servers</strong> inside <code className="bg-white/10 px-1.5 py-0.5 rounded">voxkage/mcp_servers/</code> — collectively called the <em>Honeycomb</em>. Each cell is an independent Python process with its own capability domain, zero idle overhead, and full crash isolation.
+              </p>
+              <div className="grid grid-cols-3 gap-3 mt-2">
+                {[
+                  { val: "19", label: "MCP Servers" },
+                  { val: "280+", label: "Total Tools" },
+                  { val: "0ms", label: "Idle Overhead" },
+                ].map(stat => (
+                  <div key={stat.label} className="bg-[#ffffff05] border border-white/5 rounded-xl p-4 text-center">
+                    <p className="text-2xl font-bold text-[#295cf1]">{stat.val}</p>
+                    <p className="text-xs opacity-50 uppercase tracking-widest mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
+                <span className="text-[#295cf1]">3.1</span> Ephemeral stdio Spawning
               </h3>
               <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>The Standard:</strong> The Model Context Protocol (MCP) is an open standard for connecting AI models to data sources and tools securely.</li>
-                <li><strong>The Metaphor:</strong> VoxKage does not have a massive, monolithic codebase where all tools are tangled together. Its capabilities are separated into highly specialized, isolated "cells" (micro-servers) located in the <code className="bg-white/10 px-1.5 py-0.5 rounded">voxkage/mcp_servers/</code> directory.</li>
+                <li><strong>Zero-Idle Overhead:</strong> No servers run continuously in the background. VoxKage maintains an incredibly light memory footprint at rest.</li>
+                <li><strong>Dynamic Spawning:</strong> When the Agentic Loop selects a tool, the hosting CLI dynamically spins up the specific server (e.g., <code className="bg-white/10 px-1.5 py-0.5 rounded">browser_server.py</code>) via stdio JSON-RPC, executes the command, captures the result, and terminates the process.</li>
+                <li><strong>Schema Injection:</strong> VoxKage reads all 19 server schemas at startup and injects their full tool definitions into the host CLI's system prompt — the model always knows exactly what it can do.</li>
               </ul>
             </div>
 
             <div className="flex flex-col gap-3">
               <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">3.1</span> Ephemeral Execution
+                <span className="text-[#295cf1]">3.2</span> Fault Isolation &amp; Crash Protection
               </h3>
               <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>Zero-Idle Overhead:</strong> These servers do not run continuously in the background eating up RAM. VoxKage maintains an incredibly light memory footprint.</li>
-                <li><strong>Dynamic stdio Spawning:</strong> When the Agentic Loop decides to use a tool, the MCP Dispatcher dynamically spins up the specific server (e.g., <code className="bg-white/10 px-1.5 py-0.5 rounded">browser_server.py</code>) via standard input/output (stdio), sends the JSON-RPC execution command, captures the result, and immediately terminates the server.</li>
-                <li><strong>Schema Injection:</strong> VoxKage automatically reads the schemas of all cells in the Honeycomb at startup and injects them into the LLM's system prompt, keeping it perfectly aware of its capabilities.</li>
+                <li><strong>Process Boundary Isolation:</strong> Each server is a separate OS subprocess. A Playwright crash in <code className="bg-white/10 px-1.5 py-0.5 rounded">browser_server.py</code> cannot destabilize the main VoxKage session or any other server.</li>
+                <li><strong>Stderr Self-Healing:</strong> The hosting CLI catches raw stderr crash logs from any dying cell, wraps them as structured tool errors, and injects them directly into the next model turn for autonomous diagnosis and retry.</li>
+                <li><strong>Watchdog Protection:</strong> The <code className="bg-white/10 px-1.5 py-0.5 rounded">task_server</code> adds an additional layer — background sub-agents that stop logging heartbeats are auto-killed after 30 minutes of silence, with a hard 90-minute absolute limit.</li>
               </ul>
             </div>
 
             <div className="flex flex-col gap-3">
               <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">3.2</span> Fault Isolation & Stability
-              </h3>
-              <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>Crash Protection:</strong> Because each cell operates as an isolated subprocess, a crash in the browser server cannot crash the main VoxKage engine.</li>
-                <li><strong>The Firewall:</strong> The MCP Dispatcher catches the stderr crash log, cleanly closes the dead cell, and passes the error text back to the Agentic Loop for self-correction.</li>
-              </ul>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">3.3</span> Anatomy of the Cells
+                <span className="text-[#295cf1]">3.3</span> Complete Cell Inventory
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-[#295cf1] font-medium mb-1">browser_server.py</h4>
-                  <p className="text-sm opacity-60">The Web Interface. Handles Selenium/Playwright orchestration, deep DOM element extraction, and visual viewport states.</p>
-                </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-emerald-500 font-medium mb-1">os_control_server.py</h4>
-                  <p className="text-sm opacity-60">The Hands. Manages native OS commands, directory traversal, precise file creation/editing, and process management.</p>
-                </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-yellow-500 font-medium mb-1">coding_server.py</h4>
-                  <p className="text-sm opacity-60">The Developer Brain. Powers the Agentic Coding Engine (ACE) by generating structure skeletons and managing plans.</p>
-                </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-purple-500 font-medium mb-1">rag_server.py</h4>
-                  <p className="text-sm opacity-60">The Librarian. Handles chunking, embedding, and semantic retrieval, allowing VoxKage to "read" massive repositories.</p>
-                </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-cyan-500 font-medium mb-1">memory_server.py</h4>
-                  <p className="text-sm opacity-60">The Hippocampus. Manages read/write operations for the SOUL system (user preferences) and the Problem/Solution logs.</p>
-                </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-rose-500 font-medium mb-1">task_server.py</h4>
-                  <p className="text-sm opacity-60">The Manager. Responsible for spawning, tracking, and killing detached background sub-agents.</p>
-                </div>
+                {servers.map(server => (
+                  <div key={server.name} className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className={`${server.color} font-mono font-medium text-sm`}>{server.name}</h4>
+                      <span className="text-[10px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-full text-white/50 shrink-0">{server.tools} tools</span>
+                    </div>
+                    <p className="text-xs text-white/40 uppercase tracking-wider font-medium">{server.role}</p>
+                    <p className="text-sm opacity-60 leading-relaxed">{server.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -339,8 +355,10 @@ const HoneycombContent = () => {
                 <span className="text-[#295cf1]">3.4</span> Cross-Cell Orchestration
               </h3>
               <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>The Synergy:</strong> The Agentic Loop acts as the maestro, seamlessly passing data between completely isolated cells.</li>
-                <li><strong>Example Workflow:</strong> VoxKage uses the browser_server to find a GitHub link, the os_control_server to run git clone, the rag_server to index the files, and the coding_server to analyze them. Data flows effortlessly.</li>
+                <li><strong>The Maestro:</strong> The hosting CLI&apos;s Agentic Loop acts as the conductor, seamlessly piping outputs from one cell directly into the inputs of the next — data flows across completely isolated processes with zero manual wiring.</li>
+                <li><strong>Example — Research to Telegram:</strong> <code className="bg-white/10 px-1.5 py-0.5 rounded">browser_server</code> fetches docs → <code className="bg-white/10 px-1.5 py-0.5 rounded">file_ops_server</code> compiles a .docx → <code className="bg-white/10 px-1.5 py-0.5 rounded">telegram_server</code> dispatches the file — three isolated cells, one seamless workflow.</li>
+                <li><strong>Example — Agentic Coding:</strong> <code className="bg-white/10 px-1.5 py-0.5 rounded">rag_server</code> indexes a repo → <code className="bg-white/10 px-1.5 py-0.5 rounded">coding_server</code> builds a skeleton plan → <code className="bg-white/10 px-1.5 py-0.5 rounded">os_control_server</code> executes shell builds → <code className="bg-white/10 px-1.5 py-0.5 rounded">devserver_server</code> starts the dev server → <code className="bg-white/10 px-1.5 py-0.5 rounded">browser_server</code> screenshots the result for vision scoring.</li>
+                <li><strong>Parallel Execution:</strong> The <code className="bg-white/10 px-1.5 py-0.5 rounded">task_server</code> can spawn multiple sub-agents simultaneously, each with its own full access to the entire Honeycomb, running independently in the background while the main session remains free.</li>
               </ul>
             </div>
           </motion.div>
