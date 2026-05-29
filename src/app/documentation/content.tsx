@@ -1378,144 +1378,231 @@ const RemoteContent = ({ isDark = true }: { isDark?: boolean }) => {
   );
 };
 
-const PluginsContent = () => (
-  <div className="flex flex-col gap-10 pb-12">
-    <div className="flex flex-col gap-3">
-      <p className="opacity-70 leading-relaxed text-[15px] mb-2">
-        For more information, head to the <a href="/#plugins" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#295cf1] to-cyan-400 hover:opacity-80 transition-opacity">PLUGINS</a> section.
-      </p>
-      <p className="opacity-70 leading-relaxed text-[15px] mb-2">
-        VoxKage is not a closed, rigid system. It is a highly scalable platform designed to absorb the world's open-source MCP tools, granting it near-infinite capabilities. VoxKage’s core architecture handles file operations, coding, and browser automation natively. However, the true power of VoxKage lies in its Plugin Ecosystem. By leveraging the open standard of the Model Context Protocol (MCP), VoxKage can seamlessly integrate third-party APIs, external hardware, and community-built skills.
-      </p>
+const PluginsContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
 
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
-        <span className="text-[#295cf1]">9.0</span> The MCP Integration Layer
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        VoxKage does not require complex, hardcoded API integrations in its main codebase. It treats plugins as isolated, plug-and-play MCP servers.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>The Model Context Protocol:</strong> MCP acts as a universal translator. When the community builds an MCP server for a new service (e.g., Slack, Jira, AWS, or local smart home devices), VoxKage can instantly "speak" to it.</li>
-        <li><strong>Dynamic Discovery:</strong> You do not need to alter VoxKage's core code to add a capability. When an MCP server is registered in the system, VoxKage automatically reads its JSON schema at startup. It injects the new tool definitions directly into the LLM's system prompt. The LLM instantly knows the tool exists, what arguments it requires, and how to use it.</li>
-      </ul>
-    </div>
+  return (
+    <div className="flex flex-col gap-10 pb-12">
+      <div className="flex flex-col gap-3">
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/80" : "text-[#1a1a1a]/95"}`}>
+          For more information, head to the <a href="/plugins" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#295cf1] to-cyan-400 hover:opacity-80 transition-opacity">PLUGINS</a> section.
+        </p>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/80" : "text-[#1a1a1a]/95"}`}>
+          VoxKage is not a closed, rigid system. It is a highly scalable platform designed to absorb the world's open-source MCP tools, granting it near-infinite capabilities. VoxKage’s core architecture handles file operations, coding, and browser automation natively. However, the true power of VoxKage lies in its Plugin Ecosystem. By leveraging the open standard of the Model Context Protocol (MCP), VoxKage can seamlessly integrate third-party APIs, external hardware, and community-built skills.
+        </p>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">9.1</span> The VoxKagePlugin Base Class
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        To ensure stability and a flawless user experience, all VoxKage plugins inherit from a strict, abstract base class (<code className="bg-white/10 px-1.5 py-0.5 rounded">base.py</code>). This enforces a unified lifecycle across all community additions:
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">is_configured()</h4>
-          <p className="text-xs opacity-50">Validates that all necessary environment variables (like API keys or OAuth tokens) are securely stored in the local <code className="bg-white/10 px-1 rounded">~/.voxkage/.env</code> vault before the tool is ever exposed to the LLM.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">is_package_installed()</h4>
-          <p className="text-xs opacity-50">Verifies that any underlying Python dependencies required by the MCP server are correctly installed in the virtual environment.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">setup_interactive()</h4>
-          <p className="text-xs opacity-50">Provides a standardized, secure CLI wizard. If a user installs a new plugin, they simply run the setup command. The plugin will securely prompt the user for their API keys (hiding the input) and automatically write them to the encrypted .env vault.</p>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-          <h4 className="text-[#295cf1] font-medium mb-1">get_mcp_server_config()</h4>
-          <p className="text-xs opacity-50">Automates the final step. It generates the exact JSON block needed to register the new server and injects it into VoxKage's central configuration, making the tool instantly live.</p>
-        </div>
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          9.0 The MCP Integration Layer &amp; Schema Injection
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          VoxKage does not require complex, hardcoded API integrations in its main codebase. It treats plugins as isolated, plug-and-play MCP servers.
+        </p>
+        <ul className={`list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+          <li><strong>The Model Context Protocol:</strong> MCP acts as a universal translator. When the community builds an MCP server for a new service (e.g., Slack, Jira, AWS, or local smart home devices), VoxKage can instantly "speak" to it.</li>
+          <li><strong>Dynamic Discovery:</strong> You do not need to alter VoxKage's core code to add a capability. When an MCP server is registered in the system, VoxKage automatically reads its JSON schema at startup. It injects the new tool definitions directly into the LLM's system prompt. The LLM instantly knows the tool exists, what arguments it requires, and how to use it.</li>
+        </ul>
       </div>
-    </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">9.2</span> Current Core Integrations
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        Out of the box, VoxKage ships with several powerful, built-in plugins that demonstrate this architecture:
-      </p>
-      <div className="flex flex-col gap-2 mt-2">
-        <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg flex items-center gap-4">
-          <GitBranch className="text-white shrink-0" size={18} />
-          <div>
-            <h4 className="text-white text-sm font-medium">github.py</h4>
-            <p className="text-white/60 text-xs">Grants full repository management. VoxKage can clone repos, analyze commit histories, install dependencies automatically based on package managers, and orchestrate pull requests.</p>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          9.1 The VoxKagePlugin Lifecycle Protocol
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          To ensure stability and a flawless user experience, all VoxKage plugins inherit from a strict, abstract base class ({renderCode("VoxKagePlugin")}) defined inside {renderCode("voxkage/plugins/base.py")}. This enforces a unified lifecycle across all community additions:
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide">is_configured()</h4>
+            <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+              Validates that all required environment parameters outlined in {renderCode("required_env_vars")} are securely defined inside the local app config vault ({renderCode("~/.voxkage/.env")}) and do not contain generic dummy placeholder keys.
+            </p>
           </div>
-        </div>
-        <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg flex items-center gap-4">
-          <Mail className="text-emerald-500 shrink-0" size={18} />
-          <div>
-            <h4 className="text-emerald-500 text-sm font-medium">gmail.py</h4>
-            <p className="text-white/60 text-xs">Provides secure Inbox access. VoxKage can read unread mail, summarize threads, draft replies, and send reports, acting as an autonomous executive assistant.</p>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide">setup_interactive() &amp; Hot-Swapping</h4>
+            <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+              Spawns a structured CLI wizard. Pasted API keys are kept visible ({renderCode("secret=True")} bypass) to prevent duplicate-paste corruption. Newly added variables are written to the env vault, and instantly invoke {renderCode("load_voxkage_env(force=True)")} to hot-swap tokens in-memory without restarting active terminal sessions.
+            </p>
           </div>
-        </div>
-        <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg flex items-center gap-4">
-          <Music className="text-green-500 shrink-0" size={18} />
-          <div>
-            <h4 className="text-green-500 text-sm font-medium">spotify.py & Media Control</h4>
-            <p className="text-white/60 text-xs">Bridges the gap between the OS and entertainment, allowing VoxKage to search tracks, manage playlists, and control playback purely through natural language commands.</p>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide">is_package_installed()</h4>
+            <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+              A dependency safeguard hook. Verifies that any underlying third-party Python modules or packages required by the plugin's MCP server process are correctly installed in the current virtual environment environment.
+            </p>
           </div>
-        </div>
-        <div className="bg-[#111] border border-white/5 px-4 py-3 rounded-lg flex items-center gap-4">
-          <MessageCircle className="text-blue-400 shrink-0" size={18} />
-          <div>
-            <h4 className="text-blue-400 text-sm font-medium">telegram.py</h4>
-            <p className="text-white/60 text-xs">The backbone of the remote control telemetry, allowing bi-directional messaging and file transfer globally.</p>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide">get_mcp_server_config()</h4>
+            <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+              Compiles the standardized JSON-RPC configuration blocks needed for Client registration. Configures correct Python executable paths, points to specific target scripts within {renderCode("mcp_servers/")}, binds working directories, and sets process trust parameters.
+            </p>
           </div>
         </div>
       </div>
-    </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">9.3</span> Community Extensions via Python Entry-Points
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        VoxKage is built to be a community-driven platform. The plugin registry uses standard Python <code className="bg-white/10 px-1 rounded">entry_points</code> discovery in <code className="bg-white/10 px-1.5 py-0.5 rounded">registry.py</code>.
-      </p>
-      
-      <div className="mt-4 mb-2">
-        <div className="bg-[#0a0a0a] border border-white/10 rounded-lg overflow-hidden font-mono text-[13px]">
-          <div className="bg-[#1a1a1a] px-4 py-2 flex items-center gap-2 border-b border-white/5">
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          9.2 Built-in Honeycomb Integrations
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          Out of the box, VoxKage ships with 9 powerful, built-in plugin modules that showcase this lifecycle architecture:
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <MessageCircle className="text-blue-400 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>telegram.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Remote mobile gateway. Coordinates bidirectional file transfers, voice parsing, and conformation gates.
+              </p>
             </div>
-            <span className="text-white/40 text-[10px] ml-2 tracking-widest uppercase">voxkage shell</span>
           </div>
-          <div className="p-4 flex flex-col gap-3 text-white/80">
-            <div>
-              <span className="text-[#295cf1] font-bold">~</span> <span className="text-emerald-500">❯</span> <span className="text-white">voxkage plugins</span>
-              <div className="text-white/50 mt-1 pl-4">
-                [SYSTEM] Detected Active Plugins:<br/>
-                - github (v1.2.0) [ACTIVE]<br/>
-                - gmail (v2.0.1) [ACTIVE]<br/>
-                - spotify (v1.0.0) [ACTIVE]<br/>
-                - telegram (v1.0.5) [ACTIVE]
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Mail className="text-emerald-500 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>gmail.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Inbox telemetry assistant. Handles reading unread emails, thread digests, drafts, and report dispatching.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Music className="text-green-500 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>spotify.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Media playback bridging. Searches tracks, reads custom scenarios playlists, and manages system players.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <GitBranch className="text-white shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>github.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Git telemetry leads. Handles direct repo checkouts, AST structural changes, dependency updates, and pull requests.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Hexagon className="text-orange-500 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>firebase.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Cloud dashboard suite. Creates database endpoints, configures SDK files, and deploys production folders.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Terminal className="text-cyan-400 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>netlify.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Static site delivery controller. Integrates project builds, fetches live service states, and performs deployments.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Database className="text-indigo-400 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>supabase.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Serverless database manager. Grants secure SQL configurations, credentials generation, and cost reporting.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Search className="text-pink-400 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>clickhouse.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Analytic data storage management. Operates Clickpipe setups, performs SELECT queries, and generates backups.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-4 rounded-xl transition-all duration-300 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"} flex gap-3`}>
+            <Cpu className="text-yellow-400 shrink-0 mt-0.5" size={18} />
+            <div className="flex flex-col gap-0.5">
+              <h4 className={`text-[14px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>thinking.py</h4>
+              <p className={`text-[12px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                Multi-stage logical reasoning orchestration. Chains agent thought milestones during complex OS executions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          9.3 Dynamic Discovery &amp; Community Extensions
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          VoxKage is built to be a community-driven platform. The plugin registry uses standard Python {renderCode("entry_points")} discovery in {renderCode("registry.py")} via {renderCode("importlib.metadata")}.
+        </p>
+
+        <div className="mt-4 mb-2">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-lg overflow-hidden font-mono text-[13px]">
+            <div className="bg-[#1a1a1a] px-4 py-2 flex items-center gap-2 border-b border-white/5">
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+              </div>
+              <span className="text-white/40 text-[10px] ml-2 tracking-widest uppercase">voxkage shell</span>
+            </div>
+            <div className="p-4 flex flex-col gap-3 text-white/80">
+              <div>
+                <span className="text-[#295cf1] font-bold">~</span> <span className="text-emerald-500">❯</span> <span className="text-white">voxkage plugins</span>
+                <div className="text-white/50 mt-1 pl-4">
+                  [SYSTEM] Detected Active Plugins:<br/>
+                  - telegram (v1.0.5) [ACTIVE]<br/>
+                  - gmail (v2.0.1) [ACTIVE]<br/>
+                  - spotify (v1.0.0) [ACTIVE]<br/>
+                  - github (v1.2.0) [ACTIVE]<br/>
+                  - firebase (v1.0.0) [ACTIVE]<br/>
+                  - netlify (v1.0.0) [ACTIVE]<br/>
+                  - supabase (v1.0.0) [ACTIVE]<br/>
+                  - clickhouse (v1.0.0) [ACTIVE]<br/>
+                  - sequential-thinking (v1.1.0) [ACTIVE]
+                </div>
+              </div>
+              <div>
+                <span className="text-[#295cf1] font-bold">~</span> <span className="text-emerald-500">❯</span> <span className="text-white">voxkage plugins add supabase</span>
+                <div className="text-white/50 mt-1 pl-4">
+                  [REGISTRY] Initializing setup for Supabase Plugin...<br/>
+                  Please enter your SUPABASE_URL: <span className="text-white/20">https://project.supabase.co</span><br/>
+                  Please enter your SUPABASE_KEY: <span className="text-white/20">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br/>
+                  [SYSTEM] Supabase credentials saved to ~/.voxkage/.env vault.<br/>
+                  [SYSTEM] Config files regenerated. SUPABASE plugin configured and active.
+                </div>
               </div>
             </div>
-            <div>
-              <span className="text-[#295cf1] font-bold">~</span> <span className="text-emerald-500">❯</span> <span className="text-white">voxkage plugins add aws</span>
-              <div className="text-white/50 mt-1 pl-4">
-                [REGISTRY] Discovering 'voxkage-plugin-aws' via PyPI...<br/>
-                [INSTALL] Downloading dependencies... Done.<br/>
-                [SETUP] Please enter your AWS Access Key ID: <span className="text-white/20">********************</span><br/>
-                [SYSTEM] AWS plugin configured and live injected to LLM schema.
-              </div>
-            </div>
           </div>
         </div>
-      </div>
 
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Zero-Friction Installation:</strong> A developer anywhere in the world can write a VoxKage plugin (e.g., <code className="bg-white/10 px-1 rounded">voxkage-plugin-aws</code>). They publish it to PyPI (pip).</li>
-        <li><strong>Auto-Registration:</strong> When a user runs <code className="bg-white/10 px-1 rounded">pip install voxkage-plugin-aws</code>, VoxKage's registry automatically detects the new entry-point the next time it boots. It prompts the user to run the interactive setup, and instantly, VoxKage gains the ability to manage AWS infrastructure.</li>
-        <li><strong>Isolation Guarantee:</strong> Because these community tools run as separate MCP subprocesses, a poorly written community plugin cannot crash the main VoxKage engine or expose the core memory systems to memory leaks.</li>
-      </ul>
+        <ul className={`list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2 text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+          <li><strong>Zero-Friction Packaging:</strong> A developer anywhere in the world can write a custom VoxKage plugin (e.g., {renderCode("voxkage-plugin-aws")}). They publish it as a standard package to PyPI. By registering a entry-point named {renderCode("voxkage.plugins")} inside their package metadata, the integration is completely auto-discoverable.</li>
+          <li><strong>Importlib.Metadata Discovery:</strong> When a user runs {renderCode("pip install voxkage-plugin-aws")}, VoxKage's engine dynamically queries metadata registries on boot, loads custom plugin classes, and appends them to the active integrations registry without modifying a single line of core code.</li>
+          <li><strong>Subprocess Crash Isolation:</strong> Because community plugins are built onto the Honeycomb structure, they are initialized inside isolated background process environments. A memory leak or failure inside a third-party plugin cannot affect the main session.</li>
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const FaqItem = ({ question, answer }: { question: string, answer: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
