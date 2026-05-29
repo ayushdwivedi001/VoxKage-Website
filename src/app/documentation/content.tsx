@@ -1604,16 +1604,24 @@ const PluginsContent = ({ isDark = true }: { isDark?: boolean }) => {
   );
 };
 
-const FaqItem = ({ question, answer }: { question: string, answer: React.ReactNode }) => {
+const FaqItem = ({ question, answer, isDark = true }: { question: string, answer: React.ReactNode, isDark?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-[#111] border border-white/5 rounded-xl overflow-hidden transition-all duration-300">
+    <div className={`rounded-xl overflow-hidden border transition-all duration-300 ${
+      isDark 
+        ? "bg-[#111] border-white/5 hover:border-white/10" 
+        : "bg-white/55 border-white/60 hover:border-[#295cf1]/30 shadow-sm"
+    }`}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+        className={`w-full px-5 py-4 flex items-center justify-between text-left transition-colors ${
+          isDark ? "hover:bg-white/[0.02]" : "hover:bg-[#295cf1]/5"
+        }`}
       >
-        <span className="font-medium text-white/90 text-[15px] pr-8">{question}</span>
+        <span className={`font-medium text-[15px] pr-8 transition-colors duration-300 ${
+          isDark ? "text-white/90" : "text-[#1a1a1a]/90 font-semibold"
+        }`}>{question}</span>
         <ChevronDown 
           size={18} 
           className={`text-[#295cf1] shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} 
@@ -1628,7 +1636,9 @@ const FaqItem = ({ question, answer }: { question: string, answer: React.ReactNo
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-5 text-[14px] leading-relaxed text-white/60 border-t border-white/5 pt-4">
+            <div className={`px-5 pb-5 text-[14.5px] leading-relaxed border-t pt-4 transition-colors duration-300 ${
+              isDark ? "text-white/60 border-white/5" : "text-[#1a1a1a]/70 border-black/5"
+            }`}>
               {answer}
             </div>
           </motion.div>
@@ -1638,92 +1648,273 @@ const FaqItem = ({ question, answer }: { question: string, answer: React.ReactNo
   );
 };
 
-const FaqContent = () => {
+const FaqContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"all" | "general" | "developer" | "tiers" | "support">("all");
+
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
+
+  const faqs: {
+    category: "general" | "developer" | "tiers" | "support";
+    question: string;
+    answer: React.ReactNode;
+    searchText: string;
+  }[] = [
+    {
+      category: "general",
+      question: "What exactly does 'OS-Living Agentic AI' mean?",
+      answer: (
+        <>
+          Traditional AI waits for you to type a prompt, replies with text, and stops. It exists in a vacuum. VoxKage is "agentic," meaning it operates on a goal-oriented execution sequence called the <a href="#loop" className="font-bold text-[#295cf1] hover:underline">Agentic Loop</a>. It lives on your OS, meaning it can read your local files, execute native shell commands, click buttons in a browser, and control your media. You don't ask it how to do something; you ask it to perform the action.
+        </>
+      ),
+      searchText: "os-living agentic ai meaning loop native shell goal execution"
+    },
+    {
+      category: "general",
+      question: "Is VoxKage safe to run on my personal machine?",
+      answer: (
+        <>
+          Yes. Because VoxKage has native OS access, we built the <a href="#security" className="font-bold text-[#295cf1] hover:underline">Shield Protocol</a>—a non-bypassable middleware that intercepts every command. By default (in Safe Mode), it blocks destructive shell commands (like formatting drives) and protects critical system directories like <code className={`px-1 rounded font-mono ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-black"}`}>C:\\Windows</code>. Furthermore, any irreversible action (like running executable installers or deleting files) hits a Hard Stop Confirmation Gate, requiring manual confirmation before execution.
+        </>
+      ),
+      searchText: "safe run personal machine security shield protocol middleware blocks directories safe mode hard stop confirmation"
+    },
+    {
+      category: "general",
+      question: "Does VoxKage spy on me or upload my personal files?",
+      answer: (
+        <>
+          No. VoxKage operates strictly locally. The only data sent to the cloud is the specific context required for the LLM to process your current command. Your <a href="#memory" className="font-bold text-[#295cf1] hover:underline">SOUL memory</a> (preferences/habits) and your workspace rules ({renderCode("GEMINI.md")}) are stored entirely locally on your hard drive. We do not harvest or train on your personal files.
+        </>
+      ),
+      searchText: "spy upload personal files local local storage soul memory gemini.md private data harvest training"
+    },
+    {
+      category: "general",
+      question: "Why does VoxKage sometimes take screenshots of my screen?",
+      answer: (
+        <>
+          VoxKage uses screenshots for its <a href="#vision" className="font-bold text-[#295cf1] hover:underline">Vision Validation Loop</a>. When it interacts with a complex website or needs to verify if a UI button was clicked successfully, it relies on "sight" rather than unreliable text scraping. It takes a screenshot, analyzes it locally using the multimodal model to confirm its action, and immediately discards the image once verification is complete.
+        </>
+      ),
+      searchText: "screenshots sight vision validation loop browser automation chromium web scraping local verification"
+    },
+    {
+      category: "developer",
+      question: "How does the Agentic Coding Engine (ACE) handle massive mono-repos without crashing the context window?",
+      answer: (
+        <>
+          The <a href="#ace" className="font-bold text-[#295cf1] hover:underline">Agentic Coding Engine</a> achieves 95% token efficiency using a dual-pronged approach. First, it uses local RAG (Retrieval-Augmented Generation) to semantically index the codebase, pulling only relevant chunks. Second, when navigating files, it uses the AST parser ({renderCode("get_code_skeleton")}), which strips out all implementation logic and returns only class names, imports, and function signatures, mapping a 10,000-line architecture with a fraction of the context.
+        </>
+      ),
+      searchText: "ace coding engine mono-repos context window token efficiency local rag get_code_skeleton ast parser index codebase"
+    },
+    {
+      category: "developer",
+      question: "Can I turn off the Shield Protocol's Safe Mode?",
+      answer: (
+        <>
+          Yes. If you need VoxKage to perform deep system configurations or automated refactoring of protected directories, you can toggle it off via the **Settings Control Center** ({renderCode("tray/settings_window.py")}) or set {renderCode("safe_mode: false")} in your local {renderCode("config.json")}. <span className="text-[#e11d48] font-bold">Warning:</span> This removes the path and command gating, granting the LLM root-level execution freedom. Proceed with extreme caution.
+        </>
+      ),
+      searchText: "turn off shield protocol safe mode settings control center settings.json safe_mode false warning root execution"
+    },
+    {
+      category: "developer",
+      question: "How do I inject my own MCP tools into the Honeycomb?",
+      answer: (
+        <>
+          The <a href="#plugins" className="font-bold text-[#295cf1] hover:underline">Plugin Ecosystem</a> uses standard Python {renderCode("entry_points")}. You can write a Python package inheriting from the {renderCode("VoxKagePlugin")} base class defined in {renderCode("base.py")}. Once installed via pip in VoxKage's environment, the registry automatically discovers it on boot, prompts you for any required API keys securely, and dynamically injects the new JSON schema into the main LLM context.
+        </>
+      ),
+      searchText: "inject own mcp tools honeycomb plugin ecosystem entry_points pyproject.toml base.py voxkageplugin registry schema"
+    },
+    {
+      category: "developer",
+      question: "I sent a command via Telegram, but my PC's VoxKage terminal was closed. What happens?",
+      answer: (
+        <>
+          The lightweight {renderCode("telegram_watcher.py")} background daemon runs independently of the main terminal interface. It intercepts your command and uses a <strong className="font-bold text-[#295cf1]">three-tier injection pipeline</strong> detailed in the <a href="#remote" className="font-bold text-[#295cf1] hover:underline">Tray &amp; Remote</a> section. If your terminal is offline, it activates the <strong className="font-bold text-amber-500">Headless agy Subprocess</strong> fallback, booting a temporary process that resolves the prompt and sends the answer back to your phone.
+        </>
+      ),
+      searchText: "telegram pc closed offline watcher telegram_watcher.py daemon three-tier injection pipeline headless agy fallback"
+    },
+    {
+      category: "tiers",
+      question: "Is VoxKage free to use?",
+      answer: (
+        <>
+          Yes. The core VoxKage OS automation engine is completely free and open-source under the Apache 2.0 license. For its LLM intelligence, the premium <strong className="font-bold text-[#295cf1]">Antigravity CLI (agy)</strong> provides free access to state-of-the-art models like <strong className={`font-semibold transition-colors duration-300 ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Gemini 3.5 Flash, Claude 4.6 Sonnet, Claude 4.6 Opus, and Gemini 3.1 Pro</strong> through the integrated Antigravity free-tier. Additionally, users can switch to the <strong className="font-bold text-[#295cf1]">OpenCode CLI</strong> to utilize the <strong className="font-bold text-emerald-500">OpenCode Zen free-tier</strong> for unlimited autonomous agentic tasks and development, keeping your entire setup completely free of charge.
+        </>
+      ),
+      searchText: "free use open source apache 2.0 premium models agy antigravity free tier gemini 3.5 flash claude 4.6 sonnet opus gemini 3.1 pro opencode zen free tier unlimited agentic tasks development"
+    },
+    {
+      category: "tiers",
+      question: "What are the costs associated with the LLM API?",
+      answer: (
+        <>
+          Out of the box, your LLM API cost is exactly <strong className="font-bold text-emerald-500">$0.00</strong>. Both the premium Antigravity model tier and the OpenCode Zen unlimited tier are fully integrated and cost nothing. If you prefer to use private enterprise models or custom-rate API keys, you can connect your own commercial credentials securely (e.g., via the {renderCode("/connect")} command inside the OpenCode terminal or local configuration files). Under custom keys, costs are minimal, averaging under $0.05 per 100 deep multi-step coding iterations due to the engine's token-efficient architecture.
+        </>
+      ),
+      searchText: "costs llm api daily use commercial pay-as-you-go pricing billing cheap enterprise context free tier zero cost /connect opencode antigravity tokens"
+    },
+    {
+      category: "tiers",
+      question: "Can enterprises deploy VoxKage locally behind a secure firewall?",
+      answer: (
+        <>
+          Yes. Because the entire Honeycomb server structure and the core engine are written in standard Python executing local CLI calls, enterprise teams can host VoxKage on isolated virtual networks. You can configure it to query private corporate endpoints, enforce strict directory sandboxes, and audit all action logs via the centralized {renderCode("audit.log")} file.
+        </>
+      ),
+      searchText: "enterprises deploy locally secure firewall isolated virtual networks honeycomb corporate endpoints audit.log sandboxes"
+    },
+    {
+      category: "support",
+      question: "VoxKage seems stuck in a loop trying to solve a bug. What do I do?",
+      answer: (
+        <>
+          If VoxKage encounters an unresolvable OS error and loops its strategy, you can always issue an explicit stop command or press {renderCode("Ctrl+C")} directly in your terminal to interrupt the Agentic Loop immediately. It will cleanly abort the execution context and return prompt focus to you.
+        </>
+      ),
+      searchText: "stuck loop solve bug strategy loop stop command ctrl+c terminal interrupt agentic loop abort"
+    },
+    {
+      category: "support",
+      question: "How do I clear VoxKage's memory if it learned a bad habit?",
+      answer: (
+        <>
+          You can tell VoxKage: *"Forget my preference for X"* and it will autonomously remove the records. Alternatively, you can manually open and edit the global memory file located at {renderCode("~/.gemini/GEMINI.md")} or clear problem cache histories by executing the {renderCode("voxkage plugins add")} configuration sweeps.
+        </>
+      ),
+      searchText: "clear memory learned bad habit forget preference gemini.md soul memory configuration edit"
+    },
+    {
+      category: "support",
+      question: "Where can I report bugs or suggest new MCP plugins?",
+      answer: (
+        <>
+          Please visit our official <a href="https://github.com/ayushdwivedi001/VoxKage" target="_blank" rel="noopener noreferrer" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 to-pink-500 hover:underline">GitHub Repository</a>.
+          <ul className="list-disc pl-5 mt-2 flex flex-col gap-1.5">
+            <li><strong>Bugs &amp; Gates:</strong> Open a ticket on our Issue Tracker. If your issue involves blocked paths, please paste the target log snippet from your local {renderCode("audit.log")} so we can refine the Shield Protocol blocklists.</li>
+            <li><strong>Honeycomb Plugins:</strong> Propose new capabilities or share your custom community-built MCP servers on our GitHub Discussions tab.</li>
+          </ul>
+        </>
+      ),
+      searchText: "report bugs suggest new mcp plugins official github repository issue tracker audit.log shield protocol discussions"
+    }
+  ];
+
+  const tabs = [
+    { id: "all", label: "All Questions" },
+    { id: "general", label: "General / User" },
+    { id: "developer", label: "Developer / Power" },
+    { id: "tiers", label: "Enterprise / Tiers" },
+    { id: "support", label: "Support & Troubleshooting" }
+  ];
+
+  const filteredFaqs = faqs.filter((faq) => {
+    const matchesTab = activeTab === "all" || faq.category === activeTab;
+    const matchesSearch = 
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.searchText.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesTab && matchesSearch;
+  });
+
   return (
-    <div className="flex flex-col gap-10 pb-12">
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-          <span className="text-[#295cf1]">10.0</span> For First-Time Users
-        </h3>
-        <div className="flex flex-col gap-3">
-          <FaqItem 
-            question="What exactly does 'OS-Living Agentic AI' mean?"
-            answer="Traditional AI waits for you to type a prompt, replies with text, and stops. It exists in a vacuum. VoxKage is 'agentic,' meaning it has a goal-oriented execution loop. It lives on your OS, meaning it can read your local files, execute native shell commands, click buttons in a browser, and control your media. You don't ask it how to do something; you ask it to do something."
+    <div className="flex flex-col gap-8 pb-12 w-full">
+      {/* Dynamic Search & Category Dashboard */}
+      <div className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col xl:flex-row gap-4 justify-between items-center ${
+        isDark ? "bg-[#111]/80 border-white/5 shadow-2xl" : "bg-white/55 border-white/60 shadow-lg shadow-black/5"
+      }`}>
+        {/* Search Bar */}
+        <div className="relative w-full xl:w-80 shrink-0">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <input
+            type="text"
+            placeholder="Search questions or terms..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`w-full pl-10 pr-14 py-2.5 rounded-xl border text-[13.5px] font-medium transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#295cf1] ${
+              isDark 
+                ? "bg-[#181922] border-white/5 text-white placeholder-slate-500" 
+                : "bg-white/80 border-white/60 text-[#1a1a1a] placeholder-slate-400 shadow-inner"
+            }`}
           />
-          <FaqItem 
-            question="Is VoxKage safe to run on my personal machine?"
-            answer={<>Yes. Because VoxKage has native OS access, we built the Shield Protocol—a non-bypassable middleware that intercepts every command. By default (in Safe Mode), it blocks destructive shell commands (like formatting drives or mass deletion) and prevents the AI from modifying protected system directories like <code className="bg-white/10 px-1 rounded">C:\Windows</code> or <code className="bg-white/10 px-1 rounded">.git</code> folders. Furthermore, any irreversible action (like running a .exe installer or deleting a document) hits a Hard Stop Confirmation Gate, requiring you to type "Yes" before it executes.</>}
-          />
-          <FaqItem 
-            question="Does VoxKage spy on me or upload my personal files?"
-            answer={<>No. VoxKage operates strictly locally. The only data sent to the cloud is the specific context required for the LLM to process your current command. Your SOUL memory (your preferences and habits) and your <code className="bg-white/10 px-1 rounded">MEMORY.md</code> (private project notes) are stored entirely locally on your hard drive in encrypted formats. We do not harvest your data for training.</>}
-          />
-          <FaqItem 
-            question="Why does VoxKage sometimes take screenshots of my screen?"
-            answer="VoxKage uses screenshots for its Vision Validation Loop. When it interacts with a complex website or needs to verify if a UI button was clicked successfully, it relies on 'sight' rather than unreliable text scraping. It takes a screenshot, analyzes it locally using the multimodal model to confirm its action, and immediately discards the image once verification is complete."
-          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#295cf1] text-[10px] font-bold tracking-wider uppercase transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* Tab List */}
+        <div className="flex flex-wrap gap-1.5 justify-center xl:justify-end w-full">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-3.5 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase transition-all duration-300 ${
+                  isActive 
+                    ? "bg-[#295cf1] text-white shadow-lg shadow-[#295cf1]/25" 
+                    : isDark 
+                      ? "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white" 
+                      : "bg-white/45 border border-white/50 text-[#1a1a1a]/60 hover:border-[#295cf1]/30 hover:text-[#295cf1] shadow-sm"
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-          <span className="text-[#295cf1]">10.1</span> For Developers & Power Users
-        </h3>
-        <div className="flex flex-col gap-3">
-          <FaqItem 
-            question="How does the Agentic Coding Engine (ACE) handle massive mono-repos without crashing the context window?"
-            answer={<>ACE achieves 95% token efficiency using a dual-pronged approach. First, it uses local RAG (Retrieval-Augmented Generation) to semantically index the codebase, pulling only relevant chunks. Second, when navigating files, it uses the <code className="bg-white/10 px-1 rounded">get_code_skeleton</code> tool, which strips out all implementation logic and returns only class names, imports, and function signatures. This allows VoxKage to map a 10,000-line architecture using a fraction of the token context.</>}
-          />
-          <FaqItem 
-            question="Can I turn off the Shield Protocol's Safe Mode?"
-            answer={<>Yes. If you need VoxKage to perform deep system configurations or automated refactoring of protected directories, you can open <code className="bg-white/10 px-1 rounded">~/.voxkage/settings.json</code> via the System Tray and set <code className="bg-white/10 px-1 rounded text-[#e11d48]">"safe_mode": false</code>. <br/><br/><span className="text-[#e11d48] font-medium">Warning:</span> This removes the path and regex command gating, granting the LLM root-level execution freedom. Hard Stop confirmation gates for critical deletions remain active, but proceed with extreme caution.</>}
-          />
-          <FaqItem 
-            question="How do I inject my own MCP tools into the Honeycomb?"
-            answer={<>The Plugin Ecosystem uses standard Python <code className="bg-white/10 px-1 rounded">entry_points</code>. You can write a Python package inheriting from the <code className="bg-white/10 px-1 rounded">VoxKagePlugin</code> base class. Once installed via pip in VoxKage's environment, the registry automatically discovers it on boot, prompts you for any required API keys securely via the CLI, and dynamically injects the new JSON schema into the main LLM context.</>}
-          />
-          <FaqItem 
-            question="I sent a command via Telegram, but my PC's VoxKage terminal was closed. What happens?"
-            answer={<>The lightweight <code className="bg-white/10 px-1 rounded">telegram_watcher.py</code> daemon saves all missed incoming commands to a local <code className="bg-white/10 px-1 rounded">_INBOX_FILE</code>. The next time you launch the main VoxKage terminal, it instantly reads the inbox, catches up on the missed telemetry, and executes the commands you queued up while it was offline.</>}
-          />
+      {/* Render Dynamic Content list */}
+      {filteredFaqs.length > 0 ? (
+        <div className="flex flex-col gap-3.5 w-full">
+          {filteredFaqs.map((faq, index) => (
+            <FaqItem
+              key={index}
+              question={faq.question}
+              answer={faq.answer}
+              isDark={isDark}
+            />
+          ))}
         </div>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-          <span className="text-[#295cf1]">10.2</span> Tiers and Accessibility
-        </h3>
-        <div className="flex flex-col gap-3">
-          <FaqItem 
-            question="Is VoxKage free to use?"
-            answer={<>Yes. VoxKage utilizes the Gemini Free tier models such as Gemini-3-flash, gemini-2.5-flash, gemini-3.1-flash lite preview and even the pro models for the pro users. The daily cap of these models even for a standard user is 1000+ RPD and 60+ RPMs alongside FREE 1 Million Context Window (for more information on the free tier, visit <a href="https://geminicli.com/docs/resources/quota-and-pricing/" target="_blank" rel="noopener noreferrer" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#295cf1] to-blue-400">Gemini CLI</a>). Users can either just authenticate with their google account or they can also go for an google API. The core VoxKage OS framework and the standard plugin ecosystem (GitHub, Telegram, System Tray) are entirely free and open-source. You run it locally on your own hardware.</>}
-          />
-          <FaqItem 
-            question="What are the costs associated with the LLM API?"
-            answer="Because VoxKage is an AI which utilizes the Gemini CLI as its interface, users get the free generous limits for the flash and flash lite models. Pro users get the pro models. However, with the ACE coding workflow and optimized agentic actions, VoxKage makes the flash tier models perform equally close with the Pro models."
-          />
+      ) : (
+        /* Empty State Dashboard */
+        <div className={`p-10 rounded-2xl border text-center transition-all duration-300 flex flex-col items-center gap-3.5 ${
+          isDark ? "bg-[#111]/30 border-white/5" : "bg-white/25 border-white/50 shadow-inner"
+        }`}>
+          <HelpCircle size={40} className="text-slate-500 mt-2 animate-pulse" />
+          <div className="flex flex-col gap-1.5">
+            <h4 className={`text-[16px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>
+              No matching questions found
+            </h4>
+            <p className={`text-[13.5px] max-w-md leading-relaxed transition-colors duration-300 ${isDark ? "text-white/50" : "text-[#1a1a1a]/60"}`}>
+              We couldn't find any FAQs matching your query. Try searching for "Shield", "RAG", "Subprocess", or submit a direct ticket to our support repo.
+            </p>
+          </div>
+          <a
+            href="https://github.com/ayushdwivedi001/VoxKage/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-5 py-2.5 bg-[#295cf1] hover:bg-blue-600 active:scale-[0.98] transition-all text-white font-bold font-mono text-xs tracking-wider uppercase rounded-xl shadow-lg shadow-[#295cf1]/25 mt-1"
+          >
+            Submit an Issue
+          </a>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-          <span className="text-[#295cf1]">10.3</span> Support & Troubleshooting
-        </h3>
-        <div className="flex flex-col gap-3">
-          <FaqItem 
-            question="VoxKage seems stuck in a loop trying to solve a bug. What do I do?"
-            answer="If VoxKage encounters an unresolvable error and loops its strategy, you can always issue an explicit STOP command or hit Ctrl+C in the terminal to interrupt the execution."
-          />
-          <FaqItem 
-            question="How do I clear VoxKage's memory if it learned a bad habit?"
-            answer={<>You can manually edit the global memory file located at <code className="bg-white/10 px-1 rounded">~/.gemini/GEMINI.md</code> to remove or correct any stored SOUL preferences or habits it may have miscategorized by just asking VoxKage to remove that specific memory.</>}
-          />
-          <FaqItem 
-            question="Where can I report bugs or suggest new MCP plugins?"
-            answer={<>Please visit our official <a href="https://github.com/ayushdwivedi001/VoxKage" target="_blank" rel="noopener noreferrer" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-300 to-pink-500">GitHub repository</a>.<br/><br/><ul className="list-disc pl-5 flex flex-col gap-1"><li><strong>Bugs:</strong> Use the issue tracker. If your issue involves a blocked command, please include the text from your local <code className="bg-white/10 px-1 rounded">audit_log</code> so we can adjust the Shield Protocol blocklists.</li><li><strong>Plugins:</strong> Use the Discussions tab for proposing new community plugins or sharing MCP servers you have built for the Honeycomb.</li></ul></>}
-          />
-        </div>
-      </div>
+      )}
     </div>
   );
 };
