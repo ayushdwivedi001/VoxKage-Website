@@ -1229,75 +1229,154 @@ const MemoryContent = ({ isDark = true }: { isDark?: boolean }) => {
   );
 };
 
-const RemoteContent = () => (
-  <div className="flex flex-col gap-10 pb-12">
-    <div className="flex flex-col gap-3">
-      <p className="opacity-70 leading-relaxed text-[15px] mb-2">
-        VoxKage is not confined to a terminal window that you must keep open on your desktop. It integrates directly into your operating system as an omnipresent daemon, allowing for global control and remote telemetry. This architecture ensures VoxKage is always listening and ready to execute, whether you are sitting at your desk or miles away from your PC.
-      </p>
+const RemoteContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
 
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
-        <span className="text-[#295cf1]">8.0</span> The System Tray Orchestrator
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        When VoxKage is initialized, it anchors itself in the Windows taskbar as a lightweight Qt-based System Tray application. This acts as the master process manager via <code className="bg-white/10 px-1.5 py-0.5 rounded">tray_app.py</code>.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-        <li><strong>Daemon Management:</strong> The tray app silently manages all detached background processes. It ensures the MCP Servers, the Telegram Watcher, and long-running sub-agents (<code className="bg-white/10 px-1 rounded">spawn_task</code>) remain active and healthy even if the main CLI terminal is closed.</li>
-        <li><strong>One-Click Accessibility:</strong> Provides immediate UX shortcuts to launch the main terminal, open the central <code className="bg-white/10 px-1 rounded">settings.json</code> configuration file, or access logging directories without navigating through the file system.</li>
-        <li><strong>Graceful Teardown:</strong> When you exit via the tray, it safely intercepts running LLM operations, flushes memory buffers to disk, and sends kill signals to all orphaned subprocesses, ensuring your OS isn't left with zombie processes.</li>
-      </ul>
-    </div>
+  return (
+    <div className="flex flex-col gap-10 pb-12">
+      <div className="flex flex-col gap-3">
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/80" : "text-[#1a1a1a]/95"}`}>
+          VoxKage is not confined to a terminal window that you must keep open on your desktop. It integrates directly into your operating system as an omnipresent daemon, allowing for global control, automated process syncing, and remote telemetry. This architecture ensures VoxKage is always listening and ready to execute, whether you are sitting at your desk or miles away from your PC.
+        </p>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">8.1</span> True Remote Execution
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        This is VoxKage's standout feature. Using the Telegram Bot API via <code className="bg-white/10 px-1.5 py-0.5 rounded">telegram_watcher.py</code>, VoxKage allows you to command your physical PC from anywhere in the world using your smartphone.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-        <div className="bg-[#ffffff05] border border-white/5 p-5 rounded-xl shadow-inner flex flex-col gap-2">
-          <h4 className="text-[#295cf1] font-medium text-[15px]">Live Injection (IPC)</h4>
-          <p className="text-xs opacity-50 mb-1">The remote control is not a separate web server; it is a direct neural link to the active LLM engine.</p>
-          <ul className="list-disc pl-4 opacity-70 flex flex-col gap-1 text-[13px]">
-            <li><strong>Continuous Polling:</strong> Runs as a highly efficient background thread, polling for messages from an authorized <code className="bg-white/10 px-1 rounded">CHAT_ID</code>.</li>
-            <li><strong>Named Pipe IPC:</strong> Intercepts messages and uses Named Pipe Inter-Process Communication to physically inject text directly into the active gemini CLI terminal's stdin stream.</li>
-            <li><strong>Live Execution:</strong> The main engine instantly parses the prompt, executes OS commands locally, and responds.</li>
-          </ul>
-        </div>
-        <div className="bg-[#ffffff05] border border-white/5 p-5 rounded-xl shadow-inner flex flex-col gap-2">
-          <h4 className="text-[#e11d48] font-medium text-[15px]">The Inbox Fallback Protocol</h4>
-          <p className="text-xs opacity-50 mb-1">What if you text VoxKage while the main CLI window is closed?</p>
-          <ul className="list-disc pl-4 opacity-70 flex flex-col gap-1 text-[13px]">
-            <li><strong>Persistent Queuing:</strong> Detects if the main engine is offline. Instead of dropping the message, it saves the prompt to a secure local <code className="bg-white/10 px-1 rounded">_INBOX_FILE</code>.</li>
-            <li><strong>Catch-Up Execution:</strong> The next time you open the VoxKage terminal, it automatically checks the inbox, reads all missed messages, and executes the backlog of remote commands automatically.</li>
-          </ul>
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          8.0 The System Tray Daemon &amp; Explorer Path Hooks
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          When VoxKage is initialized, it anchors itself in the Windows taskbar as a lightweight, background process manager implemented using the {renderCode("pystray")} library inside {renderCode("tray_app.py")}.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[15px] text-[#295cf1] tracking-wide flex items-center gap-1.5">
+              <Cpu size={16} /> Singleton Process Control
+            </h4>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              The tray process acts as a system-wide singleton by attempting to bind to a local TCP socket at {renderCode("127.0.0.1:49998")}. If another instance starts up, it immediately exits to prevent overlapping resource conflicts. The daemon is bootstrapped via {renderCode("pythonw")} to run in a completely detached, headless state, eliminating distracting terminal window flashes.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[15px] text-[#295cf1] tracking-wide flex items-center gap-1.5">
+              <Terminal size={16} /> Explorer path focus hooks
+            </h4>
+            <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              When launching a terminal session, the tray utilizes {renderCode("win32gui")} and {renderCode("win32com.client")} Shell COM hooks. It queries the active window class. If a user has a File Explorer window active ({renderCode("CabinetWClass")} or {renderCode("ExploreWClass")}), it extracts the folder path ({renderCode("window.Document.Folder.Self.Path")}) and initializes the terminal directly focused in that directory via {renderCode("Set-Location -Path")}.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">8.2</span> Bi-Directional File Telemetry
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        Remote control isn't limited to text commands; it supports full multimedia data transfer.
-      </p>
-      <ul className="list-disc pl-5 opacity-70 flex flex-col gap-3 mt-2">
-        <li>
-          <strong>Inbound Telemetry (Phone to PC):</strong> If you take a photo of a document on your phone and send it to the VoxKage Telegram bot, the watcher automatically downloads the file to your PC's local storage. It then passes the absolute file path to the LLM. VoxKage uses its Vision Pipeline to instantly "read" the physical document and executes commands based on its contents.
-        </li>
-        <li>
-          <strong>Outbound Telemetry (PC to Phone):</strong> VoxKage can push data back to you globally. If it completes a massive, 2-hour research task in the background, it uses the <code className="bg-white/10 px-1 rounded">telegram_send_report</code> and <code className="bg-white/10 px-1 rounded">telegram_send_file</code> tools to send the formatted markdown summary and any generated PDFs directly to your phone.
-        </li>
-        <li>
-          <strong>Interactive Confirmation Gates:</strong> If VoxKage needs to perform a dangerous action while you are away, it uses <code className="bg-white/10 px-1 rounded">telegram_ask_save</code>. It sends the prompt to your phone and pauses execution, waiting for you to reply "Yes" or "No" before proceeding with the file deletion on your physical machine.
-        </li>
-      </ul>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          8.1 The Native Control Center (Settings GUI)
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          To provide rapid environment adjustments without the massive memory footprint of Chromium wrappers or heavy PySide frameworks, VoxKage implements a native settings dashboard inside {renderCode("settings_window.py")} powered entirely by standard Python {renderCode("tkinter")}.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide flex items-center gap-1.5">
+              <Settings size={15} /> Lightweight Architecture
+            </h4>
+            <p className={`text-[13px] md:text-[13.5px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Bypasses webview delays with a process load time of near-zero milliseconds. Implements DPI-awareness settings ({renderCode("SetProcessDpiAwareness")}) and positions its compact matte dark window ({renderCode("380x580")}) anchored precisely at the bottom-right corner of the user's screen offset, resting right next to the system tray.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide flex items-center gap-1.5">
+              <Hexagon size={15} /> SlideToggle canvas widgets
+            </h4>
+            <p className={`text-[13px] md:text-[13.5px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              To mimic high-end modern design libraries, the Control Center overrides native retro Tkinter checkbuttons. It deploys custom canvas coordinates to dynamically draw organic capsule pill toggle tracks, rendering sleek slider animations using custom pixel geometry boundaries.
+            </p>
+          </div>
+
+          <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+            <h4 className="font-mono font-bold text-[14.5px] text-[#295cf1] tracking-wide flex items-center gap-1.5">
+              <Database size={15} /> Dynamic Variable Syncing
+            </h4>
+            <p className={`text-[13px] md:text-[13.5px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+              Clicking "Apply" serializes toggle states directly to {renderCode("config.json")} and global settings, dynamically triggering registry updates for boot autostart, Shield Protocol gates, execution sandboxing, Windows banner notification sounds, and terminating inactive processes.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          8.2 The Telegram Daemon &amp; Three-Tier Injection Pipeline
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          The remote control system runs on a persistent background service managed by {renderCode("telegram_watcher.py")}, completely independent of the tray process to avoid race conditions. It queries updates every 2 seconds via a secure long-poll connection, feeding prompts into a highly resilient **three-tier injection chain**.
+        </p>
+
+        <div className="flex flex-col gap-3.5 mt-2">
+          <div className={`p-5 rounded-xl transition-all duration-300 ${isDark ? "bg-[#111] border border-white/5" : "bg-white/60 border border-white/60 shadow-sm"} flex items-start gap-4`}>
+            <div className={`p-2.5 rounded-lg font-mono text-[13.5px] font-bold ${isDark ? "bg-blue-500/10 text-[#8ba2ff]" : "bg-blue-500/15 text-[#295cf1]"}`}>P1</div>
+            <div className="flex flex-col gap-1">
+              <h4 className={`text-[15px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-[#295cf1]"}`}>Named Pipe IPC (Zero Interruption)</h4>
+              <p className={`text-[13.5px] transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                The watcher first attempts to bind to Windows Named Pipe {renderCode("\\\\.\\pipe\\voxkage_ipc")}. If an active VoxKage terminal session is open and listening, the message payload is sent directly via the pipe, allowing instant injection into the active LLM engine's input stream with zero UI focus loss or foreground flashing.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-5 rounded-xl transition-all duration-300 ${isDark ? "bg-[#111] border border-white/5" : "bg-white/60 border border-white/60 shadow-sm"} flex items-start gap-4`}>
+            <div className={`p-2.5 rounded-lg font-mono text-[13.5px] font-bold ${isDark ? "bg-blue-500/10 text-[#8ba2ff]" : "bg-blue-500/15 text-[#295cf1]"}`}>P2</div>
+            <div className="flex flex-col gap-1">
+              <h4 className={`text-[15px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-[#295cf1]"}`}>PyAutoGUI Clipboard Fallback (Window Targeting)</h4>
+              <p className={`text-[13.5px] transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                If the Named Pipe is unavailable, the daemon searches window handles ({renderCode("EnumWindows")}) filtering strictly for terminal classes ({renderCode("ConsoleWindowClass")}, {renderCode("PseudoconsoleWindowClass")}, etc.) to prevent mistargeting. It then invokes COM APIs to unlock active window limits ({renderCode("AllowSetForegroundWindow")}), restores window focus, copies the text to the Unicode clipboard, and simulates a rapid {renderCode("Ctrl+V")} + {renderCode("Enter")} sequence.
+              </p>
+            </div>
+          </div>
+
+          <div className={`p-5 rounded-xl transition-all duration-300 ${isDark ? "bg-[#111] border border-white/5" : "bg-white/60 border border-white/60 shadow-sm"} flex items-start gap-4`}>
+            <div className={`p-2.5 rounded-lg font-mono text-[13.5px] font-bold ${isDark ? "bg-blue-500/10 text-[#8ba2ff]" : "bg-blue-500/15 text-[#295cf1]"}`}>P3</div>
+            <div className="flex flex-col gap-1">
+              <h4 className={`text-[15px] font-mono font-bold transition-colors duration-300 ${isDark ? "text-white" : "text-[#295cf1]"}`}>Headless agy Subprocess (Autonomous Remote Mode)</h4>
+              <p className={`text-[13.5px] transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/75"}`}>
+                If the terminal window is closed, the daemon spawns an isolated background {renderCode("agy")} process with {renderCode("VOXKAGE_ACTIVE=1")} and prepends a critical system directive instruction context. This tells the LLM it is in remote mode, forcing it to route final outputs back to the user via {renderCode("telegram_send_message")}. It enforces a hard **180-second execution timeout ceiling** to guard system resources, reporting timeout alerts if exceeded.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+          8.3 Bi-Directional Telemetry &amp; Vision-Tool Integration
+        </h3>
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/85"}`}>
+          Remote control extends far beyond text prompts. VoxKage supports complex multimedia uploads and remote confirmation gating.
+        </p>
+
+        <ul className="list-disc pl-5 opacity-70 flex flex-col gap-3.5 mt-2 text-[14.5px] leading-relaxed">
+          <li className={`transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+            <strong>Inbound Multimedia Parsing:</strong> The daemon parses stickers, location coordinates, text captions, and contacts. If you send a photo or a document to your Telegram bot, the watcher intercepts it, downloads the attachment to your local storage under {renderCode("~/.voxkage/telegram_downloads/")}, and appends a critical vision tool-calling directive directly to the prompt payload:
+            <div className="mt-2 pl-4 border-l-2 border-[#295cf1]/30 font-mono text-[13px] opacity-90 text-[#295cf1]">
+              [SYSTEM INSTRUCTION: The user attached a PHOTO. Local path: C:\path\to\image.png] | CRITICAL INSTRUCTION: You MUST use the analyze_specific_file tool (with file_path='...' and query='describe this image') BEFORE you answer!
+            </div>
+            This seamlessly forces the engine to invoke the multimodal vision MCP server to "read" your physical environment before answering.
+          </li>
+          <li className={`transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+            <strong>Outbound Media Telemetry:</strong> While executing headless operations, the agent utilizes {renderCode("telegram_send_file")} and {renderCode("telegram_send_report")} to dispatch documents, compressed folders, logs, or detailed markdown summaries directly back to your smartphone.
+          </li>
+          <li className={`transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+            <strong>Interactive Confirmation Gates:</strong> The engine coordinates with the watcher using {renderCode("telegram_ask_save")}. When performing dangerous operations remotely (e.g. deleting directories), the agent dispatches a confirmation inquiry to your chat, pauses execution, and safely checks for inbound responses ({renderCode("Yes")} or {renderCode("No")}) before executing commands on your computer.
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PluginsContent = () => (
   <div className="flex flex-col gap-10 pb-12">
