@@ -26,11 +26,29 @@ export default function InstallationPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [progress, setProgress] = useState(0);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1200); // 1.2s smooth loading screen transition
-    return () => clearTimeout(timer);
+    let loaderRafId: number;
+    let startTimestamp: number | null = null;
+    
+    const simulateProgress = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
+      
+      let currentProgress = Math.min((elapsed / 1000) * 100, 100);
+      setProgress(Math.floor(currentProgress));
+
+      if (currentProgress < 100) {
+        loaderRafId = requestAnimationFrame(simulateProgress);
+      } else {
+        setTimeout(() => setLoading(false), 200);
+      }
+    };
+    loaderRafId = requestAnimationFrame(simulateProgress);
+    return () => {
+      cancelAnimationFrame(loaderRafId);
+    };
   }, []);
 
   const pipxInstallCommands = `# Install pipx globally (if you don't have it)
@@ -80,19 +98,24 @@ pip install -e .`;
           <motion.div
             key="loader"
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#09090b] w-screen h-screen overflow-hidden"
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: "easeInOut" }}
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
           >
-            <div className="relative text-[10rem] md:text-[15rem] font-bold leading-none tracking-tighter select-none flex items-center justify-center">
-              <span className="text-white/5 relative z-0 pr-8 pl-4">V</span>
-              <motion.span 
-                className="absolute inset-0 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-t from-[#020617] via-[#1e3a8a] to-[#3b82f6] z-10 pr-8 pl-4"
-                initial={{ clipPath: "inset(100% -20% 0 -20%)" }}
-                animate={{ clipPath: "inset(0% -20% 0 -20%)" }}
-                transition={{ duration: 1.3, ease: "easeInOut" }}
+            <div className="flex flex-col items-center justify-center gap-5">
+              <motion.div 
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="font-mono text-[10px] tracking-[0.2em] text-white/80"
               >
-                V
-              </motion.span>
+                {progress}%
+              </motion.div>
+              <div className="relative w-48 h-[1px] bg-white/10 overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full bg-white transition-all duration-75"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
           </motion.div>
         )}

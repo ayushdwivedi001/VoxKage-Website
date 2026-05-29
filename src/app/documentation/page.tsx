@@ -144,15 +144,6 @@ export default function DocumentationPage() {
               <PanelLeft size={18} strokeWidth={1.5} />
             </button>
 
-            <Link 
-              href="/" 
-              className={`flex items-center flex-shrink-0 gap-2 mr-3 md:mr-6 ${isDark ? 'hover:text-white' : 'hover:text-[#1a1a1a]'} ${colors.textMuted} transition-colors`}
-              title="Return to Home"
-            >
-              <ArrowLeft size={16} />
-              <span className="hidden md:inline text-xs font-mono uppercase tracking-wider">Home</span>
-            </Link>
-
             {/* Breadcrumbs - horizontally scrollable on mobile */}
             <div className={`flex items-center gap-2 text-[9px] sm:text-[10px] md:text-xs font-mono uppercase tracking-widest ${colors.textMuted} transition-colors duration-500 overflow-x-auto no-scrollbar whitespace-nowrap`}>
               <span className="flex-shrink-0">Docs</span>

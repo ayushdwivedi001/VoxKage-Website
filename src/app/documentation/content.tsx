@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Cpu, RefreshCw, Hexagon, ShieldCheck, Code2, Eye, Database, MonitorSmartphone, Settings, HelpCircle, FileText, Terminal, Network, Search, FileEdit, Send, CheckCircle2, GitBranch, Mail, Music, MessageCircle, ChevronDown } from "lucide-react";
+import { Cpu, RefreshCw, Hexagon, ShieldCheck, Code2, Eye, Database, MonitorSmartphone, Settings, HelpCircle, FileText, Terminal, Network, Search, FileEdit, Send, CheckCircle2, GitBranch, Mail, Music, MessageCircle, ChevronDown, Copy, Check, Scale, AlertTriangle, Info } from "lucide-react";
 
 export const DOC_SECTIONS = [
   { id: "architecture", label: "Deep Architecture", category: "Core Engine", icon: Cpu },
@@ -1919,87 +1919,408 @@ const FaqContent = ({ isDark = true }: { isDark?: boolean }) => {
   );
 };
 
-const LicenseContent = () => (
-  <div className="flex flex-col gap-10 pb-12">
-    <div className="flex flex-col gap-3">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">11.0</span> Apache License 2.0
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        VoxKage is proud to be open-source software, properly licensed under the permissive <strong>Apache License, Version 2.0</strong> (January 2004). This grants you immense flexibility to use, modify, and distribute the framework whether you are an individual developer or an enterprise.
-      </p>
+const LicenseContent = ({ isDark = true }: { isDark?: boolean }) => {
+  const [tab, setTab] = useState<"summary" | "full">("summary");
+  const [copied, setCopied] = useState(false);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <div className="bg-[#ffffff05] border border-emerald-500/20 p-5 rounded-xl shadow-inner flex flex-col gap-3 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/50"></div>
-          <h4 className="text-emerald-500 font-medium text-[16px] flex items-center gap-2">
-            The Freedom (Permissions)
-          </h4>
-          <ul className="list-none opacity-80 flex flex-col gap-2 text-[13.5px]">
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 mt-0.5">✓</span>
-              <span><strong>Commercial Use:</strong> You can use VoxKage for commercial purposes and internally at your company without fees.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 mt-0.5">✓</span>
-              <span><strong>Modification:</strong> You can fork the engine, tweak the Agentic Loop, and build your own custom AI solutions on top of the codebase.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 mt-0.5">✓</span>
-              <span><strong>Distribution:</strong> You can distribute the original or modified code.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 mt-0.5">✓</span>
-              <span><strong>Patent Use:</strong> You receive an express grant of patent rights from contributors.</span>
-            </li>
-          </ul>
+  const fullLicenseText = `                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   Copyright 2026 Ayush Dwivedi
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.`;
+
+  const licenseLines = fullLicenseText.split("\n");
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(fullLicenseText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="flex flex-col gap-8 pb-12 w-full">
+      <div className="flex flex-col gap-3">
+        <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/80" : "text-[#1a1a1a]/95"}`}>
+          VoxKage is proud to be open-source software, properly licensed under the permissive <strong className="font-bold text-[#295cf1]">Apache License, Version 2.0</strong> (January 2004). This grants you immense flexibility to use, modify, and distribute the framework whether you are an individual developer, a startup, or an enterprise.
+        </p>
+
+        {/* Tab Switcher */}
+        <div className={`flex items-center gap-2 mb-4 w-max p-1 rounded-xl border transition-all duration-300 ${isDark ? "bg-[#111] border-white/5" : "bg-white/55 border-white/60 shadow-sm"}`}>
+          <button 
+            onClick={() => setTab("summary")} 
+            className={`px-5 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 ${
+              tab === "summary" 
+                ? isDark ? "bg-white/10 text-white shadow" : "bg-white text-[#295cf1] shadow-sm border border-[#295cf1]/10" 
+                : isDark ? "text-white/50 hover:text-white" : "text-[#1a1a1a]/55 hover:text-[#295cf1]"
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5" />
+            Summary &amp; Bounds
+          </button>
+          <button 
+            onClick={() => setTab("full")} 
+            className={`px-5 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 ${
+              tab === "full" 
+                ? "bg-[#295cf1] text-white shadow-lg shadow-[#295cf1]/20" 
+                : isDark ? "text-white/50 hover:text-[#295cf1]" : "text-[#1a1a1a]/55 hover:text-[#295cf1]"
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            Full License Text
+          </button>
         </div>
 
-        <div className="bg-[#ffffff05] border border-[#e11d48]/20 p-5 rounded-xl shadow-inner flex flex-col gap-3 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-[#e11d48]/50"></div>
-          <h4 className="text-[#e11d48] font-medium text-[16px] flex items-center gap-2">
-            The Limitations & Conditions
-          </h4>
-          <ul className="list-none opacity-80 flex flex-col gap-2 text-[13.5px]">
-            <li className="flex items-start gap-2">
-              <span className="text-[#e11d48] mt-0.5">✕</span>
-              <span><strong>Trademark Use:</strong> You cannot use the "VoxKage" name, logos, or trademarks to endorse your derivative products without explicit permission.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#e11d48] mt-0.5">✕</span>
-              <span><strong>Liability:</strong> VoxKage is provided "AS IS". The creators are <strong>not liable</strong> for any damages or data loss caused by autonomous agentic actions (especially if Safe Mode is bypassed).</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-400 mt-0.5">ℹ</span>
-              <span><strong>Notice & Attribution:</strong> If you distribute modifications, you must include a copy of the Apache 2.0 license, state your changes, and preserve original copyright notices.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+        <AnimatePresence mode="wait">
+          {tab === "summary" ? (
+            <motion.div
+              key="summary"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col gap-6"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                {/* Permissions */}
+                <div className={`border p-5 rounded-2xl shadow-inner flex flex-col gap-3 relative overflow-hidden transition-all duration-300 ${
+                  isDark ? "bg-[#111]/30 border-emerald-500/10 hover:border-emerald-500/20" : "bg-emerald-500/[0.02] border-emerald-500/20 shadow-sm hover:border-emerald-500/35"
+                }`}>
+                  <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/50"></div>
+                  <h4 className="text-emerald-500 font-mono font-bold text-[14px] tracking-wider uppercase flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" />
+                    ✓ Permissions (The Freedom)
+                  </h4>
+                  <ul className={`list-none opacity-85 flex flex-col gap-3 text-[13.5px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-emerald-500 mt-0.5 font-bold">✓</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Commercial Use:</strong> You can run VoxKage for commercial purposes and deploy it internally at your company without fees.</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-emerald-500 mt-0.5 font-bold">✓</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Modification:</strong> You can fork the engine, tweak the Agentic Loop parameters, and build custom AI solutions on top.</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-emerald-500 mt-0.5 font-bold">✓</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Distribution:</strong> You can distribute original or derivative software versions to others in source or binary forms.</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-emerald-500 mt-0.5 font-bold">✓</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Patent Use:</strong> Contributor agreements grant patent protection permissions.</span>
+                    </li>
+                  </ul>
+                </div>
 
-    <div className="flex flex-col gap-3 mt-4">
-      <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-        <span className="text-[#295cf1]">11.1</span> Full License Text & Repository
-      </h3>
-      <p className="opacity-70 leading-relaxed text-[15px]">
-        We believe in transparent, community-driven AI. For the complete legal text of the Apache 2.0 license, or to inspect the source code, please visit the official <a href="https://github.com/ayushdwivedi001/VoxKage" target="_blank" rel="noopener noreferrer" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#295cf1] to-blue-400">GitHub/VoxKage</a> repository. 
-      </p>
-      <div className="mt-4 p-5 rounded-xl bg-[#0a0a0a] border border-white/5 font-mono text-xs text-white/40 overflow-y-auto custom-scrollbar leading-relaxed max-h-[160px]">
-        Copyright 2026 Ayush Dwivedi<br/><br/>
-        Licensed under the Apache License, Version 2.0 (the "License");<br/>
-        you may not use this file except in compliance with the License.<br/>
-        You may obtain a copy of the License at<br/><br/>
-        http://www.apache.org/licenses/LICENSE-2.0<br/><br/>
-        Unless required by applicable law or agreed to in writing, software<br/>
-        distributed under the License is distributed on an "AS IS" BASIS,<br/>
-        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br/>
-        See the License for the specific language governing permissions and<br/>
-        limitations under the License.
+                {/* Limitations */}
+                <div className={`border p-5 rounded-2xl shadow-inner flex flex-col gap-3 relative overflow-hidden transition-all duration-300 ${
+                  isDark ? "bg-[#111]/30 border-rose-500/10 hover:border-rose-500/20" : "bg-rose-500/[0.02] border-rose-500/20 shadow-sm hover:border-rose-500/35"
+                }`}>
+                  <div className="absolute top-0 left-0 w-1 h-full bg-rose-500/50"></div>
+                  <h4 className="text-rose-500 font-mono font-bold text-[14px] tracking-wider uppercase flex items-center gap-1.5">
+                    <AlertTriangle className="w-4 h-4" />
+                    ✕ Limitations &amp; Safeguards
+                  </h4>
+                  <ul className={`list-none opacity-85 flex flex-col gap-3 text-[13.5px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-rose-500 mt-0.5 font-bold">✕</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Trademark Use:</strong> You cannot use the "VoxKage" name, brand logos, or trademarks to endorse derivative works.</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-rose-500 mt-0.5 font-bold">✕</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Liability Disclaimer:</strong> Provided "AS IS". The authors and contributors are <strong className="font-bold text-rose-500">not liable</strong> for any OS damage or directory deletions.</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-rose-500 mt-0.5 font-bold">✕</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>No Warranty:</strong> Distributed without warranties of title, merchantability, or fitness for a particular purpose.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Conditions */}
+                <div className={`border p-5 rounded-2xl shadow-inner flex flex-col gap-3 relative overflow-hidden transition-all duration-300 ${
+                  isDark ? "bg-[#111]/30 border-amber-500/10 hover:border-amber-500/20" : "bg-amber-500/[0.02] border-amber-500/20 shadow-sm hover:border-amber-500/35"
+                }`}>
+                  <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/50"></div>
+                  <h4 className="text-amber-500 font-mono font-bold text-[14px] tracking-wider uppercase flex items-center gap-1.5">
+                    <Info className="w-4 h-4" />
+                    ℹ Conditions (The Rules)
+                  </h4>
+                  <ul className={`list-none opacity-85 flex flex-col gap-3 text-[13.5px] transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-amber-500 mt-0.5 font-bold">ℹ</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>License &amp; Copyright:</strong> You must distribute a copy of the Apache 2.0 license and preserve copyright attribution (<strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Copyright 2026 Ayush Dwivedi</strong>).</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-amber-500 mt-0.5 font-bold">ℹ</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>State Changes:</strong> If you modify any file inside the source code, you must include prominent notices declaring the changes.</span>
+                    </li>
+                    <li className="flex items-start gap-2 group">
+                      <span className="text-amber-500 mt-0.5 font-bold">ℹ</span>
+                      <span><strong className={`font-semibold ${isDark ? "text-white" : "text-[#1a1a1a]"}`}>Preserve Notices:</strong> You must keep all original copyright, patent, trademark, and attribution notices from the source.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 mt-4">
+                <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-2 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+                  11.1 Transparency &amp; Open Development
+                </h3>
+                <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/80" : "text-[#1a1a1a]/95"}`}>
+                  We believe in fully transparent, community-driven development. For bug templates or to inspect the live engine workspace, please visit the official <a href="https://github.com/ayushdwivedi001/VoxKage" target="_blank" rel="noopener noreferrer" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#295cf1] to-blue-400 hover:underline">GitHub/VoxKage</a> repository.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 mt-2">
+                <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 font-mono bg-gradient-to-r from-red-500 to-rose-500 bg-clip-text text-transparent">
+                  11.2 Native Execution &amp; Shield Advisory
+                </h3>
+                <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white/80" : "text-[#1a1a1a]/95"}`}>
+                  Because VoxKage runs natively inside your local OS terminal environment with full administrative shell authorization (running commands like file creation, deletion, process launching, and Spotify controls directly), you are strictly advised to review instructions in the <a href="#security" className="font-semibold text-[#295cf1] hover:underline">Shield Protocol</a> section. Always review agent actions and maintain backups of sensitive database directories.
+                </p>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="full"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col gap-4"
+            >
+              {/* Full Scrollable License mock */}
+              <div className={`border rounded-xl overflow-hidden font-mono text-[12.5px] leading-relaxed shadow-2xl transition-all duration-300 ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-[#fafafa] border-[#1a1a1a]/10"}`}>
+                <div className={`px-4 py-2.5 flex items-center justify-between border-b transition-all duration-300 ${isDark ? "bg-[#15161c] border-white/5" : "bg-[#e5e5e5] border-[#1a1a1a]/5"}`}>
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                    </div>
+                    <span className={`text-[10px] ml-2 tracking-wider uppercase font-semibold ${isDark ? "text-white/30" : "text-[#1a1a1a]/40"}`}>LICENSE — UTF-8</span>
+                  </div>
+                  <button 
+                    onClick={handleCopy}
+                    className={`text-[10px] font-bold tracking-widest uppercase transition-all duration-300 flex items-center gap-1.5 ${
+                      copied 
+                        ? "text-emerald-500 font-extrabold" 
+                        : isDark ? "text-white/40 hover:text-[#295cf1]" : "text-[#1a1a1a]/55 hover:text-[#295cf1]"
+                    }`}
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        Copy Raw
+                      </>
+                    )}
+                  </button>
+                </div>
+                
+                {/* High-Fidelity Scrollable Line-Numbered Editor mockup */}
+                <div className={`p-4 overflow-y-auto max-h-[450px] custom-scrollbar select-text font-mono text-[13px] leading-relaxed transition-all duration-300 ${isDark ? "bg-[#09090b]" : "bg-white"}`}>
+                  {licenseLines.map((line, idx) => (
+                    <div key={idx} className={`flex px-2 py-0.5 rounded transition-colors duration-150 ${isDark ? "hover:bg-white/5" : "hover:bg-black/5"}`}>
+                      <span className={`text-[11px] font-light select-none w-8 text-right pr-3 border-r font-mono transition-all duration-300 ${isDark ? "text-white/20 border-white/5" : "text-[#1a1a1a]/25 border-black/5"}`}>{idx + 1}</span>
+                      <span className={`pl-4 whitespace-pre-wrap flex-1 font-mono tracking-wide ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>{line || " "}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const DOC_CONTENT: Record<string, {
   title: string;
