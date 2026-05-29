@@ -714,79 +714,341 @@ const VisionContent = ({ isDark = true }: { isDark?: boolean }) => {
 
 const MemoryMockup = () => {
   const [step, setStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const outputContainerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (step >= 3) return;
+    if (!isPlaying) return;
+    if (step >= 5) {
+      setIsPlaying(false);
+      return;
+    }
     const timer = setTimeout(() => {
       setStep((prev) => prev + 1);
-    }, 2000);
+    }, 3800);
     return () => clearTimeout(timer);
+  }, [step, isPlaying]);
+
+  useEffect(() => {
+    if (outputContainerRef.current) {
+      outputContainerRef.current.scrollTo({
+        top: outputContainerRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
   }, [step]);
 
+  const handleNext = () => {
+    if (step < 5) setStep((prev) => prev + 1);
+  };
+
+  const handleBack = () => {
+    if (step > 0) setStep((prev) => prev - 1);
+  };
+
+  const togglePlay = () => {
+    setIsPlaying((prev) => !prev);
+  };
+
+  const handleReplay = () => {
+    setStep(0);
+    setIsPlaying(true);
+  };
+
   return (
-    <div className="w-full bg-[#050505] border border-white/5 rounded-xl p-4 md:p-6 font-mono text-[11px] md:text-[13px] shadow-2xl relative overflow-hidden flex flex-col min-h-[360px]">
-      {/* Query Bar */}
-      <div className="flex items-start md:items-center gap-3 bg-white/5 px-3 md:px-4 py-3 rounded-lg mb-6 md:mb-8 border border-white/5 shrink-0 pr-16 md:pr-20">
-        <Terminal size={16} className="text-[#295cf1] shrink-0 mt-0.5 md:mt-0" />
-        <motion.span 
-          initial={{ opacity: 0, y: 4 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.6 }}
-          className="text-white/80 whitespace-normal leading-relaxed break-words"
-        >
-          Build me Claude. Do no mistakes.
-        </motion.span>
+    <div className="w-full bg-[#050505] border border-white/10 rounded-xl p-5 md:p-6 font-mono text-[11.5px] md:text-[13px] shadow-2xl relative overflow-hidden flex flex-col min-h-[510px]">
+      {/* Terminal Title Bar */}
+      <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-5 shrink-0 select-none">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+          <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+          <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+          <span className="text-white/40 text-[10px] md:text-[11px] ml-2 tracking-widest uppercase">voxkage@soul-terminal:~</span>
+        </div>
+        <div className="flex items-center gap-1 bg-[#111] px-2 py-0.5 rounded border border-white/5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-emerald-500 text-[9px] font-bold uppercase tracking-wider">LIVE DAEMON ACTIVE</span>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-6 relative pl-6 border-l border-white/5 ml-4">
-        {step >= 1 && (
-          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 relative">
-             <div className="absolute -left-[35px] bg-[#050505] border border-white/10 p-1.5 rounded-md z-10">
-              <Database size={14} className="text-purple-500" />
+      {/* Query Bar */}
+      <div className="flex items-start md:items-center gap-3 bg-white/5 px-3 md:px-4 py-3 rounded-lg mb-6 border border-white/5 shrink-0 pr-16 md:pr-20 relative">
+        <Terminal size={16} className="text-[#295cf1] shrink-0 mt-0.5 md:mt-0 animate-pulse" />
+        <div className="flex flex-col md:flex-row md:items-center gap-1 w-full">
+          <span className="text-white/40 shrink-0">agy &gt;</span>
+          <span className="text-white/95 whitespace-normal leading-relaxed break-words font-semibold animate-pulse">
+            Scaffold a custom analytics dashboard with glassmorphism cards, prune my orphaned Docker volumes, and launch my favorite deep-focus chill soundtrack.
+          </span>
+        </div>
+      </div>
+
+      {/* Terminal Scrolling Output */}
+      <div 
+        ref={outputContainerRef}
+        className="flex-1 flex flex-col gap-5 relative pl-4 md:pl-6 border-l border-white/10 ml-2 md:ml-4 mb-4 select-text max-h-[380px] overflow-y-auto pr-1"
+      >
+        {step >= 0 && (
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 w-full">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-white/15 p-2 rounded-lg shadow">
+                <Terminal size={13} className="text-white/40" />
+              </div>
             </div>
-            <div className="bg-[#111] border border-purple-500/20 px-4 py-3 rounded-lg w-full relative overflow-hidden">
-              <div className="absolute top-0 right-0 px-2 py-1 bg-purple-500/10 text-purple-500 text-[9px] rounded-bl-lg font-bold">SOUL MEMORY TRIGGERED</div>
-              <span className="text-purple-400 font-bold tracking-widest text-[10px] uppercase mb-1 block">Date - 23rd January, 2025</span>
-              <span className="text-white/90 font-medium mb-1 block">Title - Tech Stack preferred - NEXT JS, Tailwind, Supabase</span>
-              <p className="text-white/60 mt-2">User likes to build things with the Next JS, tailwind, supabase.</p>
+            <div className="flex-1 flex flex-col gap-1 py-1">
+              <div className="flex items-center gap-2 text-[10px] text-white/40 uppercase tracking-widest font-bold">
+                <span>[2026-05-29T05:28:02]</span>
+                <span className="text-[#295cf1]">Session Init</span>
+              </div>
+              <p className="text-white/80">Initializing agy orchestration core... Handshaking with Honeycomb cells...</p>
+            </div>
+          </motion.div>
+        )}
+
+        {step >= 1 && (
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 w-full">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-[#3b82f6]/30 p-2 rounded-lg shadow-md animate-pulse">
+                <Database size={13} className="text-[#3b82f6]" />
+              </div>
+            </div>
+            <div className="bg-[#0b0c10] border border-[#295cf1]/20 px-4 py-3 rounded-lg flex-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#295cf1]/10 text-[#3b82f6] text-[8px] md:text-[9px] rounded-bl-lg font-bold tracking-widest uppercase border-l border-b border-[#295cf1]/15">
+                SOUL PROFILE RECALL
+              </div>
+              <span className="text-[#8ba2ff] font-bold tracking-widest text-[9px] md:text-[10px] uppercase mb-1 block">
+                mcp_voxkage-memory_recall_user("profile preferences workspace")
+              </span>
+              <div className="flex flex-col gap-1 text-[11px] md:text-[12px] text-white/90 font-mono">
+                <p className="text-[#27c93f]">✔ MATCH FOUND: <span className="text-white/70">identity.name = "Alex"</span></p>
+                <p className="text-[#27c93f]">✔ MATCH FOUND: <span className="text-white/70">identity.location = "San Francisco"</span></p>
+                <p className="text-[#27c93f]">✔ MATCH FOUND: <span className="text-white/70">preferences.ambient = "Deep Focus Synthwave"</span></p>
+                <p className="text-[#27c93f]">✔ MATCH FOUND: <span className="text-white/70">playlists.synthwave = "spotify:playlist:7eM8Yy9uA2fK1oL4xZ8mY"</span></p>
+                <p className="text-[#27c93f]">✔ MATCH FOUND: <span className="text-white/70">preferences.aspect = "21:9 Ultrawide Monitor"</span></p>
+              </div>
+              <p className="text-white/50 mt-2 text-[10px] md:text-[11px] italic">
+                Logs: "Welcome back, Alex. Initializing Ultrawide workspace environment. Retrieving deep-focus profile."
+              </p>
             </div>
           </motion.div>
         )}
 
         {step >= 2 && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-4 mt-2">
-            <CheckCircle2 size={18} className="text-[#295cf1] shrink-0 mt-0.5" />
-            <p className="text-white/90"><strong>VOXKAGE:</strong> Got it sir, moving ahead with your preferred NEXT JS workflow.</p>
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 w-full">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-yellow-500/30 p-2 rounded-lg shadow-md animate-pulse">
+                <Terminal size={13} className="text-yellow-500" />
+              </div>
+            </div>
+            <div className="bg-[#0b0c10] border border-yellow-500/20 px-4 py-3 rounded-lg flex-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 px-2 py-0.5 bg-yellow-500/10 text-yellow-400 text-[8px] md:text-[9px] rounded-bl-lg font-bold tracking-widest uppercase border-l border-b border-yellow-500/15">
+                FRONTEND SNIPPET SEARCH
+              </div>
+              <span className="text-[#ffdf6d] font-bold tracking-widest text-[9px] md:text-[10px] uppercase mb-1 block">
+                mcp_voxkage-browser_search_frontend_snippets("glassmorphism cards")
+              </span>
+              <div className="flex flex-col gap-1 text-[11px] md:text-[12px] text-white/90 font-mono">
+                <p className="text-[#27c93f]">✔ MATCH FOUND: <span className="text-white/70">"glassmorphic-metric-panels" (similarity: 0.94)</span></p>
+                <p className="text-white/70">Status: Splicing raw HTML + computed flex CSS styles from archived browser audits.</p>
+                <p className="text-emerald-400 font-bold">✔ Scaffolded: custom glassmorphism metrics layout written to src/components/Dashboard.tsx.</p>
+              </div>
+              <p className="text-white/50 mt-2 text-[10px] md:text-[11px] italic">
+                Logs: "Integrating custom React Tailwind component and backdrop CSS structures learned from past web scraping archives..."
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {step >= 3 && (
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 w-full">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-emerald-500/30 p-2 rounded-lg shadow-md">
+                <ShieldCheck size={13} className="text-emerald-500" />
+              </div>
+            </div>
+            <div className="bg-[#0b0c10] border border-emerald-500/20 px-4 py-3 rounded-lg flex-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[8px] md:text-[9px] rounded-bl-lg font-bold tracking-widest uppercase border-l border-b border-emerald-500/15">
+                TRUST GATING PASS
+              </div>
+              <span className="text-[#55ea82] font-bold tracking-widest text-[9px] md:text-[10px] uppercase mb-1 block">
+                mcp_voxkage-memory_check_trusted("purge_docker_volumes")
+              </span>
+              <div className="flex flex-col gap-1 text-[11px] md:text-[12px] text-white/90 font-mono">
+                <p className="text-[#27c93f]">✔ STATUS: <span className="text-white/70">trusted</span></p>
+                <p className="text-white/70">Reason: "user pre-approved orphaned developer docker volumes cleanup on 2026-04-12"</p>
+                <p className="text-[#ffbd2e] text-[10.5px]">⚠ SHIELD PROTOCOL: Hard-stop confirmation gate bypassed securely.</p>
+              </div>
+              <p className="text-white/50 mt-2 text-[10px] md:text-[11px] italic">
+                Logs: "Scanning Docker volumes... Located 3.8 GB orphaned volumes. Registry match: trusted = True. Bypassing prompt and purging..."
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {step >= 4 && (
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 w-full">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-[#ff5f56]/30 p-2 rounded-lg shadow-md animate-bounce">
+                <HelpCircle size={13} className="text-[#ff5f56]" />
+              </div>
+            </div>
+            <div className="bg-[#0b0c10] border border-[#ff5f56]/20 px-4 py-3 rounded-lg flex-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#ff5f56]/10 text-[#ff5f56] text-[8px] md:text-[9px] rounded-bl-lg font-bold tracking-widest uppercase border-l border-b border-[#ff5f56]/15">
+                HURDLE ENCOUNTERED
+              </div>
+              <span className="text-[#ff8a84] font-bold tracking-widest text-[9px] md:text-[10px] uppercase mb-1 block">
+                mcp_voxkage-memory_log_problem()
+              </span>
+              <div className="flex flex-col gap-1 text-[11px] md:text-[12px] text-white/90 font-mono">
+                <p className="text-[#ff5f56]">✖ EXCEPTION: <span className="text-white/70">SpotifyConnectionException (socket port collision)</span></p>
+                <p className="text-white/70">Problem: "Failed to connect to local API client. Port 4370 refused handshake."</p>
+                <p className="text-[#3b82f6]">ℹ AUTONOMOUS HIPPOCAMPUS ACTION: Roadblock logged with ID 'mem_9x4c' (unsolved).</p>
+              </div>
+              <p className="text-white/50 mt-2 text-[10px] md:text-[11px] italic">
+                Logs: "Port lock detected. Stashing failure details context. Commencing diagnostic recovery loops..."
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {step >= 5 && (
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-4 w-full">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-[#27c93f]/30 p-2 rounded-lg shadow-md">
+                <FileEdit size={13} className="text-[#27c93f]" />
+              </div>
+            </div>
+            <div className="bg-[#0b0c10] border border-[#27c93f]/20 px-4 py-3 rounded-lg flex-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#27c93f]/10 text-[#27c93f] text-[8px] md:text-[9px] rounded-bl-lg font-bold tracking-widest uppercase border-l border-b border-[#27c93f]/15">
+                SELF-HEALED & SOLVED
+              </div>
+              <span className="text-[#7bf096] font-bold tracking-widest text-[9px] md:text-[10px] uppercase mb-1 block">
+                mcp_voxkage-memory_log_solution("mem_9x4c")
+              </span>
+              <div className="flex flex-col gap-1 text-[11px] md:text-[12px] text-white/90 font-mono">
+                <p className="text-[#27c93f]">✔ ACTION: <span className="text-white/70">Executed kill_process("SpotifyHelper.exe") on port 4370</span></p>
+                <p className="text-[#27c93f]">✔ RETRY STATE: <span className="text-white/70">Spotify process restarted. Synthwave soundtrack initiated successfully.</span></p>
+                <p className="text-white/70">Resolution Logged: "Terminated orphaned Helper socket process, refreshed local connection."</p>
+                <p className="text-[#3b82f6]">ℹ Prevention: "Verify port 4370 process status before initializing spotipy API connection."</p>
+              </div>
+              <p className="text-white/50 mt-2 text-[10px] md:text-[11px] italic">
+                Logs: "Port released. Playing Synthwave Focus Soundtrack. Hippocampus problem ID 'mem_9x4c' mutated to SOLVED."
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {step >= 5 && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-4 w-full mt-2">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-[#111] border border-[#3b82f6]/30 p-2 rounded-lg shadow-md animate-pulse">
+                <CheckCircle2 size={13} className="text-[#3b82f6]" />
+              </div>
+            </div>
+            <div className="flex-1 flex flex-col gap-1 py-1">
+              <p className="text-white/90">
+                <strong>VOXKAGE:</strong> Custom dashboard scaffolded successfully using your archived glassmorphic component layouts, sir. Cleaned 3.8 GB of orphaned Docker volumes without prompt interruptions (pre-approved in your trusted action registry). I encountered and self-healed a Spotify helper socket freeze, logging a permanent prevention patch to memory, and launched your Deep Focus Synthwave soundtrack. Brain environment stable.
+              </p>
+              <p className="text-[10px] text-white/30 uppercase tracking-wider mt-1 font-mono">Status: WORKFLOW COMPLETE // 0 ERRORS // 1 AUTO-RESOLVED</p>
+            </div>
           </motion.div>
         )}
       </div>
 
-      <button 
-        onClick={() => setStep(0)}
-        className="absolute top-4 right-4 md:top-6 md:right-6 text-[9px] md:text-[10px] text-white/40 hover:text-white uppercase tracking-widest border border-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded transition-colors z-10 bg-[#050505]"
-      >
-        Replay
-      </button>
+      {/* Control Panel (Replay, Back, Next, Progress circles) */}
+      <div className="mt-auto pt-4 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 select-none shrink-0 text-[10px] md:text-[11px]">
+        {/* Step Progress Circles */}
+        <div className="flex items-center gap-2">
+          {[0, 1, 2, 3, 4, 5].map((s) => (
+            <button
+              key={s}
+              onClick={() => {
+                setStep(s);
+                setIsPlaying(false);
+              }}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                s === step 
+                  ? "bg-[#295cf1] scale-125 ring-2 ring-[#295cf1]/30" 
+                  : s < step 
+                    ? "bg-[#295cf1]/60" 
+                    : "bg-white/10 hover:bg-white/20"
+              }`}
+              title={`Jump to step ${s + 1}`}
+            />
+          ))}
+          <span className="text-white/35 ml-2 uppercase font-mono tracking-widest text-[9px]">Step {step + 1} of 6</span>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-3 font-semibold">
+          <button
+            onClick={handleBack}
+            disabled={step === 0}
+            className={`px-3 py-1 rounded border border-white/10 uppercase tracking-widest transition-colors ${
+              step === 0 ? "text-white/10 cursor-not-allowed" : "text-white/60 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            Back
+          </button>
+          
+          <button
+            onClick={togglePlay}
+            className="px-3 py-1 rounded border border-[#295cf1]/20 bg-[#295cf1]/10 text-[#3b82f6] hover:bg-[#295cf1]/20 uppercase tracking-widest transition-colors font-bold"
+          >
+            {isPlaying && step < 5 ? "Pause" : "Play"}
+          </button>
+
+          <button
+            onClick={handleNext}
+            disabled={step === 5}
+            className={`px-3 py-1 rounded border border-white/10 uppercase tracking-widest transition-colors ${
+              step === 5 ? "text-white/10 cursor-not-allowed" : "text-white/60 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            Next
+          </button>
+
+          <button 
+            onClick={handleReplay}
+            className="text-white/40 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-1 rounded transition-colors bg-[#050505]"
+          >
+            Replay
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-const MemoryContent = () => {
+const MemoryContent = ({ isDark = true }: { isDark?: boolean }) => {
   const [tab, setTab] = useState<"docs" | "mockup">("docs");
+
+  const renderCode = (text: string) => (
+    <code className={`px-1.5 py-0.5 rounded font-mono text-[13.5px] transition-colors duration-300 ${isDark ? "bg-white/10 text-[#8ba2ff]" : "bg-black/10 text-[#295cf1] font-semibold"}`}>
+      {text}
+    </code>
+  );
 
   return (
     <div className="flex flex-col h-full w-full">
       {/* Internal Tab Switcher */}
-      <div className="flex items-center gap-2 mb-8 bg-[#111] w-max p-1 rounded-xl border border-white/5">
+      <div className={`flex items-center gap-2 mb-8 w-max p-1 rounded-xl border transition-all duration-300 ${isDark ? "bg-[#111] border-white/5" : "bg-white/55 border-white/60 shadow-sm"}`}>
         <button 
           onClick={() => setTab("docs")} 
-          className={`px-6 py-2 rounded-lg text-xs font-medium tracking-widest uppercase transition-all duration-300 ${tab === "docs" ? "bg-white/10 text-white shadow" : "text-white/50 hover:text-white"}`}
+          className={`px-6 py-2 rounded-lg text-xs font-medium tracking-widest uppercase transition-all duration-300 ${
+            tab === "docs" 
+              ? isDark ? "bg-white/10 text-white shadow" : "bg-white text-[#295cf1] shadow-sm border border-[#295cf1]/10" 
+              : isDark ? "text-white/50 hover:text-white" : "text-[#1a1a1a]/55 hover:text-[#295cf1]"
+          }`}
         >
           Documentation
         </button>
         <button 
           onClick={() => setTab("mockup")} 
-          className={`px-6 py-2 rounded-lg text-xs font-medium tracking-widest uppercase transition-all duration-300 ${tab === "mockup" ? "bg-[#295cf1] text-white shadow-lg shadow-[#295cf1]/20" : "text-white/50 hover:text-[#295cf1]"}`}
+          className={`px-6 py-2 rounded-lg text-xs font-medium tracking-widest uppercase transition-all duration-300 ${
+            tab === "mockup" 
+              ? "bg-[#295cf1] text-white shadow-lg shadow-[#295cf1]/20" 
+              : isDark ? "text-white/50 hover:text-[#295cf1]" : "text-[#1a1a1a]/55 hover:text-[#295cf1]"
+          }`}
         >
           Live Mockup
         </button>
@@ -796,71 +1058,165 @@ const MemoryContent = () => {
         {tab === "docs" ? (
           <motion.div key="docs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex flex-col gap-10 pb-12">
             <div className="flex flex-col gap-3">
-              <p className="opacity-70 leading-relaxed text-[15px] mb-2">
-                VoxKage learns across sessions. It utilizes a multi-tiered memory architecture managed by the <code className="bg-white/10 px-1.5 py-0.5 rounded">memory_server</code>. This system ensures that VoxKage adapts to your specific workflows, remembers your preferences, and actively learns from its own operational mistakes.
+              <p className={`opacity-70 leading-relaxed text-[15px] mb-2 transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>
+                VoxKage is not amnesic. It adapts and learns across sessions using a robust, multi-tiered memory architecture managed by the stateful {renderCode("voxkage-memory")} server cell. This system partitions cognitive storage into two highly optimized paths: the append-only self-healing **Hippocampus** and the permanent, identity-defining user **SOUL profile**.
               </p>
 
-              <h3 className="text-xl font-medium tracking-wide flex items-center gap-2 mt-4">
-                <span className="text-[#295cf1]">7.0</span> The SOUL Database
+              <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+                7.0 The SOUL Database (Systemic Observation of User Lifestyle)
               </h3>
-              <p className="opacity-70 leading-relaxed text-[15px]">
-                The SOUL (Systemic Observation of User Lifestyle) database is where VoxKage stores its understanding of you. It does not require you to fill out a profile; it learns autonomously through observation.
+              <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>
+                The SOUL database manages the permanent, structured profile of the user. Unlike standard agents that require you to fill out static preference forms, VoxKage listens to your voice and observes your actions to build an adaptive identity record stored locally in {renderCode("~/.voxkage/user_profile.json")}.
               </p>
-              <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>Autonomous Logging:</strong> When you mention a preference (e.g., "I prefer vanilla CSS over Tailwind"), VoxKage autonomously logs it under Identity, Preferences, or Habits via <code className="bg-white/10 px-1 rounded">remember_user</code>.</li>
-                <li><strong>Proactive Recall:</strong> At the start of a session, VoxKage retrieves relevant SOUL data. It automatically knows to open Spotify and play your preferred Lo-Fi beats without you specifying the genre via <code className="bg-white/10 px-1 rounded">recall_user</code>.</li>
-                <li><strong>Trusted Actions:</strong> If you repeatedly confirm repetitive tasks, VoxKage logs a <code className="bg-white/10 px-1.5 py-0.5 rounded text-[#295cf1]">trusted_action</code>, permanently bypassing the Shield Protocol's Hard Stop Confirmation Gate for that workflow.</li>
-              </ul>
-            </div>
 
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">7.1</span> The Hippocampus: Problem & Solution Logs
-              </h3>
-              <p className="opacity-70 leading-relaxed text-[15px]">
-                VoxKage is designed to be highly fault-tolerant. When it encounters an error it cannot immediately solve, it ensures it never makes the same mistake twice.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-[#295cf1] font-medium mb-1">Failure Logging</h4>
-                  <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">log_problem</code> — Documents the exact context, attempted action, and reason for failure if a tool fails or VoxKage wastes time.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">The Profile Structure</h4>
+                  <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    SOUL partitions your profile into 5 distinct categories:
+                  </p>
+                  <ul className={`list-disc pl-5 text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 flex flex-col gap-1.5 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    <li><strong>identity:</strong> Name (e.g. Alex), location (e.g. San Francisco), device model (e.g. 21:9 Ultrawide Monitor), gender, and personal references.</li>
+                    <li><strong>preferences:</strong> Spotify playlists (e.g. <em>Deep Focus Synthwave</em>), image aspect ratios (21:9 ultrawide), streaming apps (e.g. Netflix), and search fallback configurations.</li>
+                    <li><strong>habits:</strong> Behavioral workflows (e.g. daily updates protocol, file searches desktop priority, RAG reindexing).</li>
+                    <li><strong>trusted_actions:</strong> A registry of routine actions pre-approved to skip Shield Protocol hard-stops.</li>
+                    <li><strong>notes:</strong> Observations logged mid-conversation to keep track of shared tasks and session states.</li>
+                  </ul>
                 </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-[#295cf1] font-medium mb-1">Resolution Logging</h4>
-                  <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">log_solution</code> — Once the hurdle is overcome (self-correction or user intervention), it permanently updates the log with the working solution.</p>
-                </div>
-                <div className="bg-[#ffffff05] border border-white/5 p-4 rounded-xl shadow-inner">
-                  <h4 className="text-[#295cf1] font-medium mb-1">Pre-Flight Checks</h4>
-                  <p className="text-xs opacity-50"><code className="bg-white/10 px-1 rounded">search_memory</code> — Before complex tasks, VoxKage queries this database to proactively apply documented solutions to historical failures.</p>
+
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Cognitive Handlers</h4>
+                  <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    Permanent user facts are governed through autonomous API tools:
+                  </p>
+                  <ul className={`list-disc pl-5 text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 flex flex-col gap-1.5 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    <li><strong>remember_user:</strong> Autonomously captures facts in context (e.g., <em>"I prefer Synthwave Lofi Beats for focus soundtrack"</em>) and updates the profile categories.</li>
+                    <li><strong>recall_user:</strong> Dynamically matches keyword queries against the profile, returning a token-budget efficient summary of maximum 12 compact bullets.</li>
+                    <li><strong>get_user_profile:</strong> Generates a full text visualization of your entire profile, triggered only when you explicitly ask: <em>"What do you know about me?"</em>.</li>
+                    <li><strong>forget_user:</strong> Easily prunes outdated or miscategorized facts from any active category.</li>
+                  </ul>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">7.2</span> Frontend Template Memory
+              <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+                7.1 The Hippocampus: Problem &amp; Solution Logs
               </h3>
-              <p className="opacity-70 leading-relaxed text-[15px]">
-                VoxKage acts as an autonomous design archivist, building a personalized library of beautiful frontend components as it browses the web.
+              <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>
+                VoxKage is engineered to be a self-correcting entity. When it encounters a system roadblock, network timeout, or tool execution failure, it archives the event and patches its reasoning, ensuring it never makes the same mistake twice.
               </p>
-              <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>DOM Extraction:</strong> When encountering visually striking elements, it extracts raw HTML, computed CSS, and JS logic via <code className="bg-white/10 px-1 rounded">save_frontend_snippet</code>.</li>
-                <li><strong>Permanent Indexing:</strong> Saves snippets into the Frontend Memory database, tagged with descriptive keywords (e.g., "animated-gradient-button").</li>
-                <li><strong>Application Building:</strong> Queries <code className="bg-white/10 px-1 rounded">search_frontend_snippets</code> when scaffolding apps to construct UI from high-quality components it previously learned from the live web.</li>
-              </ul>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[15px] text-[#295cf1] tracking-wide">1. Failure Archiving</h4>
+                  <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    When a tool fails 2+ times or a browser action stalls, VoxKage autonomously runs:
+                  </p>
+                  <p className="text-[12.5px] leading-relaxed mt-1 mb-1">
+                    {renderCode("log_problem(...)")}
+                  </p>
+                  <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    This logs an unsolved entry containing the target context and attempted methods inside the append-only {renderCode("memory.jsonl")} database with a unique short ID (e.g. <em>mem_8f2b</em>).
+                  </p>
+                </div>
+
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[15px] text-[#295cf1] tracking-wide">2. Solution Patches</h4>
+                  <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    Once the hurdle is resolved (by autonomous retry or manual user guidance), VoxKage invokes:
+                  </p>
+                  <p className="text-[12.5px] leading-relaxed mt-1 mb-1">
+                    {renderCode("log_solution(...)")}
+                  </p>
+                  <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    This mutates the problem's status to <strong>solved</strong>, permanently archiving what worked and outlining future prevention rules to shield the engine from repeating the error.
+                  </p>
+                </div>
+
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[15px] text-[#295cf1] tracking-wide">3. Pre-Flight Retrieval</h4>
+                  <p className={`text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    Before starting complex terminal commands or browser flows, VoxKage proactively calls:
+                  </p>
+                  <p className="text-[12.5px] leading-relaxed mt-1 mb-1">
+                    {renderCode("search_memory(...)")}
+                  </p>
+                  <p className={`text-[13px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    A pure-Python TF-IDF similarity search calculates vector similarity against historical solved/unsolved problems, shielding it from repeating mistakes.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium tracking-wide flex items-center gap-2">
-                <span className="text-[#295cf1]">7.3</span> Project-Specific Memory
+              <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+                7.2 Action Gating &amp; Trusted Registry
               </h3>
-              <p className="opacity-70 leading-relaxed text-[15px]">
-                While SOUL is global, VoxKage maintains strict boundaries for project-specific knowledge.
+              <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>
+                To eliminate tedious prompt fatigue while maintaining absolute control, VoxKage coordinates between its memory database and the **Shield Protocol** using a secure confirmation pre-approval gate registry.
               </p>
-              <ul className="list-disc pl-5 opacity-70 flex flex-col gap-2 mt-2">
-                <li><strong>GEMINI.md (Team Rules):</strong> Stored in the root of a repository. VoxKage reads this to understand team-wide architectures, linting rules, and strict boundaries.</li>
-                <li><strong>MEMORY.md (Private Workflows):</strong> Stored securely in <code className="bg-white/10 px-1 rounded">~/.gemini/tmp/</code>. Holds private notes (local API keys, server ports) that should never be committed to source control.</li>
-              </ul>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">Confirmation Overrides</h4>
+                  <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    Routine operations can be pre-approved via:
+                  </p>
+                  <p className="text-[12.5px] leading-relaxed mt-1 mb-1">
+                    {renderCode("set_trusted_action(action_key, trusted, reason)")}
+                  </p>
+                  <p className={`text-[13.5px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    When the user says <em>"Stop asking me before clearing temp files"</em>, this writes a trusted record. The hosting engine queries {renderCode("check_trusted(action_key)")} before displaying confirmation prompts. If trusted, it bypasses the gate safely.
+                  </p>
+                </div>
+
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-[#e11d48]/5 border border-[#e11d48]/10" : "bg-[#e11d48]/5 border border-[#e11d48]/20 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#e11d48] tracking-wide">The Untrusted Boundary</h4>
+                  <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    For safety and integrity, dangerous actions can NEVER be trusted:
+                  </p>
+                  <ul className={`list-disc pl-5 text-[13.5px] md:text-[14px] leading-relaxed transition-colors duration-300 flex flex-col gap-1.5 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    <li>Deleting user files or directories outside designated temp folders.</li>
+                    <li>Running third-party desktop application installers from unverified URLs.</li>
+                    <li>Sending emails or executing bulk messaging programs.</li>
+                  </ul>
+                  <p className={`text-[13px] italic mt-1 leading-relaxed transition-colors duration-300 ${isDark ? "text-white/40" : "text-[#1a1a1a]/55"}`}>
+                    These actions will ALWAYS require a physical human verification click, regardless of preference settings.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <h3 className="text-xl font-bold tracking-wide flex items-center gap-2 mt-4 font-mono bg-gradient-to-r from-[#295cf1] to-[#3b82f6] bg-clip-text text-transparent">
+                7.3 Project-Specific &amp; Local Context Boundaries
+              </h3>
+              <p className={`opacity-70 leading-relaxed text-[15px] transition-colors duration-300 ${isDark ? "text-white" : "text-black"}`}>
+                While SOUL memory coordinates global lifestyle context, VoxKage enforces strict, isolated parameters for codebase workspaces, ensuring sensitive project details remain private.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">GEMINI.md (Workspace Rules)</h4>
+                  <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    Stored at the root of your project directory:
+                  </p>
+                  <p className={`text-[13.5px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    This standard markdown file instructs VoxKage on repo-specific architecture patterns, coding guidelines, framework overrides, and project constraints. It is shared across team members and committed to source control to keep developers aligned.
+                  </p>
+                </div>
+
+                <div className={`p-5 rounded-xl shadow-inner transition-all duration-300 flex flex-col gap-2.5 ${isDark ? "bg-white/5 border border-white/5" : "bg-white/45 border border-white/60 shadow-sm"}`}>
+                  <h4 className="font-mono font-bold text-[16px] md:text-[17px] text-[#295cf1] tracking-wide">MEMORY.md (Private Context)</h4>
+                  <p className={`text-[15px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/70" : "text-[#1a1a1a]/80"}`}>
+                    Stored securely in your local app configuration at {renderCode("~/.gemini/tmp/")}:
+                  </p>
+                  <p className={`text-[13.5px] leading-relaxed transition-colors duration-300 ${isDark ? "text-white/60" : "text-[#1a1a1a]/70"}`}>
+                    Acts as a private scratchpad. It caches active workspace variables, private local server ports, developer credentials, and sensitive session details. It is never checked into Git, keeping private configuration separate from the codebase.
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
         ) : (
